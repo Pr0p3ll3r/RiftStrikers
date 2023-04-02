@@ -44,6 +44,9 @@ public class PlayerController : NetworkBehaviour
     {
         base.OnStartNetwork();
 
+        if (!Owner.IsLocalClient)
+            return;
+
         Camera.main.GetComponent<CameraFollow>().SetPlayer(transform);
     }
 
