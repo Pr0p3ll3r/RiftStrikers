@@ -1,17 +1,20 @@
 ﻿using FishNet.Object;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : NetworkBehaviour
 {
-    [SerializeField] private float speed;
+    [SerializeField] private float speed, gravity;
     [SerializeField] private AudioClip footstepSound;
     [SerializeField] private AudioClip rollSound;
     [SerializeField] private float nextStep;
     [SerializeField] private float nextRoll;
     [SerializeField] private AnimationCurve rollingCurve;
+
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private LayerMask groundMask;
+    [SerializeField] private float groundDistance;
 
     public bool roll;
 
@@ -20,11 +23,13 @@ public class PlayerController : NetworkBehaviour
     private AudioSource audioSource;
     private Animator animCharacter;
     private Vector3 lastPos;
+    private Vector3 movement;
     private Vector2 moveInput;
     private float distMoved;
     private float lastRoll;
     private float rollTimer;
     private float adjustedSpeed, adjustedNextStep;
+    private bool isGrounded;
 
     private void Start()
     {
@@ -70,9 +75,15 @@ public class PlayerController : NetworkBehaviour
 
     void Move()
     {
-        Vector3 movement = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);      
 
-        controller.Move(movement * adjustedSpeed * Time.deltaTime);
+        if (isGrounded)
+        {
+            movement = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
+            movement *= adjustedSpeed;          
+        }
+        movement.y += gravity * Time.deltaTime;
+        controller.Move(movement * Time.deltaTime);
 
         //animations
         Vector3 localMove = transform.InverseTransformDirection(movement);
