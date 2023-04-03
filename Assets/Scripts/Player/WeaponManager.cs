@@ -22,6 +22,7 @@ public class WeaponManager : NetworkBehaviour
     private float currentCooldown;
     private PlayerInput playerInput;
     private InputAction fireAction;
+    private PlayerHUD hud;
     private PlayerController controller;
     private Animator animCharacter;
     private Coroutine equip;
@@ -29,7 +30,8 @@ public class WeaponManager : NetworkBehaviour
     [SerializeField] private float bulletEjectingSpeed = 0.5f;
 
     private void Start()
-    {       
+    {
+        hud = GetComponent<PlayerHUD>();
         animCharacter = GetComponent<Animator>();
         controller = GetComponent<PlayerController>();
         playerInput = GetComponent<PlayerInput>();
@@ -102,7 +104,7 @@ public class WeaponManager : NetworkBehaviour
     IEnumerator Equip(int index)
     {
         selectedWeapon = index;
-        currentWeaponData = testWeapon;
+        currentWeaponData = (Weapon)testWeapon.GetCopy();
 
         isEquipping = true;
         isReloading = false;
@@ -118,6 +120,8 @@ public class WeaponManager : NetworkBehaviour
             weaponSound.clip = currentWeaponData.equipSound;
             weaponSound.Play();
         }
+
+        hud.RefreshAmmo(currentWeaponData.GetClip());
 
         yield return new WaitForSeconds(1f);
         isEquipping = false;
@@ -143,6 +147,8 @@ public class WeaponManager : NetworkBehaviour
     [ServerRpc]
     void ShootServer()
     {
+        hud.RefreshAmmo(currentWeaponData.GetClip());
+
         //slide sound
         if (currentWeaponData.slideSound != null)
         {
@@ -216,17 +222,21 @@ public class WeaponManager : NetworkBehaviour
                     isReloading = false;
                     yield break;
                 }
+                hud.StartReload(currentWeaponData.reloadTime);
                 PlayReloadSoundServer();              
                 yield return new WaitForSeconds(currentWeaponData.reloadTime);
                 currentWeaponData.Reload();
+                hud.RefreshAmmo(currentWeaponData.GetClip());
             }
             while (currentWeaponData.GetClip() != currentWeaponData.clipSize);
         }
         else
         {
+            hud.StartReload(currentWeaponData.reloadTime);
             PlayReloadSoundServer();
             yield return new WaitForSeconds(currentWeaponData.reloadTime);
             currentWeaponData.Reload();
+            hud.RefreshAmmo(currentWeaponData.GetClip());
         }
         animCharacter.SetBool("Reload", false);
         isReloading = false;
@@ -247,6 +257,7 @@ public class WeaponManager : NetworkBehaviour
     private void StopReload()
     {
         StopCoroutine(reload);
+        hud.StopReload();
         animCharacter.SetBool("Reload", false);
         isReloading = false;
         weaponSound.Stop();

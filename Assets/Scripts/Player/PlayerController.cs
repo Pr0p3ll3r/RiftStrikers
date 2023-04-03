@@ -21,6 +21,7 @@ public class PlayerController : NetworkBehaviour
     public bool IsRolling => roll;
 
     private Camera cam;
+    private PlayerHUD hud;
     private CharacterController controller;
     private AudioSource audioSource;
     private Animator animCharacter;
@@ -36,6 +37,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Start()
     {
+        hud = GetComponent<PlayerHUD>();
         audioSource = GetComponent<AudioSource>();
         animCharacter = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
@@ -154,6 +156,7 @@ public class PlayerController : NetworkBehaviour
         roll = true;
         float timer = 0;
         networkAnimator.SetTrigger("Roll");
+        hud.StartCoroutine(hud.StaminaRestore(nextRoll));
         lastRoll = nextRoll;
         while (timer < rollTimer)
         {

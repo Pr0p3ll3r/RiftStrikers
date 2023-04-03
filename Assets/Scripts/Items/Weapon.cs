@@ -52,7 +52,9 @@ public class Weapon : Item
 
     public override Item GetCopy()
     {
-        return Instantiate(this);
+        Item weapon = Instantiate(this);
+        weapon.Initialize();
+        return weapon;
     }
 
     public bool FireBullet()
