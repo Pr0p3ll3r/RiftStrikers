@@ -1,4 +1,5 @@
-﻿using FishNet.Object;
+﻿using FishNet.Component.Animating;
+using FishNet.Object;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -23,6 +24,7 @@ public class PlayerController : NetworkBehaviour
     private CharacterController controller;
     private AudioSource audioSource;
     private Animator animCharacter;
+    private NetworkAnimator networkAnimator; 
     private Vector3 lastPos;
     private Vector3 playerVelocity;
     private Vector2 moveInput;
@@ -37,6 +39,7 @@ public class PlayerController : NetworkBehaviour
         audioSource = GetComponent<AudioSource>();
         animCharacter = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
+        networkAnimator = GetComponent<NetworkAnimator>();
         cam = Camera.main;
 
         Keyframe roll_LastFrame = rollingCurve[rollingCurve.length - 1];
@@ -46,11 +49,11 @@ public class PlayerController : NetworkBehaviour
         adjustedNextStep = nextStep;
     }
 
-    public override void OnStartNetwork()
+    public override void OnStartClient()
     {
-        base.OnStartNetwork();
+        base.OnStartClient();
 
-        if (!Owner.IsLocalClient)
+        if (!IsOwner)
             return;
 
         Camera.main.GetComponent<CameraFollow>().SetPlayer(transform);
@@ -150,7 +153,7 @@ public class PlayerController : NetworkBehaviour
         bool makeSound = false;
         roll = true;
         float timer = 0;
-        animCharacter.SetTrigger("Roll");
+        networkAnimator.SetTrigger("Roll");
         lastRoll = nextRoll;
         while (timer < rollTimer)
         {

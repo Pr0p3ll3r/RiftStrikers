@@ -44,9 +44,6 @@ public class WeaponManager : NetworkBehaviour
 
         if (currentWeapon != null)
         {
-            if (!IsOwner)
-                return;
-
             if (currentCooldown > 0) currentCooldown -= Time.deltaTime;
 
             if (currentWeapon != null && !isEquipping)
@@ -56,7 +53,10 @@ public class WeaponManager : NetworkBehaviour
                     if (fireAction.WasPressedThisFrame() && currentCooldown <= 0 && !isReloading && !controller.IsRolling)
                     {
                         if (currentWeaponData.FireBullet())
-                            Shoot();
+                        {
+                            ShootServer();
+                            currentCooldown = currentWeaponData.fireRate;
+                        }
                         else if (currentWeaponData.OutOfAmmo())
                             reload = StartCoroutine(Reload());
                     }
@@ -66,7 +66,10 @@ public class WeaponManager : NetworkBehaviour
                     if (fireAction.IsPressed() && currentCooldown <= 0 && !isReloading && !controller.IsRolling)
                     {
                         if (currentWeaponData.FireBullet())
-                            Shoot();
+                        {
+                            ShootServer();
+                            currentCooldown = currentWeaponData.fireRate;
+                        }                         
                         else if (currentWeaponData.OutOfAmmo())
                             reload = StartCoroutine(Reload());
                     }
@@ -137,19 +140,9 @@ public class WeaponManager : NetworkBehaviour
         currentWeapon.SetActive(true);
     }
 
-    void Shoot()
+    [ServerRpc]
+    void ShootServer()
     {
-        currentCooldown = currentWeaponData.fireRate;
-
-        ParticleSystem muzzleFlash = weaponHolder.GetChild(currentWeaponData.childNumber).gameObject.GetComponentInChildren<ParticleSystem>();
-        muzzleFlash.Play();
-
-        //sfx
-        sfx.clip = currentWeaponData.gunshotSound;
-        sfx.pitch = 1 - currentWeaponData.pitchRandom + Random.Range(-currentWeaponData.pitchRandom, currentWeaponData.pitchRandom);
-        sfx.volume = currentWeaponData.shotVolume;
-        sfx.PlayOneShot(sfx.clip);
-
         //slide sound
         if (currentWeaponData.slideSound != null)
         {
@@ -181,13 +174,28 @@ public class WeaponManager : NetworkBehaviour
                     bulletHole.transform.LookAt(hit.point + hit.normal);
                 }
 
-                //Bullet trail
-
                 //Give damage to enemy
-            }
-
-            //Bullet Case Out
+            }         
         }
+        ShootRpc();
+    }
+
+    [ObserversRpc]
+    void ShootRpc()
+    {
+        //muzzle
+        ParticleSystem muzzleFlash = weaponHolder.GetChild(currentWeaponData.childNumber).gameObject.GetComponentInChildren<ParticleSystem>();
+        muzzleFlash.Play();
+
+        //sfx
+        sfx.clip = currentWeaponData.gunshotSound;
+        sfx.pitch = 1 - currentWeaponData.pitchRandom + Random.Range(-currentWeaponData.pitchRandom, currentWeaponData.pitchRandom);
+        sfx.volume = currentWeaponData.shotVolume;
+        sfx.PlayOneShot(sfx.clip);
+
+        //Bullet trail
+
+        //Bullet Case Out
     }
 
     IEnumerator Reload()
@@ -208,7 +216,7 @@ public class WeaponManager : NetworkBehaviour
                     isReloading = false;
                     yield break;
                 }
-                weaponSound.PlayOneShot(currentWeaponData.reloadSound);
+                PlayReloadSoundServer();              
                 yield return new WaitForSeconds(currentWeaponData.reloadTime);
                 currentWeaponData.Reload();
             }
@@ -216,12 +224,24 @@ public class WeaponManager : NetworkBehaviour
         }
         else
         {
-            weaponSound.PlayOneShot(currentWeaponData.reloadSound);
+            PlayReloadSoundServer();
             yield return new WaitForSeconds(currentWeaponData.reloadTime);
             currentWeaponData.Reload();
         }
         animCharacter.SetBool("Reload", false);
         isReloading = false;
+    }
+
+    [ServerRpc]
+    private void PlayReloadSoundServer()
+    {
+        PlayReloadSoundRpc();
+    }
+
+    [ObserversRpc]
+    private void PlayReloadSoundRpc()
+    {
+        weaponSound.PlayOneShot(currentWeaponData.reloadSound);
     }
 
     private void StopReload()
