@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 508e60f8eeda556419c3b296abeabd27, type: 3}
+  m_Name: AK-47
+  m_EditorClassIdentifier: 
+  itemName: AK-47
+  icon: {fileID: 0}
+  itemType: 1
+  description: 
+  firingMode: 0
+  damage: 25
+  clipSize: 30
+  pellets: 0
+  pelletsSpread: 0
+  range: 0
+  fireRate: 0.16
+  bulletForce: 20
+  bulletPrefab: {fileID: 0}
+  movementSpeed: 0.7
+  reloadTime: 2.8
+  childNumber: 1
+  animSet: 1
+  bloom: 50
+  mainFOV: 0
+  inserting: 0
+  equipSound: {fileID: 8300000, guid: d6cde026d84d3f249be29e7913e50f88, type: 3}
+  slideSound: {fileID: 0}
+  reloadSound: {fileID: 8300000, guid: 5cbc0a42c05d9184d912d1308566356a, type: 3}
+  gunshotSound: {fileID: 8300000, guid: 7c2281521487bbd42b48542bbe6aa1a7, type: 3}
+  pitchRandom: 0
+  shotVolume: 0.5
