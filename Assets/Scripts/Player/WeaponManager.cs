@@ -2,6 +2,7 @@
 using System.Collections;
 using FishNet.Object;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 
 public class WeaponManager : NetworkBehaviour
 {
@@ -169,18 +170,20 @@ public class WeaponManager : NetworkBehaviour
 
             if (Physics.Raycast(transform.position, bloom, out hit, Mathf.Infinity, canBeShot))
             {
+                //Debug.Log(hit.collider.gameObject.name);
                 if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
                 {
                     GameObject blood = Instantiate(bloodPrefab, hit.point + hit.normal * 0.001f, Quaternion.identity);
                     blood.transform.LookAt(hit.point + hit.normal);
+                    Spawn(blood);
+                    hit.collider.gameObject.GetComponent<IDamageable>().TakeDamage(currentWeaponData.damage);
                 }
                 else
                 {
                     GameObject bulletHole = Instantiate(bulletHolePrefab, hit.point + hit.normal * 0.001f, Quaternion.identity);
                     bulletHole.transform.LookAt(hit.point + hit.normal);
-                }
-
-                //Give damage to enemy
+                    Spawn(bulletHole);
+                }            
             }         
         }
         ShootRpc();
