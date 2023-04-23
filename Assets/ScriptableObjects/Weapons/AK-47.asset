@@ -16,13 +16,12 @@ MonoBehaviour:
   icon: {fileID: 0}
   itemType: 1
   description: 
-  firingMode: 0
   damage: 25
-  clipSize: 30
+  clipSize: 5
   pellets: 0
   pelletsSpread: 0
-  range: 0
-  fireRate: 0.16
+  range: 10
+  fireRate: 1
   bulletForce: 20
   bulletPrefab: {fileID: 0}
   movementSpeed: 0.7

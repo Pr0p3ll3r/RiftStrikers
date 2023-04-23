@@ -1,12 +1,5 @@
 ﻿using UnityEngine;
 
-public enum FiringMode
-{
-    Auto,
-    SemiAuto,
-    Burst
-}
-
 public enum AnimationSet
 {
     Unarmed,
@@ -18,7 +11,6 @@ public enum AnimationSet
 [CreateAssetMenu(fileName = "Weapon", menuName = "HumanSurvivors/Items/Weapon")]
 public class Weapon : Item
 {
-    public FiringMode firingMode;
     public int damage;
     public int clipSize;
     public int pellets;
@@ -31,7 +23,6 @@ public class Weapon : Item
     public float reloadTime;
     public int childNumber;
     public AnimationSet animSet;
-    public float bloom;
     [Range(0, 1)] public float mainFOV;
     public bool inserting;
 

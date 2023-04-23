@@ -2,6 +2,7 @@
 using FishNet.Object;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class PlayerController : NetworkBehaviour
@@ -23,6 +24,7 @@ public class PlayerController : NetworkBehaviour
     private Camera cam;
     private PlayerHUD hud;
     private CharacterController controller;
+    private WeaponManager weaponManager;
     private AudioSource audioSource;
     private Animator animCharacter;
     private NetworkAnimator networkAnimator; 
@@ -34,6 +36,8 @@ public class PlayerController : NetworkBehaviour
     private float rollTimer;
     private float adjustedSpeed, adjustedNextStep;
     private bool isGrounded;
+    private bool autoAim = true;
+    public bool AutoAim => autoAim;
 
     private void Start()
     {
@@ -42,6 +46,7 @@ public class PlayerController : NetworkBehaviour
         animCharacter = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
         networkAnimator = GetComponent<NetworkAnimator>();
+        weaponManager = GetComponent<WeaponManager>();
         cam = Camera.main;
 
         Keyframe roll_LastFrame = rollingCurve[rollingCurve.length - 1];
@@ -72,7 +77,8 @@ public class PlayerController : NetworkBehaviour
         if (!roll)
         {
             Move();
-            Look();
+            if(!autoAim)
+                Look();
         }
     }
 
@@ -106,6 +112,22 @@ public class PlayerController : NetworkBehaviour
             audioSource.PlayOneShot(footstepSound);
 
             distMoved = 0;
+        }
+
+        if(autoAim)
+        {
+            if (weaponManager.ClosestEnemy)
+            {
+                Vector3 directionToEnemy = weaponManager.ClosestEnemy.transform.position - transform.position;
+                directionToEnemy.y = 0;
+                Quaternion targetRotation = Quaternion.LookRotation(directionToEnemy, Vector3.up);
+                transform.rotation = targetRotation;
+            }
+            else if(movement != Vector3.zero)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(movement, Vector3.up);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10 * Time.deltaTime);
+            }              
         }
     }
 

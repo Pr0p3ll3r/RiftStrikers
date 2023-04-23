@@ -2,7 +2,6 @@
 using System.Collections;
 using FishNet.Object;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering.Universal;
 
 public class WeaponManager : NetworkBehaviour
 {
@@ -29,6 +28,8 @@ public class WeaponManager : NetworkBehaviour
     private Coroutine equip;
     private Coroutine reload;
     [SerializeField] private float bulletEjectingSpeed = 0.5f;
+    private GameObject closestEnemy;
+    public GameObject ClosestEnemy => closestEnemy;
 
     private void Start()
     {
@@ -45,15 +46,17 @@ public class WeaponManager : NetworkBehaviour
         if (!IsOwner)
             return;
 
+        closestEnemy = GetClosestEnemy();
+
         if (currentWeapon != null)
         {
             if (currentCooldown > 0) currentCooldown -= Time.deltaTime;
 
             if (currentWeapon != null && !isEquipping)
             {
-                if (currentWeaponData.firingMode == FiringMode.SemiAuto)
+                if (controller.AutoAim)
                 {
-                    if (fireAction.WasPressedThisFrame() && currentCooldown <= 0 && !isReloading && !controller.IsRolling)
+                    if(closestEnemy && currentCooldown <= 0 && !isReloading && !controller.IsRolling)
                     {
                         if (currentWeaponData.FireBullet())
                         {
@@ -72,7 +75,7 @@ public class WeaponManager : NetworkBehaviour
                         {
                             ShootServer();
                             currentCooldown = currentWeaponData.fireRate;
-                        }                         
+                        }
                         else if (currentWeaponData.OutOfAmmo())
                             reload = StartCoroutine(Reload());
                     }
@@ -159,16 +162,9 @@ public class WeaponManager : NetworkBehaviour
 
         for (int i = 0; i < Mathf.Max(1, currentWeaponData.pellets); i++)
         {
-            //bloom
-            Vector3 bloom = transform.position + transform.forward * 1000f;
-            bloom += Random.Range(-currentWeaponData.bloom, currentWeaponData.bloom) * transform.up;
-            bloom += Random.Range(-currentWeaponData.bloom, currentWeaponData.bloom) * transform.right;
-            bloom -= transform.position;
-            bloom.Normalize();
-
             RaycastHit hit;
 
-            if (Physics.Raycast(transform.position, bloom, out hit, Mathf.Infinity, canBeShot))
+            if (Physics.Raycast(transform.position, transform.forward * 1000f, out hit, currentWeaponData.range, canBeShot))
             {
                 //Debug.Log(hit.collider.gameObject.name);
                 if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
@@ -205,6 +201,32 @@ public class WeaponManager : NetworkBehaviour
         //Bullet trail
 
         //Bullet Case Out
+    }
+
+    private GameObject GetClosestEnemy()
+    {
+        Collider[] enemies = Physics.OverlapSphere(transform.position, currentWeaponData.range, LayerMask.GetMask("Enemy"));
+        GameObject closestEnemy = null;
+        float minimumDistance = 1000000f;
+
+        foreach (Collider enemy in enemies)
+        {
+            float distanceToEnemy = Vector3.Distance(transform.position, enemy.transform.position);
+
+            if (distanceToEnemy < minimumDistance)
+            {
+                closestEnemy = enemy.gameObject;
+                minimumDistance = distanceToEnemy;
+            }
+        }
+
+        return closestEnemy;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(transform.position, currentWeaponData.range);
     }
 
     IEnumerator Reload()
