@@ -87,7 +87,7 @@ public class WeaponManager : NetworkBehaviour
     public void OnReload(InputAction.CallbackContext context)
     {
         if (context.performed)
-            if (currentWeaponData.OutOfAmmo() && !isReloading) reload = StartCoroutine(Reload());
+            if (!isReloading) reload = StartCoroutine(Reload());
     }
 
     private void StartEquip(int index)
