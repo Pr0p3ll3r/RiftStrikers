@@ -1,16 +1,20 @@
 ﻿using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
 public class Zombie : NetworkBehaviour, IDamageable
 {
+    [SyncVar]
     public int currentHealth = 100;
 
     public int damage = 5;
     public float attackDistance = 5f;
     public float speed = 5f;
+    [SyncVar]
     public bool isDead;
+    public int maxHealth = 100;
 
     public int exp;
     public int money;
@@ -20,6 +24,7 @@ public class Zombie : NetworkBehaviour, IDamageable
     private Animator animator;
     private NavMeshAgent agent;
     private Material material;
+    private Ragdoll ragdoll;
     [SerializeField] private GameObject healthBar;
 
     float lastAttackTime = 0;
@@ -35,25 +40,26 @@ public class Zombie : NetworkBehaviour, IDamageable
         animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         agent.speed = speed;
+        ragdoll = GetComponent<Ragdoll>();
         if (GetClosestPlayer() != null)
             player = GetClosestPlayer().transform;
     }
 
     private void Update()
     {
-        if (!IsServer) return;
-
         if (isDead)
         {
             agent.isStopped = true;
             dissolve += Time.deltaTime * dissolveSpeed;
-            material.SetVector("_DissolveOffest", new Vector4(0f, dissolve, 0f, 0f));
-            if(dissolve >= 0.5f)
+            material.SetVector("_DissolveOffset", new Vector4(0f, dissolve, 0f, 0f));
+            if(IsServer && dissolve >= 0.5f)
             {
-                Destroy(gameObject);
+                Despawn(gameObject);
             }
             return;
         }
+
+        if (!IsServer) return;
 
         if (GetClosestPlayer() != null)
             player = GetClosestPlayer().transform;
@@ -126,9 +132,9 @@ public class Zombie : NetworkBehaviour, IDamageable
     void SetHealthBar()
     {
         healthBar.SetActive(true);
-        healthBar.GetComponentInChildren<Slider>().value = (float)currentHealth / 100;
+        healthBar.GetComponentInChildren<Slider>().value = (float)currentHealth / maxHealth;
         if (healthBar.GetComponentInChildren<Slider>().value <= 0)
-            healthBar.gameObject.SetActive(false);
+            healthBar.SetActive(false);
     }
 
     public void TakeDamage(int damage)
@@ -139,12 +145,20 @@ public class Zombie : NetworkBehaviour, IDamageable
         SetHealthBar();
         if (currentHealth <= 0)
         {
-            Die();
+            DieServer();
         }
     }
 
-    void Die()
+    [ServerRpc(RequireOwnership = false)]
+    void DieServer()
     {
+        DieRpc();
+    }
+
+    [ObserversRpc]
+    void DieRpc()
+    {
+        ragdoll.Die();
         SetHealthBar();
         isDead = true;
         animator.enabled = false;
@@ -152,6 +166,6 @@ public class Zombie : NetworkBehaviour, IDamageable
         foreach (Transform trans in gameObject.GetComponentsInChildren<Transform>(true))
         {
             trans.gameObject.layer = LayerMask.NameToLayer("NotCollide");
-        }    
+        }
     }
 }

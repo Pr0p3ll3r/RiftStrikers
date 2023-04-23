@@ -18,6 +18,7 @@ public class Player : NetworkBehaviour
     private PlayerController controller;
     private PlayerHUD hud;
     private WeaponManager wm;
+    private Ragdoll ragdoll;
 
     private void Awake()
     {
@@ -25,11 +26,12 @@ public class Player : NetworkBehaviour
     }
 
     void Start()
-    {  
+    {       
         hud = GetComponent<PlayerHUD>();
         wm = GetComponent<WeaponManager>();
         controller = GetComponent<PlayerController>();
-        hud.RefreshBars(currentHealth);
+        ragdoll = GetComponent<Ragdoll>();
+        hud.RefreshBars(currentHealth);     
     }
 
     void Update()
@@ -57,6 +59,7 @@ public class Player : NetworkBehaviour
 
     void Die()
     {
+        ragdoll.Die();
         deathSound.Play();
         isDead = true;
         controller.Control(false);
