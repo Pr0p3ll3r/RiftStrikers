@@ -2,23 +2,30 @@
 
 public class Ragdoll : MonoBehaviour
 {
+    private Animator animator;
+    private Collider mainCollider;
+    private Rigidbody[] rigidbodies;
+    private Collider[] colliders;
+
     void Start()
-    { 
+    {
+        rigidbodies = GetComponentsInChildren<Rigidbody>();
+        colliders = GetComponentsInChildren<Collider>();
         SetRigidbodyState(true);
         SetColliderState(false);
+        animator = GetComponent<Animator>();
+        mainCollider = GetComponent<Collider>();
     }
 
     public void Die()
     {
-        GetComponent<Animator>().enabled = false;
+        animator.enabled = false;
         SetRigidbodyState(false);
         SetColliderState(true);
     }
 
     void SetRigidbodyState(bool state)
-    {
-        Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
-
+    {    
         foreach (Rigidbody rb in rigidbodies)
         {
             rb.isKinematic = state;
@@ -26,14 +33,12 @@ public class Ragdoll : MonoBehaviour
     }
 
     void SetColliderState(bool state)
-    {
-        Collider[] colliders = GetComponentsInChildren<Collider>();
-
+    {   
         for (int i = 1; i < colliders.Length; i++)
         {
             colliders[i].isTrigger = !state;
         }
 
-        //GetComponent<Collider>().enabled = !state;
+        if (mainCollider) mainCollider.enabled = !state;
     }
 }

@@ -49,7 +49,6 @@ public class Zombie : NetworkBehaviour, IDamageable
     {
         if (isDead)
         {
-            agent.isStopped = true;
             dissolve += Time.deltaTime * dissolveSpeed;
             material.SetVector("_DissolveOffset", new Vector4(0f, dissolve, 0f, 0f));
             if(IsServer && dissolve >= 0.5f)
@@ -158,10 +157,11 @@ public class Zombie : NetworkBehaviour, IDamageable
     [ObserversRpc]
     void DieRpc()
     {
+        isDead = true;
+        agent.isStopped = true;
         ragdoll.Die();
         SetHealthBar();
-        isDead = true;
-        animator.enabled = false;
+        material.SetFloat("_EdgeWidth", 0.3f);
         gameObject.layer = LayerMask.NameToLayer("NotCollide");
         foreach (Transform trans in gameObject.GetComponentsInChildren<Transform>(true))
         {
