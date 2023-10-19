@@ -2,12 +2,14 @@
 using FishNet.Object.Synchronizing;
 using FishNet.Object;
 using UnityEngine.InputSystem;
+using FishNet.Connection;
 
 public class Player : NetworkBehaviour
 {
     public static Player Instance { get; private set; }
 
-    public bool isDead;
+    private bool isDead;
+    public bool IsDead => isDead;
 
     [SyncVar]
     public int currentHealth;
@@ -36,33 +38,51 @@ public class Player : NetworkBehaviour
 
     void Update()
     {
+        if (!IsOwner) return;
+
 #if UNITY_EDITOR
         if (Keyboard.current.tKey.wasPressedThisFrame)
         {
-            TakeDamage(20);
+            TakeDamageServer(20);
         }
 #endif
     }
-
-    public void TakeDamage(int damage)
+ 
+    [ServerRpc]
+    public void TakeDamageServer(int damage)
     {
         if (isDead) return;
-        hurtSound.Play();
-        hud.ShowVignette();
+    
         currentHealth -= damage;
-        hud.RefreshBars(currentHealth);
+        hurtSound.Play();
+        TakeDamageRpc(currentHealth);
         if (currentHealth <= 0)
         {
-            Die();
+            Debug.Log("SERVER: Player died");
+            DieServer();
         }
     }
 
-    void Die()
+    [ObserversRpc]
+    public void TakeDamageRpc(int newHealth)
+    {
+        hud.ShowVignette();
+        hud.RefreshBars(newHealth);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DieServer()
+    {
+        DieRpc();
+    }
+
+    [ObserversRpc]
+    private void DieRpc()
     {
         ragdoll.Die();
         deathSound.Play();
         isDead = true;
-        controller.Control(false);
+        controller.enabled = false;
         wm.ShowWeapon();
     }
 }

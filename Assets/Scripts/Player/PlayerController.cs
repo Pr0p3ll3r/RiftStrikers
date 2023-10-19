@@ -21,6 +21,7 @@ public class PlayerController : NetworkBehaviour
     private bool roll;
     public bool IsRolling => roll;
 
+    private Player player;
     private Camera cam;
     private PlayerHUD hud;
     private CharacterController controller;
@@ -41,6 +42,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Start()
     {
+        player = GetComponent<Player>();
         hud = GetComponent<PlayerHUD>();
         audioSource = GetComponent<AudioSource>();
         animCharacter = GetComponent<Animator>();
@@ -148,7 +150,7 @@ public class PlayerController : NetworkBehaviour
 
     public void OnMovement(InputAction.CallbackContext context)
     {
-        if (!IsOwner)
+        if (!IsOwner || player.IsDead)
             return;
 
         moveInput = context.ReadValue<Vector2>();
@@ -156,7 +158,7 @@ public class PlayerController : NetworkBehaviour
 
     public void OnRoll(InputAction.CallbackContext context)
     {
-        if (!IsOwner)
+        if (!IsOwner || player.IsDead)
             return;
 
         if (context.started && lastRoll <= 0)
@@ -194,11 +196,5 @@ public class PlayerController : NetworkBehaviour
             yield return null;
         }
         roll = false;
-    }
-
-    public void Control(bool status)
-    {
-        enabled = status;
-        controller.enabled = status;
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
-public class Zombie : NetworkBehaviour, IDamageable
+public class Enemy : NetworkBehaviour, IDamageable
 {
     [SyncVar]
     public int currentHealth = 100;
@@ -35,7 +35,7 @@ public class Zombie : NetworkBehaviour, IDamageable
     public override void OnStartClient()
     {
         base.OnStartClient();
-
+        Debug.Log("StarClient");
         RandomZombieLookServer();
         animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
@@ -72,6 +72,7 @@ public class Zombie : NetworkBehaviour, IDamageable
         }
         else
         {
+            Debug.Log("Update");
             animator.SetBool("Attack", false);
             agent.isStopped = false;
             agent.SetDestination(player.position);
@@ -84,7 +85,7 @@ public class Zombie : NetworkBehaviour, IDamageable
         {
             animator.SetBool("Attack", true);
             lastAttackTime = Time.time;
-            player.GetComponent<Player>().TakeDamage(damage);
+            player.GetComponent<Player>().TakeDamageServer(damage);
         }         
     }
 
@@ -136,13 +137,14 @@ public class Zombie : NetworkBehaviour, IDamageable
             healthBar.SetActive(false);
     }
 
+    [ObserversRpc]
     public void TakeDamage(int damage)
     {
         if (isDead) return;
 
         currentHealth -= damage;
         SetHealthBar();
-        if (currentHealth <= 0)
+        if (IsServer && currentHealth <= 0)
         {
             DieServer();
         }
