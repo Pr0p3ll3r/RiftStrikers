@@ -10,6 +10,8 @@ Material:
   m_Name: Shader Graphs_Dissolve_Dissolve_Direction_Metallic
   m_Shader: {fileID: -6465566751694194690, guid: 4646cfe8b2b909e468b54c795b40f39c,
     type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - BOOLEAN_DIRECTION_FROM_EULERANGLE_ON
   - BOOLEAN_USE_WROLDSPACE_ON
@@ -22,6 +24,7 @@ Material:
     MotionVector: User
   disabledShaderPasses:
   - MOTIONVECTORS
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -86,4 +89,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 5
+  version: 7
