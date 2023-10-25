@@ -32,17 +32,21 @@ public class Enemy : NetworkBehaviour, IDamageable
     private float dissolve = -0.1f;
     [SerializeField] private float dissolveSpeed = 0.1f;
 
-    public override void OnStartClient()
+    public override void OnStartNetwork()
     {
-        base.OnStartClient();
-        Debug.Log("StarClient");
-        RandomZombieLookServer();
+        base.OnStartNetwork();  
         animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         agent.speed = speed;
         ragdoll = GetComponent<Ragdoll>();
         if (GetClosestPlayer() != null)
             player = GetClosestPlayer().transform;
+    }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        RandomZombieLookServer();
     }
 
     private void Update()
@@ -53,6 +57,7 @@ public class Enemy : NetworkBehaviour, IDamageable
             material.SetVector("_DissolveOffset", new Vector4(0f, dissolve, 0f, 0f));
             if(IsServer && dissolve >= 0.5f)
             {
+                enabled = false;
                 Despawn(gameObject);
             }
             return;
@@ -72,7 +77,6 @@ public class Enemy : NetworkBehaviour, IDamageable
         }
         else
         {
-            Debug.Log("Update");
             animator.SetBool("Attack", false);
             agent.isStopped = false;
             agent.SetDestination(player.position);
