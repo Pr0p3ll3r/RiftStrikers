@@ -1,4 +1,8 @@
 using FishNet.Object;
+using FishNet.Object.Synchronizing;
+using System;
+using System.Collections;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -12,6 +16,8 @@ public class Wave
 
 public class GameManager : NetworkBehaviour
 {
+    public static GameManager Instance { get; private set; }
+
     [Header("Spawn Management")]
     [SerializeField] private int waveDuration = 60;
     [SerializeField] private Transform[] spawnPoints;
@@ -26,10 +32,26 @@ public class GameManager : NetworkBehaviour
     private float timeToNextWave;
     private int enemyKilled;
 
+    [SerializeField] private float timeToStart = 0;
+    [SerializeField] private TextMeshProUGUI timer;
+
     private int healthMultiplier = 1;
     private float damageMultiplier = 1;
     private float spawnIntervalMultiplier = 1;
     private float maximumAmountMultiplier = 1;
+
+    private bool canStart = false;
+    private bool started = false;
+    public bool GameStarted => started;
+
+    [SyncObject]
+    public readonly SyncList<PlayerInstance> players = new SyncList<PlayerInstance>();
+
+    public override void OnStartNetwork()
+    {
+        base.OnStartNetwork();
+        Instance = this;
+    }
 
     void Start()
     {
@@ -38,7 +60,7 @@ public class GameManager : NetworkBehaviour
 
     void Update()
     {
-        if (!IsServer) return;
+        if (!IsServer || !started) return;
 
         if (timeToNextWave > 0)
             timeToNextWave -= Time.deltaTime;
@@ -51,6 +73,27 @@ public class GameManager : NetworkBehaviour
         {
             SpawnEnemy();
         }
+    }
+
+    [Server]
+    void StartGame()
+    {
+        if (!canStart) return;
+
+        Debug.Log("Game Start");
+        foreach (PlayerInstance player in players)
+        {
+            player.SpawnPlayer();
+        }
+    }
+
+    [Server]
+    public void CheckCanStart()
+    {
+        canStart = players.All(player => player.isReady);
+        Debug.Log($"canStart = {canStart}");
+
+        if (canStart) StartGame();
     }
 
     public void StartWave()
@@ -71,7 +114,7 @@ public class GameManager : NetworkBehaviour
         timeToSpawn = currentWave.spawnInterval * spawnIntervalMultiplier;
         foreach (GameObject enemyPrefab in currentWave.enemies)
         {
-            Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
+            Transform spawnPoint = spawnPoints[UnityEngine.Random.Range(0, spawnPoints.Length)];
             GameObject enemyGO = Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
 
             Enemy enemy = enemyGO.GetComponent<Enemy>();
@@ -81,7 +124,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    public void ZombieKilled()
+    public void EnemyKilled()
     {
         enemyKilled++;
         enemyKilledText.text = enemyKilled.ToString();
