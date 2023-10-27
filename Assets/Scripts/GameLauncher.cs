@@ -44,9 +44,10 @@ public class GameLauncher : MonoBehaviour
     [SerializeField] private Transform playerList;
     [SerializeField] private Button readyButton;
     [SerializeField] private Button leaveButton;
-    [SerializeField] private GameObject startButton;
+    [SerializeField] private Button startButton;
     [SerializeField] private TextMeshProUGUI lobbyNameText;
     [SerializeField] private TextMeshProUGUI maxPlayersText;
+    private int playersReady = 0;
 
     public string GetPlayerName()
     {
@@ -60,7 +61,6 @@ public class GameLauncher : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        startButton.SetActive(false);
 
         authenticateButton.onClick.AddListener(Authenticate);
 
@@ -74,7 +74,7 @@ public class GameLauncher : MonoBehaviour
             ChangeMaxPlayers(maxPlayersDropdown);
         });
         createButton.onClick.AddListener(CreateLobby);
-
+        readyButton.onClick.AddListener(ReadyOnClick);
         leaveButton.onClick.AddListener(() => {
             LobbyManager.Instance.LeaveLobby();
         });
@@ -117,11 +117,13 @@ public class GameLauncher : MonoBehaviour
     private void LobbyManager_OnPlayerLeftLobby(object sender, EventArgs e)
     {
         ClearLobby();
+        ShowStartButton();
     }
 
     private void LobbyManager_OnJoinedLobby(object sender, LobbyManager.LobbyEventArgs e)
     {
         menuManager.OpenTab(menuManager.tabLobby);
+        ShowStartButton();
     }
 
     private void LobbyManager_OnLobbyListChanged(object sender, LobbyManager.OnLobbyListChangedEventArgs e)
@@ -157,7 +159,7 @@ public class GameLauncher : MonoBehaviour
     private void UpdateLobby(Lobby lobby)
     {
         ClearLobby();
-
+        playersReady = 0;
         foreach (Unity.Services.Lobbies.Models.Player player in lobby.Players)
         {
             GameObject playerListItem = Instantiate(lobbyPlayerPrefab, playerList);
@@ -167,9 +169,14 @@ public class GameLauncher : MonoBehaviour
                 LobbyManager.Instance.IsLobbyHost() &&
                 player.Id != AuthenticationService.Instance.PlayerId // Don't allow kick self
             );
-
+            if(player.Data["Ready"].Value == "true")
+                playersReady++;
             lobbyPlayer.UpdatePlayer(player);
         }
+        if (playersReady == lobby.Players.Count)
+            startButton.interactable = true;
+        else
+            startButton.interactable = false;
     }
 
     private void ClearLobby()
@@ -240,16 +247,26 @@ public class GameLauncher : MonoBehaviour
     {
         if (readyButton.GetComponent<Image>().color == Color.red)
         {
+            LobbyManager.Instance.UpdatePlayerReady("true");
             readyButton.GetComponent<Image>().color = Color.green;
             
-            leaveButton.interactable = false;
+            //leaveButton.interactable = false;
         }
         else if (readyButton.GetComponent<Image>().color == Color.green)
         {
+            LobbyManager.Instance.UpdatePlayerReady("false");
             readyButton.GetComponent<Image>().color = Color.red;
             
-            leaveButton.interactable = true;
+           // leaveButton.interactable = true;
         }
+    }
+
+    private void ShowStartButton()
+    {
+        if (LobbyManager.Instance.IsLobbyHost())
+            startButton.gameObject.SetActive(true);
+        else
+            startButton.gameObject.SetActive(false);
     }
 
     private void Btn_StartGame()

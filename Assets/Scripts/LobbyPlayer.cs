@@ -26,7 +26,10 @@ public class LobbyPlayer : MonoBehaviour
     {
         this.player = player;
         nicknameText.text = player.Data["Nickname"].Value;
-        
+        if (player.Data["Ready"].Value == "true")
+            readyImage.color = Color.green;
+        else
+            readyImage.color = Color.red;
     }
 
     private void KickPlayer()

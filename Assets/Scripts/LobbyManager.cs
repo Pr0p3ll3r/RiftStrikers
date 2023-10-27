@@ -18,6 +18,7 @@ public class LobbyManager : MonoBehaviour
     private float lobbyPollTimer;
     private float refreshLobbyListTimer = 5f;
     private string playerName;
+    private string isReady;
 
     public event EventHandler OnLeftLobby;
 
@@ -197,7 +198,8 @@ public class LobbyManager : MonoBehaviour
         {
             Data = new Dictionary<string, PlayerDataObject>
             {
-                { "Nickname", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerName) }
+                { "Nickname", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerName) },
+                { "Ready",  new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "false") }
             }
         };
     }
@@ -271,21 +273,33 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    private async void MigrateLobbyHost()
+    public async void UpdatePlayerReady(string status)
     {
-        try
-        {
-            hostLobby = await Lobbies.Instance.UpdateLobbyAsync(hostLobby.Id, new UpdateLobbyOptions
-            {
-                HostId = joinedLobby.Players[1].Id
-            });
-            joinedLobby = hostLobby;
+        isReady = status;
 
-            PrintPlayers(hostLobby);
-        }
-        catch (LobbyServiceException e)
+        if (joinedLobby != null)
         {
-            Debug.Log(e);
+            try
+            {
+                UpdatePlayerOptions options = new UpdatePlayerOptions();
+
+                options.Data = new Dictionary<string, PlayerDataObject>() {
+                    {
+                        "Ready", new PlayerDataObject(visibility: PlayerDataObject.VisibilityOptions.Member, value: status)
+                    }
+                };
+
+                string playerId = AuthenticationService.Instance.PlayerId;
+
+                Lobby lobby = await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, playerId, options);
+                joinedLobby = lobby;
+
+                OnJoinedLobbyUpdate?.Invoke(this, new LobbyEventArgs { lobby = joinedLobby });
+            }
+            catch (LobbyServiceException e)
+            {
+                Debug.Log(e);
+            }
         }
     }
 }
