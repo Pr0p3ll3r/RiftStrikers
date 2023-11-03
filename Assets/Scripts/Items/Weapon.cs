@@ -12,7 +12,7 @@ public enum AnimationSet
 public class Weapon : Item
 {
     public int damage;
-    public int clipSize;
+    public int ammo;
     public int pellets;
     public float pelletsSpread;
     public float range;
@@ -34,11 +34,11 @@ public class Weapon : Item
     public float pitchRandom;
     public float shotVolume;
 
-    private int clip;
+    private int currentAmmo;
 
     public override void Initialize()
     {
-        clip = clipSize;
+        currentAmmo = ammo;
     }
 
     public override Item GetCopy()
@@ -50,9 +50,9 @@ public class Weapon : Item
 
     public bool FireBullet()
     {
-        if (clip > 0)
+        if (currentAmmo > 0)
         {
-            clip -= 1;
+            currentAmmo -= 1;
             return true;
         }
         else return false;
@@ -60,9 +60,9 @@ public class Weapon : Item
 
     public bool FireBurst()
     {
-        if (clip >= 3)
+        if (currentAmmo >= 3)
         {
-            clip -= 3;
+            currentAmmo -= 3;
             return true;
         }
         else return false;
@@ -72,21 +72,29 @@ public class Weapon : Item
     {
         if (inserting)
         {
-            clip += 1;
+            currentAmmo += 1;
         }
         else
         {
-            clip = clipSize;
+            currentAmmo = ammo;
         }
     }
 
     public bool OutOfAmmo()
     {
-        if (clip <= 0)
+        if (currentAmmo <= 0)
             return true;
         else
             return false;
     }
 
-    public int GetClip() { return clip; }
+    public bool FullAmmo()
+    {
+        if (ammo == currentAmmo)
+            return true;
+        else
+            return false;
+    }
+
+    public int GetAmmo() { return currentAmmo; }
 }

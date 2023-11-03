@@ -52,32 +52,30 @@ public class WeaponManager : NetworkBehaviour
         {
             if (currentCooldown > 0) currentCooldown -= Time.deltaTime;
 
-            if (currentWeapon != null && !isEquipping)
+            if (currentWeapon != null && !isEquipping && currentCooldown <= 0 && !isReloading && !controller.IsRolling)
             {
-                if (controller.AutoAim)
+                if (currentWeaponData.OutOfAmmo()) 
+                    reload = StartCoroutine(Reload());
+                else if (controller.AutoAim)
                 {
-                    if(closestEnemy && currentCooldown <= 0 && !isReloading && !controller.IsRolling)
+                    if(closestEnemy)
                     {
                         if (currentWeaponData.FireBullet())
                         {
                             ShootServer();
                             currentCooldown = currentWeaponData.fireRate;
                         }
-                        else if (currentWeaponData.OutOfAmmo())
-                            reload = StartCoroutine(Reload());
                     }
                 }
                 else
                 {
-                    if (fireAction.IsPressed() && currentCooldown <= 0 && !isReloading && !controller.IsRolling)
+                    if (fireAction.IsPressed())
                     {
                         if (currentWeaponData.FireBullet())
                         {
                             ShootServer();
                             currentCooldown = currentWeaponData.fireRate;
                         }
-                        else if (currentWeaponData.OutOfAmmo())
-                            reload = StartCoroutine(Reload());
                     }
                 }
             }
@@ -86,8 +84,8 @@ public class WeaponManager : NetworkBehaviour
 
     public void OnReload(InputAction.CallbackContext context)
     {
-        if (context.performed)
-            if (!isReloading) reload = StartCoroutine(Reload());
+        if (context.performed && IsOwner)
+            if (!currentWeaponData.FullAmmo() && !isReloading) reload = StartCoroutine(Reload());
     }
 
     private void StartEquip(int index)
@@ -125,7 +123,7 @@ public class WeaponManager : NetworkBehaviour
             weaponSound.Play();
         }
 
-        hud.RefreshAmmo(currentWeaponData.GetClip());
+        hud.RefreshAmmo(currentWeaponData.GetAmmo());
 
         yield return new WaitForSeconds(1f);
         isEquipping = false;
@@ -151,7 +149,7 @@ public class WeaponManager : NetworkBehaviour
     [ServerRpc]
     void ShootServer()
     {
-        hud.RefreshAmmo(currentWeaponData.GetClip());
+        hud.RefreshAmmo(currentWeaponData.GetAmmo());
 
         //slide sound
         if (currentWeaponData.slideSound != null)
@@ -251,9 +249,9 @@ public class WeaponManager : NetworkBehaviour
                 PlayReloadSoundServer();              
                 yield return new WaitForSeconds(currentWeaponData.reloadTime);
                 currentWeaponData.Reload();
-                hud.RefreshAmmo(currentWeaponData.GetClip());
+                hud.RefreshAmmo(currentWeaponData.GetAmmo());
             }
-            while (currentWeaponData.GetClip() != currentWeaponData.clipSize);
+            while (currentWeaponData.GetAmmo() != currentWeaponData.ammo);
         }
         else
         {
@@ -261,7 +259,7 @@ public class WeaponManager : NetworkBehaviour
             PlayReloadSoundServer();
             yield return new WaitForSeconds(currentWeaponData.reloadTime);
             currentWeaponData.Reload();
-            hud.RefreshAmmo(currentWeaponData.GetClip());
+            hud.RefreshAmmo(currentWeaponData.GetAmmo());
         }
         animCharacter.SetBool("Reload", false);
         isReloading = false;

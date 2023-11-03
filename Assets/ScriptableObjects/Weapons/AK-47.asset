@@ -16,8 +16,8 @@ MonoBehaviour:
   icon: {fileID: 0}
   itemType: 1
   description: 
-  damage: 25
-  clipSize: 5
+  damage: 45
+  ammo: 6
   pellets: 0
   pelletsSpread: 0
   range: 10
@@ -28,7 +28,6 @@ MonoBehaviour:
   reloadTime: 2.8
   childNumber: 1
   animSet: 1
-  bloom: 50
   mainFOV: 0
   inserting: 0
   equipSound: {fileID: 8300000, guid: d6cde026d84d3f249be29e7913e50f88, type: 3}
