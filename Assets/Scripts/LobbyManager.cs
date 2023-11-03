@@ -12,19 +12,18 @@ public class LobbyManager : MonoBehaviour
 {
     public static LobbyManager Instance { get; private set; }
 
-    private Lobby hostLobby;
     private Lobby joinedLobby;
     private float heartbeatTimer;
     private float lobbyPollTimer;
     private float refreshLobbyListTimer = 5f;
     private string playerName;
-    private string isReady;
 
     public event EventHandler OnLeftLobby;
 
     public event EventHandler<LobbyEventArgs> OnJoinedLobby;
     public event EventHandler<LobbyEventArgs> OnJoinedLobbyUpdate;
     public event EventHandler<LobbyEventArgs> OnKickedFromLobby;
+    public event EventHandler OnGameStarted;
 
     public class LobbyEventArgs : EventArgs
     {
@@ -106,6 +105,18 @@ public class LobbyManager : MonoBehaviour
 
                     joinedLobby = null;
                 }
+
+                if (joinedLobby.Data["Start Game"].Value != "0")
+                {
+                    if(!IsLobbyHost())
+                    {
+                        RelayManager.Instance.JoinRelay(joinedLobby.Data["Start Game"].Value);
+                    }
+
+                    joinedLobby = null;
+
+                    OnGameStarted?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
     }
@@ -131,7 +142,11 @@ public class LobbyManager : MonoBehaviour
         {
             CreateLobbyOptions options = new CreateLobbyOptions
             {
-                Player = GetPlayer()
+                Player = GetPlayer(),
+                Data = new Dictionary<string, DataObject>
+                {
+                    {"Start Game", new DataObject(DataObject.VisibilityOptions.Member, "0") }
+                }
             };
 
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, options);
@@ -275,8 +290,6 @@ public class LobbyManager : MonoBehaviour
 
     public async void UpdatePlayerReady(string status)
     {
-        isReady = status;
-
         if (joinedLobby != null)
         {
             try
@@ -295,6 +308,33 @@ public class LobbyManager : MonoBehaviour
                 joinedLobby = lobby;
 
                 OnJoinedLobbyUpdate?.Invoke(this, new LobbyEventArgs { lobby = joinedLobby });
+            }
+            catch (LobbyServiceException e)
+            {
+                Debug.Log(e);
+            }
+        }
+    }
+
+    public async void StartGame()
+    {
+        if(IsLobbyHost())
+        {
+            try
+            {
+                Debug.Log("Start Game");
+
+                string relayCode = await RelayManager.Instance.CreateRelay();
+
+                Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
+                {
+                    Data = new Dictionary<string, DataObject>
+                    {
+                       { "Start Game", new DataObject(DataObject.VisibilityOptions.Member, relayCode) }
+                    }
+                });
+
+                joinedLobby = lobby;
             }
             catch (LobbyServiceException e)
             {

@@ -12,9 +12,6 @@ public class PlayerInstance : NetworkBehaviour
     public string nickname;
 
     [SyncVar]
-    public bool isReady;
-
-    [SyncVar]
     public Player controlledPlayer;
 
     [SerializeField]
@@ -23,7 +20,7 @@ public class PlayerInstance : NetworkBehaviour
     public override void OnStartServer()
     {
         base.OnStartServer();
-
+ 
         GameManager.Instance.players.Add(this);
     }
 
@@ -32,13 +29,6 @@ public class PlayerInstance : NetworkBehaviour
         base.OnStopServer();
 
         GameManager.Instance.players.Remove(this);
-    }
-
-    [ServerRpc]
-    public void ServerSetIsReady(bool value)
-    {
-        isReady = value;
-        GameManager.Instance.CheckCanStart();
     }
 
     public override void OnStartClient()

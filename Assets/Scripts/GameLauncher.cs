@@ -1,3 +1,5 @@
+using FishNet;
+using FishNet.Managing.Scened;
 using FishNet.Object;
 using System;
 using System.Collections.Generic;
@@ -77,6 +79,9 @@ public class GameLauncher : MonoBehaviour
         readyButton.onClick.AddListener(ReadyOnClick);
         leaveButton.onClick.AddListener(() => {
             LobbyManager.Instance.LeaveLobby();
+        });
+        startButton.onClick.AddListener(() => {
+            LobbyManager.Instance.StartGame();
         });
     }
 
@@ -268,11 +273,5 @@ public class GameLauncher : MonoBehaviour
         else
             startButton.gameObject.SetActive(false);
     }
-
-    private void Btn_StartGame()
-    {
-        
-    }
-
     #endregion
 }

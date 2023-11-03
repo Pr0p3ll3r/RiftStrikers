@@ -56,6 +56,7 @@ public class GameManager : NetworkBehaviour
     void Start()
     {
         enemyKilledText = GameObject.Find("HUD/EnemyKilled/Amount").GetComponent<TextMeshProUGUI>();
+        started = true;
     }
 
     void Update()
@@ -78,22 +79,13 @@ public class GameManager : NetworkBehaviour
     [Server]
     void StartGame()
     {
-        if (!canStart) return;
+        //if (!canStart) return;
 
         Debug.Log("Game Start");
         foreach (PlayerInstance player in players)
         {
             player.SpawnPlayer();
         }
-    }
-
-    [Server]
-    public void CheckCanStart()
-    {
-        canStart = players.All(player => player.isReady);
-        Debug.Log($"canStart = {canStart}");
-
-        if (canStart) StartGame();
     }
 
     public void StartWave()

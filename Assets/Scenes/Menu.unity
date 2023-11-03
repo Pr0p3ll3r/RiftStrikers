@@ -13311,7 +13311,7 @@ MonoBehaviour:
   playerList: {fileID: 1787035423}
   readyButton: {fileID: 1817356758}
   leaveButton: {fileID: 333893763}
-  startButton: {fileID: 861794383}
+  startButton: {fileID: 861794386}
   lobbyNameText: {fileID: 84646709}
   maxPlayersText: {fileID: 935848249}
 --- !u!4 &950080812
@@ -16336,6 +16336,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1142716522}
   - component: {fileID: 1142716521}
+  - component: {fileID: 1142716523}
   m_Layer: 0
   m_Name: LobbyManager
   m_TagString: Untagged
@@ -16370,6 +16371,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1142716523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1142716520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbd97b52d95c8cb40a48803af2f36e74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  networkManager: {fileID: 3708485004875378398}
 --- !u!1 &1166151190
 GameObject:
   m_ObjectHideFlags: 0
@@ -27987,7 +28001,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: -50}
+  m_AnchoredPosition: {x: 0, y: -50}
   m_SizeDelta: {x: -0.00012207, y: 50}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &2113655057
@@ -35765,25 +35779,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1966219392283219303}
   m_CullTransparentMesh: 0
---- !u!114 &5525473470735620051
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6178786076915044143}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f48f002b825cbd45a19bd96d90f9edb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _unreliableMTU: 1023
-  _ipv4BindAddress: 
-  _ipv6BindAddress: 
-  _port: 7770
-  _maximumClients: 4095
-  _clientAddress: localhost
-  _timeout: 15
 --- !u!224 &5569399266257030288
 RectTransform:
   m_ObjectHideFlags: 0
@@ -36094,8 +36089,10 @@ GameObject:
   m_Component:
   - component: {fileID: 2761777226025486689}
   - component: {fileID: 3708485004875378398}
-  - component: {fileID: 5525473470735620051}
   - component: {fileID: 6620658231389427898}
+  - component: {fileID: 6620658231389427899}
+  - component: {fileID: 6620658231389427900}
+  - component: {fileID: 6620658231389427901}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -36413,6 +36410,73 @@ MonoBehaviour:
   _color: {r: 1, g: 1, b: 1, a: 1}
   _placement: 1
   _hideTickRate: 1
+--- !u!114 &6620658231389427899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6178786076915044143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cdcee4396754c63a1574492499cffc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ProtocolType: 0
+  m_UseWebSockets: 0
+  m_UseEncryption: 0
+  m_MaxPacketQueueSize: 128
+  m_MaxPayloadSize: 6144
+  m_HeartbeatTimeoutMS: 500
+  m_ConnectTimeoutMS: 1000
+  m_MaxConnectAttempts: 60
+  m_DisconnectTimeoutMS: 30000
+  ConnectionData:
+    Address: 127.0.0.1
+    Port: 7777
+    ServerListenAddress: 
+  DebugSimulator:
+    PacketDelayMS: 0
+    PacketJitterMS: 0
+    PacketDropRate: 0
+  m_MaximumClients: 4095
+--- !u!114 &6620658231389427900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6178786076915044143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34e4a322dca349547989b14021da4e23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Transport: {fileID: 6620658231389427899}
+  _intermediateLayer: {fileID: 0}
+  _latencySimulator:
+    _enabled: 0
+    _simulateHost: 1
+    _latency: 0
+    _outOfOrder: 0
+    _packetLoss: 0
+--- !u!114 &6620658231389427901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6178786076915044143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57ce8bbb58966cb45a7140f32da5327a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _enableGlobalScenes: 1
+  _startInOffline: 1
+  _offlineScene: Assets/Scenes/Menu.unity
+  _onlineScene: Assets/Scenes/Game.unity
+  _replaceScenes: 0
 --- !u!222 &6664082491016637425
 CanvasRenderer:
   m_ObjectHideFlags: 0
