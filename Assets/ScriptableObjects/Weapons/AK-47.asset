@@ -16,7 +16,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   itemType: 1
   description: 
-  damage: 45
+  damage: 25
   ammo: 6
   pellets: 0
   pelletsSpread: 0
@@ -31,7 +31,6 @@ MonoBehaviour:
   mainFOV: 0
   inserting: 0
   equipSound: {fileID: 8300000, guid: d6cde026d84d3f249be29e7913e50f88, type: 3}
-  slideSound: {fileID: 0}
   reloadSound: {fileID: 8300000, guid: 5cbc0a42c05d9184d912d1308566356a, type: 3}
   gunshotSound: {fileID: 8300000, guid: 7c2281521487bbd42b48542bbe6aa1a7, type: 3}
   pitchRandom: 0

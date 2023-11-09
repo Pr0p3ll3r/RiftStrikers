@@ -1,24 +1,46 @@
+using FishNet.Object;
 using Unity.AI.Navigation;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
 public class MapGenerator : MonoBehaviour
 {
-    public GameObject[] islandPrefabs;
-    public GameObject waterPrefab;
+    [SerializeField] private GameObject[] islandPrefabs;
 
-    public int mapSizeX = 10;
-    public int mapSizeY = 10;
+    [SerializeField] private int mapSizeX = 10;
+    [SerializeField] private int mapSizeZ = 10;
+    [SerializeField] private float tileSize = 1f;
 
-    public float islandRadiusMin = 10;
-    public float islandRadiusMax = 25;
+    [SerializeField] private float islandRadiusMin = 10f;
+    [SerializeField] private float islandRadiusMax = 25f;
+    [SerializeField] private float islandDensityMin = 0.7f;
+    [SerializeField] private float islandDensityMax = 1f;
 
     private NavMeshSurface navMeshSurface;
 
     void Start()
     {
         navMeshSurface = GetComponent<NavMeshSurface>();
+        int seed = Random.Range(int.MinValue, int.MaxValue);
+        InitializeWorld(seed);
+    }
+
+    //public override void OnStartClient()
+    //{
+    //    base.OnStartClient();
+
+    //    if(IsServer)
+    //    {
+    //        int seed = Random.Range(int.MinValue, int.MaxValue);
+    //        InitializeWorld(seed);
+    //    }
+    //}
+
+   // [ObserversRpc]
+    private void InitializeWorld(int seed)
+    {
+        Random.InitState(seed);
+
         GenerateMap();
     }
 
@@ -37,68 +59,42 @@ public class MapGenerator : MonoBehaviour
             Destroy(t.gameObject);
         }
 
-        // Losowo wybierz promieñ wyspy przy ka¿dym uruchomieniu
         float islandRadius = Random.Range(islandRadiusMin, islandRadiusMax);
+        float islandDensity = Random.Range(islandDensityMin, islandDensityMax);
 
-        // Losowo wybierz gêstoœæ wyspy przy ka¿dym uruchomieniu
-        float islandDensity = Random.Range(0.7f, 0.95f); // Dostosuj zakres wed³ug preferencji
-
-        // Iteruj przez wspó³rzêdne x i y
         for (int x = 0; x < mapSizeX; x++)
         {
-            for (int y = 0; y < mapSizeY; y++)
+            for (int z = 0; z < mapSizeZ; z++)
             {
-                Vector3 hexPosition = CalculateHexPosition(x, y);
+                Vector2 hexPosition = CalculateHexPosition(x, z);
+                Vector3 position = new Vector3(hexPosition.x, 0, hexPosition.y);
 
-                // Jeœli punkt znajduje siê wewn¹trz obszaru wyspy, utwórz element
-                if (IsInsideIsland(x, y, islandRadius, islandDensity))
-                {
-                    int random = Random.Range(0, 2);
-                    GameObject island = Instantiate(islandPrefabs[random], hexPosition, Quaternion.identity, transform);
-                    island.transform.rotation = Quaternion.Euler(90, 0, 0);
-                }
-                else
-                {
-                    // W przeciwnym razie utwórz element wody
-                    GameObject water = Instantiate(waterPrefab, hexPosition - new Vector3(0, 0.5f, 0), Quaternion.identity, transform);
-                    water.transform.rotation = Quaternion.Euler(90, 0, 0);
-                }
+                bool isWater = !IsIsland(x, z, islandRadius, islandDensity);
+                if (isWater) continue;
+
+                int random = Random.Range(0, 2);
+                Instantiate(islandPrefabs[random], position, Quaternion.identity, transform);
             }
         }
 
         navMeshSurface.BuildNavMesh();
     }
 
-    bool IsInsideIsland(int x, int y, float islandRadius, float islandDensity)
+    bool IsIsland(int x, int z, float islandRadius, float islandDensity)
     {
-        // Okreœl œrodek mapy
         float centerX = mapSizeX / 2;
-        float centerY = mapSizeY / 2;
+        float centerZ = mapSizeZ / 2;
 
-        // Oblicz odleg³oœæ od punktu (x, y) do œrodka mapy
-        float distanceToCenter = Mathf.Sqrt((x - centerX) * (x - centerX) + (y - centerY) * (y - centerY));
+        float distanceToCenter = Mathf.Sqrt((x - centerX) * (x - centerX) + (z - centerZ) * (z - centerZ));
 
-        // Jeœli punkt znajduje siê wewn¹trz promienia i spe³nia warunek gêstoœci, zwróæ true
         return distanceToCenter <= islandRadius && Random.value < islandDensity;
     }
 
-    Vector3 CalculateHexPosition(int x, int y)
+    Vector2 CalculateHexPosition(int x, int z)
     {
-        float hexWidth = 3.46f;
-        float hexHeight = 2.99f;
+        float xPos = x * tileSize + ((z % 2 == 1) ? tileSize * 0.5f : 0);
+        float zPos = z * tileSize * Mathf.Cos(Mathf.Deg2Rad * 30);  
 
-        float offsetX = x * hexWidth;
-        float offsetY = y * hexHeight;
-
-        // Dla nieparzystych wierszy, przesuñ co drugi rz¹d w prawo
-        if (y % 2 != 0)
-        {
-            offsetX += hexWidth * 0.5f;
-        }
-
-        float xPosition = offsetX;
-        float zPosition = offsetY;
-
-        return new Vector3(xPosition, 0, zPosition);
+        return new Vector2(xPos, zPos);
     }
 }
