@@ -10,7 +10,7 @@ public class PlayerHUD : NetworkBehaviour
     [SerializeField] private Sprite emptyIcon;
     private Slider healthBar;
     private Slider staminaBar;
-    private TextMeshProUGUI clipSize;
+    private TextMeshProUGUI ammo;
     private TextMeshProUGUI levelText;
     private Slider expBar;
     private TextMeshProUGUI moneyText;
@@ -31,7 +31,7 @@ public class PlayerHUD : NetworkBehaviour
         staminaBar = GameObject.Find("HUD/BottomLeftCorner/Stamina/StaminaBar").GetComponent<Slider>();
 
         //Bottom Right
-        clipSize = GameObject.Find("HUD/BottomRightCorner/Ammo/ClipSize").GetComponent<TextMeshProUGUI>();
+        ammo = GameObject.Find("HUD/BottomRightCorner/Ammo/Amount").GetComponent<TextMeshProUGUI>();
         weaponParent = GameObject.Find("HUD/BottomRightCorner/Weapons").transform;
         reloadingSlider = GameObject.Find("HUD/BottomRightCorner/Ammo/ReloadingSlider").GetComponent<Slider>();
 
@@ -59,9 +59,9 @@ public class PlayerHUD : NetworkBehaviour
         healthBar.value = currentHealth;
     }
 
-    public void RefreshAmmo(int clip)
+    public void RefreshAmmo(int currentAmmo)
     {
-        clipSize.text = clip.ToString();
+        ammo.text = currentAmmo.ToString();
     }
 
     public void UpdateLevel(int level, int exp, int requireExp)

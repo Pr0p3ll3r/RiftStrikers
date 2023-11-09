@@ -82,7 +82,11 @@ public class Player : NetworkBehaviour
         ragdoll.Die();
         deathSound.Play();
         isDead = true;
-        controller.enabled = false;
-        wm.ShowWeapon();
+        controller.OnDeath();
+        gameObject.layer = LayerMask.NameToLayer("NotCollide");
+        foreach (Transform child in gameObject.GetComponentsInChildren<Transform>(true))
+        {
+            child.gameObject.layer = LayerMask.NameToLayer("NotCollide");
+        }
     }
 }

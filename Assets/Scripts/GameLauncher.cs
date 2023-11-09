@@ -210,7 +210,7 @@ public class GameLauncher : MonoBehaviour
     {
         lobbyNameInputField.text = "";
         warningTextLobby.text = "";
-        maxPlayers = 1;
+        maxPlayers = 2;
     }
 
     private void ChangeMaxPlayers(TMP_Dropdown change)

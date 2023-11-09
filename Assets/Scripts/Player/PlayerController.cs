@@ -165,6 +165,12 @@ public class PlayerController : NetworkBehaviour
             StartCoroutine(Roll());
     }
 
+    public void OnDeath()
+    {
+        enabled = false;
+        weaponManager.enabled = false;
+    }
+
     public void SetSpeed(float speedMultiplier)
     {
         adjustedSpeed = speed * speedMultiplier;

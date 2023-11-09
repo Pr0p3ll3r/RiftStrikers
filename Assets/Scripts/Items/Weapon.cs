@@ -28,7 +28,6 @@ public class Weapon : Item
 
     [Header("Sounds")]
     public AudioClip equipSound;
-    public AudioClip slideSound;
     public AudioClip reloadSound;
     public AudioClip gunshotSound;
     public float pitchRandom;

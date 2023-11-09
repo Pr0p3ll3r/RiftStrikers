@@ -79,7 +79,7 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 5799975719655290014}
   _networkObjectCache: {fileID: 5799975719655290014}
-  currentHealth: 90
+  currentHealth: 100
   damage: 5
   attackDistance: 2
   speed: 3
@@ -295,7 +295,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  <PrefabId>k__BackingField: 1
+  <PrefabId>k__BackingField: 0
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 0
   <SceneId>k__BackingField: 0

@@ -60,22 +60,14 @@ public class WeaponManager : NetworkBehaviour
                 {
                     if(closestEnemy)
                     {
-                        if (currentWeaponData.FireBullet())
-                        {
-                            ShootServer();
-                            currentCooldown = currentWeaponData.fireRate;
-                        }
+                        Shoot();
                     }
                 }
                 else
                 {
                     if (fireAction.IsPressed())
                     {
-                        if (currentWeaponData.FireBullet())
-                        {
-                            ShootServer();
-                            currentCooldown = currentWeaponData.fireRate;
-                        }
+                        Shoot();
                     }
                 }
             }
@@ -146,18 +138,19 @@ public class WeaponManager : NetworkBehaviour
         currentWeapon.SetActive(true);
     }
 
+    void Shoot()
+    {
+        if (currentWeaponData.FireBullet())
+        {
+            ShootServer();
+            currentCooldown = currentWeaponData.fireRate;
+            hud.RefreshAmmo(currentWeaponData.GetAmmo());
+        }
+    }
+
     [ServerRpc]
     void ShootServer()
-    {
-        hud.RefreshAmmo(currentWeaponData.GetAmmo());
-
-        //slide sound
-        if (currentWeaponData.slideSound != null)
-        {
-            sfx.clip = currentWeaponData.slideSound;
-            sfx.PlayOneShot(sfx.clip);
-        }
-
+    { 
         for (int i = 0; i < Mathf.Max(1, currentWeaponData.pellets); i++)
         {
             RaycastHit hit;

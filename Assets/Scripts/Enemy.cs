@@ -169,9 +169,9 @@ public class Enemy : NetworkBehaviour, IDamageable
         SetHealthBar();
         material.SetFloat("_EdgeWidth", 0.3f);
         gameObject.layer = LayerMask.NameToLayer("NotCollide");
-        foreach (Transform trans in gameObject.GetComponentsInChildren<Transform>(true))
+        foreach (Transform child in gameObject.GetComponentsInChildren<Transform>(true))
         {
-            trans.gameObject.layer = LayerMask.NameToLayer("NotCollide");
+            child.gameObject.layer = LayerMask.NameToLayer("NotCollide");
         }
     }
 }
