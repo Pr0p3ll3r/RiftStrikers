@@ -1,11 +1,22 @@
 using FishNet.Object;
+using System.Collections.Generic;
 using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class MapGenerator : MonoBehaviour
+[System.Serializable]
+public class Biome
 {
-    [SerializeField] private GameObject[] islandPrefabs;
+    public string name;
+    public GameObject[] landPrefabs;
+    public GameObject[] naturePrefabs;
+}
+
+public class MapGenerator : NetworkBehaviour
+{
+    [SerializeField] private List<Biome> biomes;
+    [SerializeField] private GameObject waterCollider;
+    [SerializeField] private int natureCount = 10;
 
     [SerializeField] private int mapSizeX = 10;
     [SerializeField] private int mapSizeZ = 10;
@@ -18,25 +29,25 @@ public class MapGenerator : MonoBehaviour
 
     private NavMeshSurface navMeshSurface;
 
-    void Start()
+    private void Start()
     {
         navMeshSurface = GetComponent<NavMeshSurface>();
         int seed = Random.Range(int.MinValue, int.MaxValue);
         InitializeWorld(seed);
     }
 
-    //public override void OnStartClient()
-    //{
-    //    base.OnStartClient();
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
 
-    //    if(IsServer)
-    //    {
-    //        int seed = Random.Range(int.MinValue, int.MaxValue);
-    //        InitializeWorld(seed);
-    //    }
-    //}
+        if (IsServer)
+        {
+            int seed = Random.Range(int.MinValue, int.MaxValue);
+            InitializeWorld(seed);
+        }
+    }
 
-   // [ObserversRpc]
+    [ObserversRpc]
     private void InitializeWorld(int seed)
     {
         Random.InitState(seed);
@@ -52,8 +63,9 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    void GenerateMap()
+    private void GenerateMap()
     {
+        int natureCountCurrent = natureCount;
         foreach (Transform t in transform)
         {
             Destroy(t.gameObject);
@@ -62,6 +74,20 @@ public class MapGenerator : MonoBehaviour
         float islandRadius = Random.Range(islandRadiusMin, islandRadiusMax);
         float islandDensity = Random.Range(islandDensityMin, islandDensityMax);
 
+        int totalLandHexagons = 0;
+        for (int x = 0; x < mapSizeX; x++)
+        {
+            for (int z = 0; z < mapSizeZ; z++)
+            {
+                if (IsIsland(x, z, islandRadius, islandDensity))
+                {
+                    totalLandHexagons++;
+                }
+            }
+        }
+
+        int selectedBiome = ChooseRandomBiome();
+
         for (int x = 0; x < mapSizeX; x++)
         {
             for (int z = 0; z < mapSizeZ; z++)
@@ -69,18 +95,31 @@ public class MapGenerator : MonoBehaviour
                 Vector2 hexPosition = CalculateHexPosition(x, z);
                 Vector3 position = new Vector3(hexPosition.x, 0, hexPosition.y);
 
-                bool isWater = !IsIsland(x, z, islandRadius, islandDensity);
-                if (isWater) continue;
-
-                int random = Random.Range(0, 2);
-                Instantiate(islandPrefabs[random], position, Quaternion.identity, transform);
+                if(IsIsland(x, z, islandRadius, islandDensity))
+                {
+                    if (natureCountCurrent > 0 && Random.value < (float)natureCountCurrent / totalLandHexagons)
+                    {
+                        GameObject naturePrefab = GetNaturePrefab(biomes[selectedBiome].naturePrefabs);
+                        Instantiate(naturePrefab, position, Quaternion.identity, transform);
+                        natureCountCurrent--;
+                    }
+                    else
+                    {
+                        GameObject landPrefab = GetLandPrefab(biomes[selectedBiome].landPrefabs);
+                        Instantiate(landPrefab, position, Quaternion.identity, transform);
+                    }
+                }
+                else
+                {
+                    Instantiate(waterCollider, position, Quaternion.identity, transform);
+                }
             }
         }
 
         navMeshSurface.BuildNavMesh();
     }
 
-    bool IsIsland(int x, int z, float islandRadius, float islandDensity)
+    private bool IsIsland(int x, int z, float islandRadius, float islandDensity)
     {
         float centerX = mapSizeX / 2;
         float centerZ = mapSizeZ / 2;
@@ -90,11 +129,26 @@ public class MapGenerator : MonoBehaviour
         return distanceToCenter <= islandRadius && Random.value < islandDensity;
     }
 
-    Vector2 CalculateHexPosition(int x, int z)
+    private Vector2 CalculateHexPosition(int x, int z)
     {
         float xPos = x * tileSize + ((z % 2 == 1) ? tileSize * 0.5f : 0);
         float zPos = z * tileSize * Mathf.Cos(Mathf.Deg2Rad * 30);  
 
         return new Vector2(xPos, zPos);
+    }
+
+    int ChooseRandomBiome()
+    {
+        return Random.Range(0, biomes.Count);
+    }
+
+    private GameObject GetLandPrefab(GameObject[] prefabs)
+    {
+        return prefabs[Random.Range(0, prefabs.Length)];
+    }
+
+    private GameObject GetNaturePrefab(GameObject[] prefabs)
+    {
+        return prefabs[Random.Range(0, prefabs.Length)];
     }
 }
