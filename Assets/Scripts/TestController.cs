@@ -1,10 +1,8 @@
-﻿using FishNet.Component.Animating;
-using FishNet.Object;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : NetworkBehaviour
+public class TestController : MonoBehaviour
 {
     [SerializeField] private float speed, gravity;
     [SerializeField] private AudioClip footstepSound;
@@ -27,7 +25,6 @@ public class PlayerController : NetworkBehaviour
     private WeaponManager weaponManager;
     private AudioSource audioSource;
     private Animator animCharacter;
-    private NetworkAnimator networkAnimator; 
     private Vector3 lastPos;
     private Vector3 playerVelocity;
     private Vector2 moveInput;
@@ -46,9 +43,9 @@ public class PlayerController : NetworkBehaviour
         audioSource = GetComponent<AudioSource>();
         animCharacter = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
-        networkAnimator = GetComponent<NetworkAnimator>();
         weaponManager = GetComponent<WeaponManager>();
         cam = Camera.main;
+        Camera.main.GetComponent<CameraFollow>().SetPlayer(transform);
 
         Keyframe roll_LastFrame = rollingCurve[rollingCurve.length - 1];
         rollTimer = roll_LastFrame.time;
@@ -57,37 +54,24 @@ public class PlayerController : NetworkBehaviour
         adjustedNextStep = nextStep;
     }
 
-    public override void OnStartClient()
-    {
-        base.OnStartClient();
-
-        if (!IsOwner)
-            return;
-
-        Camera.main.GetComponent<CameraFollow>().SetPlayer(transform);
-    }
-
     void Update()
     {
-        if (!IsOwner)
-            return;
-
         if (lastRoll > 0)
             lastRoll -= Time.deltaTime;
 
         if (!roll)
         {
             Move();
-            if(!autoAim)
+            if (!autoAim)
                 Look();
         }
     }
 
     void Move()
     {
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);      
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-        if(isGrounded && playerVelocity.y < 0) 
+        if (isGrounded && playerVelocity.y < 0)
         {
             playerVelocity.y = 0f;
         }
@@ -115,7 +99,7 @@ public class PlayerController : NetworkBehaviour
             distMoved = 0;
         }
 
-        if(autoAim)
+        if (autoAim)
         {
             if (weaponManager.ClosestEnemy)
             {
@@ -124,11 +108,11 @@ public class PlayerController : NetworkBehaviour
                 Quaternion targetRotation = Quaternion.LookRotation(directionToEnemy, Vector3.up);
                 transform.rotation = targetRotation;
             }
-            else if(movement != Vector3.zero)
+            else if (movement != Vector3.zero)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(movement, Vector3.up);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10 * Time.deltaTime);
-            }              
+            }
         }
     }
 
@@ -137,7 +121,7 @@ public class PlayerController : NetworkBehaviour
         Plane playerPlane = new Plane(Vector3.up, transform.position);
         Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (playerPlane.Raycast(ray, out float hit))
-        {       
+        {
             Vector3 hitPoint = ray.GetPoint(hit);
             //Debug.DrawLine(ray.origin, hitPoint);
             Quaternion targetRotation = Quaternion.LookRotation(hitPoint - transform.position);
@@ -149,7 +133,7 @@ public class PlayerController : NetworkBehaviour
 
     public void OnMovement(InputAction.CallbackContext context)
     {
-        if (!IsOwner || player.IsDead)
+        if (player.IsDead)
             return;
 
         moveInput = context.ReadValue<Vector2>();
@@ -157,7 +141,7 @@ public class PlayerController : NetworkBehaviour
 
     public void OnRoll(InputAction.CallbackContext context)
     {
-        if (!IsOwner || player.IsDead)
+        if (player.IsDead)
             return;
 
         if (context.started && lastRoll <= 0)
@@ -179,22 +163,22 @@ public class PlayerController : NetworkBehaviour
     IEnumerator Roll()
     {
         Vector3 movement = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
-        if(movement == Vector3.zero)
+        if (movement == Vector3.zero)
             yield break;
         bool makeSound = false;
         roll = true;
         float timer = 0;
-        networkAnimator.SetTrigger("Roll");
+        animCharacter.SetTrigger("Roll");
         hud.StartCoroutine(hud.StaminaRestore(nextRoll));
         lastRoll = nextRoll;
         while (timer < rollTimer)
         {
-            if (!makeSound && timer >= rollTimer/2)
+            if (!makeSound && timer >= rollTimer / 2)
             {
                 audioSource.PlayOneShot(rollSound);
                 makeSound = true;
-            }              
-            float speed = rollingCurve.Evaluate(timer);              
+            }
+            float speed = rollingCurve.Evaluate(timer);
             transform.rotation = Quaternion.LookRotation(movement);
             controller.Move(movement * speed * Time.deltaTime);
             timer += Time.deltaTime;
