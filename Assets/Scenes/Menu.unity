@@ -34789,7 +34789,7 @@ MonoBehaviour:
   _objectPool: {fileID: 0}
   _persistence: 0
   _logging: {fileID: 0}
-  _spawnablePrefabs: {fileID: 11400000, guid: d9deb3003f644d84e92665dee3d1b2f0, type: 2}
+  _spawnablePrefabs: {fileID: 11400000, guid: ed6b020ffd3d31c4abe96792fff684e7, type: 2}
 --- !u!1 &3711678630331955148
 GameObject:
   m_ObjectHideFlags: 0
@@ -36475,7 +36475,7 @@ MonoBehaviour:
   _enableGlobalScenes: 1
   _startInOffline: 1
   _offlineScene: Assets/Scenes/Menu.unity
-  _onlineScene: Assets/Scenes/Game.unity
+  _onlineScene: Assets/Scenes/Test.unity
   _replaceScenes: 0
 --- !u!222 &6664082491016637425
 CanvasRenderer:

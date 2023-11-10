@@ -26,7 +26,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 0}
   movementSpeed: 0.7
   reloadTime: 2.8
-  childNumber: 1
+  childNumber: 0
   animSet: 1
   mainFOV: 0
   inserting: 0

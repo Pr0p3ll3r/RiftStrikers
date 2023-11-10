@@ -26,21 +26,21 @@ public class PlayerHUD : NetworkBehaviour
     void InitializeUI()
     {
         //Bottom Left
-        moneyText = GameObject.Find("HUD/BottomLeftCorner/Money").GetComponent<TextMeshProUGUI>();
-        healthBar = GameObject.Find("HUD/BottomLeftCorner/Health/HealthBar").GetComponent<Slider>();
-        staminaBar = GameObject.Find("HUD/BottomLeftCorner/Stamina/StaminaBar").GetComponent<Slider>();
+        moneyText = GameObject.Find("HUD/Game/BottomLeftCorner/Money").GetComponent<TextMeshProUGUI>();
+        healthBar = GameObject.Find("HUD/Game/BottomLeftCorner/Health/HealthBar").GetComponent<Slider>();
+        staminaBar = GameObject.Find("HUD/Game/BottomLeftCorner/Stamina/StaminaBar").GetComponent<Slider>();
 
         //Bottom Right
-        ammo = GameObject.Find("HUD/BottomRightCorner/Ammo/Amount").GetComponent<TextMeshProUGUI>();
-        weaponParent = GameObject.Find("HUD/BottomRightCorner/Weapons").transform;
-        reloadingSlider = GameObject.Find("HUD/BottomRightCorner/Ammo/ReloadingSlider").GetComponent<Slider>();
+        ammo = GameObject.Find("HUD/Game/BottomRightCorner/Ammo/Amount").GetComponent<TextMeshProUGUI>();
+        weaponParent = GameObject.Find("HUD/Game/BottomRightCorner/Weapons").transform;
+        reloadingSlider = GameObject.Find("HUD/Game/BottomRightCorner/Ammo/ReloadingSlider").GetComponent<Slider>();
 
         //Exp Bar
-        levelText = GameObject.Find("HUD/Exp/Level").GetComponent<TextMeshProUGUI>();
-        expBar = GameObject.Find("HUD/Exp/ExpBar").GetComponent<Slider>();
+        levelText = GameObject.Find("HUD/Game/Exp/Level").GetComponent<TextMeshProUGUI>();
+        expBar = GameObject.Find("HUD/Game/Exp/ExpBar").GetComponent<Slider>();
 
         //Center
-        vignette = GameObject.Find("HUD/Resources/Vignette").gameObject;
+        vignette = GameObject.Find("HUD/Game/Vignette").gameObject;
     }
 
     private IEnumerator FadeToZeroAlpha()
