@@ -32,8 +32,6 @@ public class MapGenerator : NetworkBehaviour
     private void Start()
     {
         navMeshSurface = GetComponent<NavMeshSurface>();
-        int seed = Random.Range(int.MinValue, int.MaxValue);
-        InitializeWorld(seed);
     }
 
     public override void OnStartClient()
@@ -47,7 +45,7 @@ public class MapGenerator : NetworkBehaviour
         }
     }
 
-    [ObserversRpc]
+    [ObserversRpc(BufferLast = true)]
     private void InitializeWorld(int seed)
     {
         Random.InitState(seed);
@@ -116,7 +114,7 @@ public class MapGenerator : NetworkBehaviour
             }
         }
 
-        navMeshSurface.BuildNavMesh();
+        if(IsServer) navMeshSurface.BuildNavMesh();
     }
 
     private bool IsIsland(int x, int z, float islandRadius, float islandDensity)

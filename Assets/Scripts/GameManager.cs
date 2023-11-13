@@ -55,7 +55,7 @@ public class GameManager : NetworkBehaviour
 
     void Start()
     {
-        enemyKilledText = GameObject.Find("HUD/EnemyKilled/Amount").GetComponent<TextMeshProUGUI>();
+        enemyKilledText = GameObject.Find("HUD/Game/EnemyKilled/Amount").GetComponent<TextMeshProUGUI>();
         started = true;
     }
 
@@ -77,7 +77,7 @@ public class GameManager : NetworkBehaviour
     }
 
     [Server]
-    void StartGame()
+    private void StartGame()
     {
         //if (!canStart) return;
 
@@ -88,7 +88,8 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    public void StartWave()
+    [Server]
+    private void StartWave()
     {
         if (currentWaveNumber == waves.Length - 1)
         {
@@ -101,7 +102,8 @@ public class GameManager : NetworkBehaviour
         SpawnEnemy();
     }
 
-    void SpawnEnemy()
+    [Server]
+    private void SpawnEnemy()
     {
         timeToSpawn = currentWave.spawnInterval * spawnIntervalMultiplier;
         foreach (GameObject enemyPrefab in currentWave.enemies)
@@ -122,7 +124,7 @@ public class GameManager : NetworkBehaviour
         enemyKilledText.text = enemyKilled.ToString();
     }
 
-    void UpgradeWave()
+    private void UpgradeWave()
     {
         currentWaveNumber = 0;
 
