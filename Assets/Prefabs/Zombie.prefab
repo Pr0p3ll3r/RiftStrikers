@@ -90,7 +90,7 @@ MonoBehaviour:
   graphics: {fileID: 7633417698277815300}
   healthBar: {fileID: 7738503667405173057}
   attackCooldown: 2
-  dissolveSpeed: 0.1
+  dissolveSpeed: 0.05
 --- !u!114 &6469412637720269795
 MonoBehaviour:
   m_ObjectHideFlags: 0
