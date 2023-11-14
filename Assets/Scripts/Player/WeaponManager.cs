@@ -142,36 +142,26 @@ public class WeaponManager : NetworkBehaviour
     {
         if (currentWeaponData.FireBullet())
         {
-            ShootServer();
+            ShootServer(currentWeaponData.damage, transform.position, transform.forward * 1000f, currentWeaponData.range, currentWeaponData.pellets);
             currentCooldown = currentWeaponData.fireRate;
             hud.RefreshAmmo(currentWeaponData.GetAmmo());
         }
     }
 
-    [ServerRpc]
-    void ShootServer()
-    { 
-        for (int i = 0; i < Mathf.Max(1, currentWeaponData.pellets); i++)
-        {
-            RaycastHit hit;
+    [ServerRpc(RequireOwnership = false)]
+    void ShootServer(int damage, Vector3 postion, Vector3 direction, float range, int pellets)
+    {
+        Debug.Log("ShootServer");
 
-            if (Physics.Raycast(transform.position, transform.forward * 1000f, out hit, currentWeaponData.range, canBeShot))
+        for (int i = 0; i < Mathf.Max(1, pellets); i++)
+        {
+            if (Physics.Raycast(postion, direction, out RaycastHit hit, range, canBeShot))
             {
-                //Debug.Log(hit.collider.gameObject.name);
-                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
-                {
-                    GameObject blood = Instantiate(bloodPrefab, hit.point + hit.normal * 0.001f, Quaternion.identity);
-                    blood.transform.LookAt(hit.point + hit.normal);
-                    Spawn(blood);
-                    hit.collider.gameObject.GetComponent<IDamageable>().TakeDamage(currentWeaponData.damage);
-                }
-                else
-                {
-                    GameObject bulletHole = Instantiate(bulletHolePrefab, hit.point + hit.normal * 0.001f, Quaternion.identity);
-                    bulletHole.transform.LookAt(hit.point + hit.normal);
-                    Spawn(bulletHole);
-                }            
-            }         
+                GameObject blood = Instantiate(bloodPrefab, hit.point + hit.normal * 0.001f, Quaternion.identity);
+                blood.transform.LookAt(hit.point + hit.normal);
+                Spawn(blood);
+                hit.collider.gameObject.GetComponent<Enemy>().TakeDamage(damage);
+            }
         }
         ShootRpc();
     }

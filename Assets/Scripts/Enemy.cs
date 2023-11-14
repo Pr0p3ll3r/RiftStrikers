@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
-public class Enemy : NetworkBehaviour, IDamageable
+public class Enemy : NetworkBehaviour
 {
     [SyncVar]
     public int currentHealth = 100;
@@ -133,6 +133,7 @@ public class Enemy : NetworkBehaviour, IDamageable
         material = mesh.GetComponent<SkinnedMeshRenderer>().material;
     }
 
+    [ObserversRpc(RunLocally = true)]
     void SetHealthBar()
     {
         healthBar.SetActive(true);
@@ -141,7 +142,6 @@ public class Enemy : NetworkBehaviour, IDamageable
             healthBar.SetActive(false);
     }
 
-    [ObserversRpc]
     public void TakeDamage(int damage)
     {
         if (isDead) return;
@@ -150,6 +150,7 @@ public class Enemy : NetworkBehaviour, IDamageable
         SetHealthBar();
         if (IsServer && currentHealth <= 0)
         {
+            Debug.Log("Server");
             DieServer();
         }
     }
@@ -157,16 +158,15 @@ public class Enemy : NetworkBehaviour, IDamageable
     [ServerRpc(RequireOwnership = false)]
     void DieServer()
     {
+        agent.isStopped = false;
         DieRpc();
-        agent.isStopped = true;
     }
 
-    [ObserversRpc]
+    [ObserversRpc(RunLocally = true)]
     void DieRpc()
     {
         isDead = true;
         ragdoll.Die();
-        SetHealthBar();
         material.SetFloat("_EdgeWidth", 0.3f);
         gameObject.layer = LayerMask.NameToLayer("NotCollide");
         foreach (Transform child in gameObject.GetComponentsInChildren<Transform>(true))
