@@ -158,13 +158,13 @@ public class Enemy : NetworkBehaviour, IDamageable
     void DieServer()
     {
         DieRpc();
+        agent.isStopped = true;
     }
 
     [ObserversRpc]
     void DieRpc()
     {
         isDead = true;
-        agent.isStopped = true;
         ragdoll.Die();
         SetHealthBar();
         material.SetFloat("_EdgeWidth", 0.3f);
