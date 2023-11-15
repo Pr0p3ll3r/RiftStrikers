@@ -9,8 +9,10 @@ public enum AnimationSet
 }
 
 [CreateAssetMenu(fileName = "Weapon", menuName = "HumanSurvivors/Items/Weapon")]
-public class Weapon : Item
+public class Weapon : ScriptableObject
 {
+    public string itemName;
+    public Sprite icon;
     public int damage;
     public int ammo;
     public int pellets;
@@ -24,10 +26,8 @@ public class Weapon : Item
     public int childNumber;
     public AnimationSet animSet;
     [Range(0, 1)] public float mainFOV;
-    public bool inserting;
 
     [Header("Sounds")]
-    public AudioClip equipSound;
     public AudioClip reloadSound;
     public AudioClip gunshotSound;
     public float pitchRandom;
@@ -35,15 +35,10 @@ public class Weapon : Item
 
     private int currentAmmo;
 
-    public override void Initialize()
+    public Weapon GetCopy()
     {
-        currentAmmo = ammo;
-    }
-
-    public override Item GetCopy()
-    {
-        Item weapon = Instantiate(this);
-        weapon.Initialize();
+        Weapon weapon = Instantiate(this);
+        weapon.Reload();
         return weapon;
     }
 
@@ -69,14 +64,7 @@ public class Weapon : Item
 
     public void Reload()
     {
-        if (inserting)
-        {
-            currentAmmo += 1;
-        }
-        else
-        {
-            currentAmmo = ammo;
-        }
+        currentAmmo = ammo;
     }
 
     public bool OutOfAmmo()

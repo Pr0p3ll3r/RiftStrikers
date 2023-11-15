@@ -98,7 +98,7 @@ public class WeaponManager : NetworkBehaviour
     IEnumerator Equip(int index)
     {
         selectedWeapon = index;
-        currentWeaponData = (Weapon)testWeapon.GetCopy();
+        currentWeaponData = testWeapon.GetCopy();
 
         isEquipping = true;
         isReloading = false;
@@ -108,12 +108,6 @@ public class WeaponManager : NetworkBehaviour
         animCharacter.SetInteger("Weapon", (int)currentWeaponData.animSet);
         weaponSound.Stop();
         weaponSound.PlayOneShot(equipSound);
-
-        if (currentWeaponData.equipSound != null)
-        {
-            weaponSound.clip = currentWeaponData.equipSound;
-            weaponSound.Play();
-        }
 
         hud.RefreshAmmo(currentWeaponData.GetAmmo());
 
@@ -219,45 +213,14 @@ public class WeaponManager : NetworkBehaviour
         if (currentWeapon.GetComponent<Animator>() != null)
             currentWeapon.GetComponent<Animator>().Play("Reload", 0, 0);
 
-        if (currentWeaponData.inserting)
-        {
-            do
-            {
-                if (!currentWeaponData.OutOfAmmo())
-                {
-                    isReloading = false;
-                    yield break;
-                }
-                hud.StartReload(currentWeaponData.reloadTime);
-                PlayReloadSoundServer();              
-                yield return new WaitForSeconds(currentWeaponData.reloadTime);
-                currentWeaponData.Reload();
-                hud.RefreshAmmo(currentWeaponData.GetAmmo());
-            }
-            while (currentWeaponData.GetAmmo() != currentWeaponData.ammo);
-        }
-        else
-        {
-            hud.StartReload(currentWeaponData.reloadTime);
-            PlayReloadSoundServer();
-            yield return new WaitForSeconds(currentWeaponData.reloadTime);
-            currentWeaponData.Reload();
-            hud.RefreshAmmo(currentWeaponData.GetAmmo());
-        }
+        hud.StartReload(currentWeaponData.reloadTime);
+        weaponSound.PlayOneShot(currentWeaponData.reloadSound);
+        yield return new WaitForSeconds(currentWeaponData.reloadTime);
+        currentWeaponData.Reload();
+        hud.RefreshAmmo(currentWeaponData.GetAmmo());
+
         animCharacter.SetBool("Reload", false);
         isReloading = false;
-    }
-
-    [ServerRpc]
-    private void PlayReloadSoundServer()
-    {
-        PlayReloadSoundRpc();
-    }
-
-    [ObserversRpc]
-    private void PlayReloadSoundRpc()
-    {
-        weaponSound.PlayOneShot(currentWeaponData.reloadSound);
     }
 
     private void StopReload()
