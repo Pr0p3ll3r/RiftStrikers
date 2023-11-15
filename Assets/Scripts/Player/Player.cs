@@ -2,7 +2,6 @@
 using FishNet.Object.Synchronizing;
 using FishNet.Object;
 using UnityEngine.InputSystem;
-using FishNet.Connection;
 
 public class Player : NetworkBehaviour
 {
@@ -19,7 +18,6 @@ public class Player : NetworkBehaviour
 
     private PlayerController controller;
     private PlayerHUD hud;
-    private WeaponManager wm;
     private Ragdoll ragdoll;
 
     private void Awake()
@@ -30,7 +28,6 @@ public class Player : NetworkBehaviour
     void Start()
     {       
         hud = GetComponent<PlayerHUD>();
-        wm = GetComponent<WeaponManager>();
         controller = GetComponent<PlayerController>();
         ragdoll = GetComponent<Ragdoll>();
         hud.RefreshBars(currentHealth);     
@@ -87,6 +84,22 @@ public class Player : NetworkBehaviour
         foreach (Transform child in gameObject.GetComponentsInChildren<Transform>(true))
         {
             child.gameObject.layer = LayerMask.NameToLayer("NotCollide");
+        }
+    }
+
+    public void HandlePickup(PickableItem item, int value)
+    {
+        if (item.itemType == ItemType.Health)
+        {
+            // Obsługa zdrowia
+        }
+        else if (item.itemType == ItemType.Exp)
+        {
+            // Obsługa doświadczenia
+        }
+        else if (item.itemType == ItemType.Money)
+        {
+            // Obsługa pieniędzy
         }
     }
 }
