@@ -145,11 +145,11 @@ public class WeaponManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     void ShootServer(int damage, Vector3 postion, Vector3 direction, float range, int pellets)
     {
-        Debug.Log("ShootServer");
+        //Debug.Log("ShootServer");
 
         for (int i = 0; i < Mathf.Max(1, pellets); i++)
         {
-            if (Physics.Raycast(postion, direction, out RaycastHit hit, range, canBeShot))
+            if (Physics.Raycast(postion, direction, out RaycastHit hit, range, canBeShot) && hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
                 GameObject blood = Instantiate(bloodPrefab, hit.point + hit.normal * 0.001f, Quaternion.identity);
                 blood.transform.LookAt(hit.point + hit.normal);
