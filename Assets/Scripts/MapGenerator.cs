@@ -29,7 +29,7 @@ public class MapGenerator : NetworkBehaviour
 
     private NavMeshSurface navMeshSurface;
 
-    private void Start()
+    private void Awake()
     {
         navMeshSurface = GetComponent<NavMeshSurface>();
     }
@@ -114,7 +114,7 @@ public class MapGenerator : NetworkBehaviour
             }
         }
 
-        if(IsServer) navMeshSurface.BuildNavMesh();
+        navMeshSurface.BuildNavMesh();
     }
 
     private bool IsIsland(int x, int z, float islandRadius, float islandDensity)

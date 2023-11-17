@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 23806632591804510}
   - component: {fileID: 64948271280799566}
   m_Layer: 7
-  m_Name: BeachLand2
+  m_Name: BeachLand1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

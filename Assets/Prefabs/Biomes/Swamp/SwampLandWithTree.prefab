@@ -170,10 +170,24 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7905551768925689863, guid: b8d0fc9068ba7b04693a2494de26f19c,
+        type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 7905551768925689863, guid: b8d0fc9068ba7b04693a2494de26f19c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2210834982315410453, guid: b8d0fc9068ba7b04693a2494de26f19c,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5464725911219907541}
+    - targetCorrespondingSourceObject: {fileID: 2210834982315410453, guid: b8d0fc9068ba7b04693a2494de26f19c,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7356613013354841756}
   m_SourcePrefab: {fileID: 100100000, guid: b8d0fc9068ba7b04693a2494de26f19c, type: 3}
 --- !u!4 &3988616888796906784 stripped
 Transform:
@@ -181,3 +195,48 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 9056278855709008291}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7133749161307956662 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2210834982315410453, guid: b8d0fc9068ba7b04693a2494de26f19c,
+    type: 3}
+  m_PrefabInstance: {fileID: 9056278855709008291}
+  m_PrefabAsset: {fileID: 0}
+--- !u!208 &5464725911219907541
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7133749161307956662}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 0
+  m_Extents: {x: 0.1, y: 1.7960001, z: 0.1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.02, y: 1.7800001, z: 0.043}
+  m_TimeToStationary: 0.5
+--- !u!136 &7356613013354841756
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7133749161307956662}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.3
+  m_Height: 3.592
+  m_Direction: 1
+  m_Center: {x: -0.02, y: 1.78, z: 0.043}

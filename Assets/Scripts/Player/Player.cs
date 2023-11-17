@@ -44,8 +44,8 @@ public class Player : NetworkBehaviour
         }
 #endif
     }
- 
-    [ServerRpc]
+
+    [ServerRpc(RequireOwnership = false)]
     public void TakeDamageServer(int damage)
     {
         if (isDead) return;

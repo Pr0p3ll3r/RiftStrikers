@@ -12,7 +12,6 @@ public class Enemy : NetworkBehaviour
     public int damage = 5;
     public float attackDistance = 5f;
     public float speed = 5f;
-    [SyncVar]
     public bool isDead;
     public int maxHealth = 100;
 
@@ -32,21 +31,23 @@ public class Enemy : NetworkBehaviour
     private float dissolve = -0.1f;
     [SerializeField] private float dissolveSpeed = 0.1f;
 
-    public override void OnStartNetwork()
+    public void Awake()
     {
-        base.OnStartNetwork();  
         animator = GetComponent<Animator>();
+        ragdoll = GetComponent<Ragdoll>();
         agent = GetComponent<NavMeshAgent>();
         agent.speed = speed;
-        ragdoll = GetComponent<Ragdoll>();
-        if (GetClosestPlayer() != null)
-            player = GetClosestPlayer().transform;
     }
 
     public override void OnStartClient()
     {
         base.OnStartClient();
-        RandomZombieLookServer();
+
+        if(IsServer)
+        {
+            int rand = Random.Range(0, graphics.childCount);
+            RpcRandomZombieLook(rand);
+        }
     }
 
     private void Update()
@@ -113,15 +114,8 @@ public class Enemy : NetworkBehaviour
         return closestPlayer;
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    void RandomZombieLookServer()
-    {
-        int rand = Random.Range(0, graphics.childCount);
-        RandomZombieLookRpc(rand);
-    }
-
-    [ObserversRpc]
-    void RandomZombieLookRpc(int rand)
+    [ObserversRpc(BufferLast = true)]
+    void RpcRandomZombieLook(int rand)
     {    
         for (int i = 0; i < graphics.childCount; i++)
         {
@@ -134,7 +128,7 @@ public class Enemy : NetworkBehaviour
     }
 
     [ObserversRpc(RunLocally = true)]
-    void SetHealthBar()
+    void RpcSetHealthBar(int currentHealth)
     {
         healthBar.SetActive(true);
         healthBar.GetComponentInChildren<Slider>().value = (float)currentHealth / maxHealth;
@@ -142,28 +136,23 @@ public class Enemy : NetworkBehaviour
             healthBar.SetActive(false);
     }
 
-    public void TakeDamage(int damage)
+    [ServerRpc(RequireOwnership = false)]
+    public void ServerTakeDamage(int damage)
     {
         if (isDead) return;
 
         currentHealth -= damage;
-        SetHealthBar();
-        if (IsServer && currentHealth <= 0)
+        RpcSetHealthBar(currentHealth);
+        if (currentHealth <= 0)
         {
-            Debug.Log("Server");
-            DieServer();
+            isDead = true;
+            agent.enabled = false;
+            RpcDie();
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    void DieServer()
-    {
-        agent.isStopped = false;
-        DieRpc();
-    }
-
-    [ObserversRpc(RunLocally = true)]
-    void DieRpc()
+    [ObserversRpc]
+    void RpcDie()
     {
         isDead = true;
         ragdoll.Die();

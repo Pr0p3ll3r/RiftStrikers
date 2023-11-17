@@ -154,7 +154,7 @@ public class WeaponManager : NetworkBehaviour
                 GameObject blood = Instantiate(bloodPrefab, hit.point + hit.normal * 0.001f, Quaternion.identity);
                 blood.transform.LookAt(hit.point + hit.normal);
                 Spawn(blood);
-                hit.collider.gameObject.GetComponent<Enemy>().TakeDamage(damage);
+                hit.collider.gameObject.GetComponent<Enemy>().ServerTakeDamage(damage);
             }
         }
         ShootRpc();
