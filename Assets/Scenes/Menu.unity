@@ -36475,7 +36475,7 @@ MonoBehaviour:
   _enableGlobalScenes: 1
   _startInOffline: 1
   _offlineScene: Assets/Scenes/Menu.unity
-  _onlineScene: Assets/Scenes/Test.unity
+  _onlineScene: Assets/Scenes/Game.unity
   _replaceScenes: 0
 --- !u!222 &6664082491016637425
 CanvasRenderer:

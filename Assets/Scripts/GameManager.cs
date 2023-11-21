@@ -42,26 +42,30 @@ public class GameManager : NetworkBehaviour
 
     private bool canStart = false;
     private bool started = false;
+    [SyncVar] private float gameTimer;
     public bool GameStarted => started;
 
     [SyncObject]
     public readonly SyncList<PlayerInstance> players = new SyncList<PlayerInstance>();
 
+    void Start()
+    {
+        enemyKilledText = GameObject.Find("HUD/Game/EnemyKilled/Amount").GetComponent<TextMeshProUGUI>();
+    }
+
     public override void OnStartNetwork()
     {
         base.OnStartNetwork();
         Instance = this;
-    }
 
-    void Start()
-    {
-        enemyKilledText = GameObject.Find("HUD/Game/EnemyKilled/Amount").GetComponent<TextMeshProUGUI>();
-        started = true;
+        if (IsServer) StartGame();
     }
 
     void Update()
     {
         if (!IsServer || !started) return;
+
+        UpdateGameTimer();
 
         if (timeToNextWave > 0)
             timeToNextWave -= Time.deltaTime;
@@ -77,15 +81,26 @@ public class GameManager : NetworkBehaviour
     }
 
     [Server]
+    private void UpdateGameTimer()
+    {
+        gameTimer += Time.deltaTime;
+        RpcUpdateGameTimer(gameTimer);
+    }
+
+    [Server]
     private void StartGame()
     {
         //if (!canStart) return;
 
         Debug.Log("Game Start");
-        foreach (PlayerInstance player in players)
-        {
-            player.SpawnPlayer();
-        }
+        started = true;
+        timeToSpawn = 5f;
+        gameTimer = 0f;
+        RpcUpdateGameTimer(gameTimer);
+        //foreach (PlayerInstance player in players)
+        //{
+        //    player.SpawnPlayer();
+        //}
     }
 
     [Server]
@@ -99,7 +114,7 @@ public class GameManager : NetworkBehaviour
             currentWaveNumber++;
         currentWave = waves[currentWaveNumber];
         timeToNextWave = waveDuration;
-        SpawnEnemy();
+        //SpawnEnemy();
     }
 
     [Server]
@@ -132,5 +147,15 @@ public class GameManager : NetworkBehaviour
         damageMultiplier += 0.25f;
         spawnIntervalMultiplier += 0.5f;
         maximumAmountMultiplier += 0.5f;
+    }
+
+    [ObserversRpc(RunLocally = true)]
+    private void RpcUpdateGameTimer(float newTime)
+    {
+        string hours = (newTime / 3600).ToString("00");
+        float m = newTime % 3600;
+        string minutes = (m / 60).ToString("00");
+        string seconds = (m % 60).ToString("00");
+        timer.text = $"{hours}:{minutes}:{seconds}";
     }
 }
