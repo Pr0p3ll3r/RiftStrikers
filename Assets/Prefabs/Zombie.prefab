@@ -87,6 +87,9 @@ MonoBehaviour:
   maxHealth: 100
   exp: 0
   money: 0
+  loot:
+  - {fileID: 11400000, guid: 0f0fadb32803bd04fab5dc133247d773, type: 2}
+  - {fileID: 11400000, guid: 54eb888d49cc7e946b3cd3a0cba742cd, type: 2}
   graphics: {fileID: 7633417698277815300}
   healthBar: {fileID: 7738503667405173057}
   attackCooldown: 2
@@ -288,8 +291,8 @@ MonoBehaviour:
   <ChildNetworkObjects>k__BackingField: []
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 0}
-    LocalScale: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 1}
+    LocalScale: {x: 0.9, y: 0.9, z: 0.9}
   _isNetworked: 1
   _isGlobal: 0
   _initializeOrder: 0

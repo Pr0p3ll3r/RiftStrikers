@@ -12,8 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d71010244b3f1b4bbe46ffe7dba6842, type: 3}
   m_Name: Exp
   m_EditorClassIdentifier: 
-  itemName: 
-  icon: {fileID: 0}
-  prefab: {fileID: 0}
+  prefab: {fileID: 8957155702306191222, guid: 53b512dbeb48c7941a34546dc0ac0d92, type: 3}
   itemType: 1
-  value: 0
+  dropChance: 100

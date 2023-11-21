@@ -17,6 +17,7 @@ public class Enemy : NetworkBehaviour
 
     public int exp;
     public int money;
+    public PickableItem[] loot;
 
     [SerializeField] private Transform graphics;
     private Transform player;
@@ -147,6 +148,7 @@ public class Enemy : NetworkBehaviour
         {
             isDead = true;
             agent.enabled = false;
+            DropLoot();
             RpcDie();
         }
     }
@@ -161,6 +163,29 @@ public class Enemy : NetworkBehaviour
         foreach (Transform child in gameObject.GetComponentsInChildren<Transform>(true))
         {
             child.gameObject.layer = LayerMask.NameToLayer("NotCollide");
+        }
+    }
+
+
+    private void DropLoot()
+    {
+        foreach (PickableItem item in loot)
+        {
+            int randomChance = Random.Range(0, 100);
+            if (randomChance <= item.dropChance)
+            {
+                GameObject pickupItem = Instantiate(item.prefab, transform.position + Vector3.up, Quaternion.identity);
+                Spawn(pickupItem);
+                switch (item.itemType)
+                {
+                    case ItemType.Exp:
+                        pickupItem.GetComponent<PickupItem>().SetItem(item, exp);
+                        break;
+                    case ItemType.Money:
+                        pickupItem.GetComponent<PickupItem>().SetItem(item, money);
+                        break;
+                }
+            }
         }
     }
 }
