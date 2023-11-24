@@ -13,7 +13,7 @@ public class PlayerHUD : NetworkBehaviour
     private TextMeshProUGUI ammo;
     private TextMeshProUGUI moneyText;
     private GameObject vignette;
-    private Transform weaponParent;
+    private Transform weapon;
     private Slider reloadingSlider;
 
     private void Awake()
@@ -30,7 +30,7 @@ public class PlayerHUD : NetworkBehaviour
 
         //Bottom Right
         ammo = GameObject.Find("HUD/Game/BottomRightCorner/Ammo/Amount").GetComponent<TextMeshProUGUI>();
-        weaponParent = GameObject.Find("HUD/Game/BottomRightCorner/Weapons").transform;
+        weapon = GameObject.Find("HUD/Game/BottomRightCorner/Weapon").transform;
         reloadingSlider = GameObject.Find("HUD/Game/BottomRightCorner/Ammo/ReloadingSlider").GetComponent<Slider>();
 
         //Center
@@ -77,6 +77,11 @@ public class PlayerHUD : NetworkBehaviour
             staminaBar.value += Time.deltaTime;
             yield return null;
         }
+    }
+
+    public void RefreshWeapon(Weapon weaponData)
+    {
+        weapon.GetChild(0).GetComponentInChildren<Image>().sprite = weaponData.icon;
     }
 
     private IEnumerator Reload(float time)

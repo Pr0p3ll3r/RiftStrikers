@@ -84,6 +84,7 @@ public class WeaponManager : NetworkBehaviour
     {
         currentWeaponData = testWeapon.GetCopy();
         ShowWeapon();
+        hud.RefreshWeapon(currentWeaponData);
         controller.SetSpeed(currentWeaponData.movementSpeed);
         animCharacter.SetInteger("Weapon", (int)currentWeaponData.animSet);
         weaponSound.PlayOneShot(equipSound);
