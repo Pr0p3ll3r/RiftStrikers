@@ -151,7 +151,8 @@ public class LevelSystem : NetworkBehaviour
         Random.InitState(seed);
         List<Skill> tempAvailableSkills = new List<Skill>(availableSkills);
 
-        for (int i = 0; i < skillList.childCount; i++)
+        int i;
+        for (i = 0; i < skillList.childCount; i++)
         {
             Transform skillSlot = skillList.GetChild(i);
             skillSlot.GetComponent<Button>().onClick.RemoveAllListeners();
@@ -171,10 +172,9 @@ public class LevelSystem : NetworkBehaviour
                 }
             }
             AddMoneySkill(skillSlot);
-            ActivateSkillSlots(i);
             break;
         }
-        ActivateSkillSlots(2);
+        ActivateSkillSlots(i);
     }
 
     private bool ChooseSkillFromOwnedSkills(List<Skill> ownedSkillsToUpgrade, Transform skillSlot, List<Skill> availableSkills)
