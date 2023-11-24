@@ -1,7 +1,6 @@
+using FishNet;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -41,11 +40,11 @@ public class GameManager : NetworkBehaviour
     private float spawnIntervalMultiplier = 1;
     private float maximumAmountMultiplier = 1;
 
-    private bool canStart = false;
     private bool started = false;
     [SyncVar] private float gameTimer;
     public bool GameStarted => started;
-
+    private bool canSpawn = true;
+    [SerializeField] private float waitingTimeBeforeStart = 5f;
     [SyncObject]
     public readonly SyncList<Player> players = new SyncList<Player>();
     private List<Enemy> enemies = new List<Enemy>();
@@ -53,22 +52,25 @@ public class GameManager : NetworkBehaviour
     private void Awake()
     {
         Instance = this;
-    }
-
-    void Start()
-    {
         enemyKilledText = GameObject.Find("HUD/Game/EnemyKilled/Amount").GetComponent<TextMeshProUGUI>();
-    }
-
-    public override void OnStartNetwork()
-    {
-        base.OnStartNetwork();
-        if (IsServer) StartGame();
     }
 
     void Update()
     {
-        if (!IsServer || !started) return;
+        if (!IsServer) return;
+        
+        if (!started)
+        {
+            waitingTimeBeforeStart -= Time.deltaTime;
+            RpcUpdateGameTimer(waitingTimeBeforeStart);
+            if (waitingTimeBeforeStart <= 0)
+            {
+                StartGame();
+            }
+            return;
+        }
+
+        if (!canSpawn) return;
 
         UpdateGameTimer();
 
@@ -95,11 +97,8 @@ public class GameManager : NetworkBehaviour
     [Server]
     private void StartGame()
     {
-        //if (!canStart) return;
-
         Debug.Log("Game Start");
         started = true;
-        timeToSpawn = 2f;
         gameTimer = 0f;
         RpcUpdateGameTimer(gameTimer);
     }
@@ -115,7 +114,6 @@ public class GameManager : NetworkBehaviour
             currentWaveNumber++;
         currentWave = waves[currentWaveNumber];
         timeToNextWave = waveDuration;
-        //SpawnEnemy();
     }
 
     [Server]
@@ -142,7 +140,7 @@ public class GameManager : NetworkBehaviour
 
     public void ChangeEnemiesStatus(bool status)
     {
-        started = status;
+        canSpawn = status;
         foreach(Enemy enemy in enemies)
         {
             enemy.ChangeAgentStatus(status);
@@ -166,7 +164,7 @@ public class GameManager : NetworkBehaviour
         maximumAmountMultiplier += 0.5f;
     }
 
-    [ObserversRpc(RunLocally = true)]
+    [ObserversRpc]
     private void RpcUpdateGameTimer(float newTime)
     {
         string hours = (newTime / 3600).ToString("00");
