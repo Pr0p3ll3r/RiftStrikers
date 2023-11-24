@@ -79,14 +79,14 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 5799975719655290014}
   _networkObjectCache: {fileID: 5799975719655290014}
-  currentHealth: 100
+  currentHealth: 60
   damage: 5
   attackDistance: 2
   speed: 3
   isDead: 0
-  maxHealth: 100
-  exp: 0
-  money: 0
+  maxHealth: 60
+  exp: 5
+  money: 5
   loot:
   - {fileID: 11400000, guid: 0f0fadb32803bd04fab5dc133247d773, type: 2}
   - {fileID: 11400000, guid: 54eb888d49cc7e946b3cd3a0cba742cd, type: 2}
@@ -298,7 +298,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  <PrefabId>k__BackingField: 0
+  <PrefabId>k__BackingField: 1
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 0
   <SceneId>k__BackingField: 0

@@ -19,10 +19,13 @@ public class Player : NetworkBehaviour
     private PlayerController controller;
     private PlayerHUD hud;
     private Ragdoll ragdoll;
+    private WeaponManager weaponManager;
 
-    private void Awake()
+    public override void OnStartClient()
     {
-        Instance = this;
+        base.OnStartClient();
+        if(IsOwner) Instance = this;
+        if(IsServer) GameManager.Instance.players.Add(this);
     }
 
     void Start()
@@ -30,6 +33,7 @@ public class Player : NetworkBehaviour
         hud = GetComponent<PlayerHUD>();
         controller = GetComponent<PlayerController>();
         ragdoll = GetComponent<Ragdoll>();
+        weaponManager = GetComponent<WeaponManager>();
         hud.RefreshBars(currentHealth);     
     }
 
@@ -87,6 +91,12 @@ public class Player : NetworkBehaviour
         }
     }
 
+    public void ChangePlayerControlsStatus(bool status)
+    {
+        controller.enabled = status;
+        weaponManager.enabled = status;
+    }
+
     public void HandlePickup(PickableItem item, int value)
     {
         if (item.itemType == ItemType.Health)
@@ -95,11 +105,16 @@ public class Player : NetworkBehaviour
         }
         else if (item.itemType == ItemType.Exp)
         {
-            // Obsługa doświadczenia
+            LevelSystem.Instance.GainExperience(value);
         }
         else if (item.itemType == ItemType.Money)
         {
             // Obsługa pieniędzy
         }
+    }
+
+    public void HandleSkillSelection(Skill skill)
+    {
+
     }
 }

@@ -2,6 +2,7 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -46,7 +47,13 @@ public class GameManager : NetworkBehaviour
     public bool GameStarted => started;
 
     [SyncObject]
-    public readonly SyncList<PlayerInstance> players = new SyncList<PlayerInstance>();
+    public readonly SyncList<Player> players = new SyncList<Player>();
+    private List<Enemy> enemies = new List<Enemy>();
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
@@ -56,8 +63,6 @@ public class GameManager : NetworkBehaviour
     public override void OnStartNetwork()
     {
         base.OnStartNetwork();
-        Instance = this;
-
         if (IsServer) StartGame();
     }
 
@@ -94,13 +99,9 @@ public class GameManager : NetworkBehaviour
 
         Debug.Log("Game Start");
         started = true;
-        timeToSpawn = 5f;
+        timeToSpawn = 2f;
         gameTimer = 0f;
         RpcUpdateGameTimer(gameTimer);
-        //foreach (PlayerInstance player in players)
-        //{
-        //    player.SpawnPlayer();
-        //}
     }
 
     [Server]
@@ -130,13 +131,29 @@ public class GameManager : NetworkBehaviour
             enemy.maxHealth *= healthMultiplier;
             enemy.damage = (int)(enemy.damage * damageMultiplier);
             Spawn(enemyGO);
+            enemies.Add(enemy);
         }
     }
 
-    public void EnemyKilled()
+    public int GetLivingPlayers()
+    {
+        return players.Count(x => !x.IsDead);
+    }
+
+    public void ChangeEnemiesStatus(bool status)
+    {
+        started = status;
+        foreach(Enemy enemy in enemies)
+        {
+            enemy.ChangeAgentStatus(status);
+        }
+    }
+
+    public void EnemyKilled(Enemy enemy)
     {
         enemyKilled++;
         enemyKilledText.text = enemyKilled.ToString();
+        enemies.Remove(enemy);
     }
 
     private void UpgradeWave()

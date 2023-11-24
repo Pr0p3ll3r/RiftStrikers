@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f26a669179a2d14e818e8d561a8c298, type: 3}
   m_Name: Skill
   m_EditorClassIdentifier: 
-  skillName: 
-  icon: {fileID: 0}
-  skillType: 0
+  skillName: Skill
+  skillIconIndex: 1
+  isActive: 0
   levels:
-  - description: 
+  - description: Test
+  - description: Test
+  - description: Test
+  - description: Test
+  - description: Test

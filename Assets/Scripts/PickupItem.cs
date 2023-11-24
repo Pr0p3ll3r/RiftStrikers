@@ -14,19 +14,16 @@ public class PickupItem : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player"))
+        if (other.CompareTag("Player") && other.gameObject.GetComponent<NetworkObject>().IsOwner)
         {
-            other.GetComponent<Player>().HandlePickup(item, value);
-            ServerDestroy();
+            ServerPickup(other.gameObject);
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void ServerDestroy()
+    private void ServerPickup(GameObject player)
     {
-        if (IsServer)
-        { 
-            Despawn(gameObject);
-        }
+        player.GetComponent<Player>().HandlePickup(item, value);
+        Despawn(gameObject);
     }
 }

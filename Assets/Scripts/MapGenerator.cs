@@ -34,9 +34,9 @@ public class MapGenerator : NetworkBehaviour
         navMeshSurface = GetComponent<NavMeshSurface>();
     }
 
-    public override void OnStartClient()
+    public override void OnStartNetwork()
     {
-        base.OnStartClient();
+        base.OnStartNetwork();
 
         if (IsServer)
         {

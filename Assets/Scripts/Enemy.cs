@@ -30,6 +30,7 @@ public class Enemy : NetworkBehaviour
     float lastAttackTime = 0;
     public float attackCooldown = 2;
     private float dissolve = -0.1f;
+    private bool isStopped = false;
     [SerializeField] private float dissolveSpeed = 0.1f;
 
     public void Awake()
@@ -60,6 +61,7 @@ public class Enemy : NetworkBehaviour
             if(IsServer && dissolve >= 0.5f)
             {
                 enabled = false;
+                GameManager.Instance.EnemyKilled(this);
                 Despawn(gameObject);
             }
             return;
@@ -70,7 +72,7 @@ public class Enemy : NetworkBehaviour
         if (GetClosestPlayer() != null)
             player = GetClosestPlayer().transform;
 
-        if (player == null) return;
+        if (player == null || isStopped) return;
 
         if (Vector3.Distance(transform.position, player.position) <= attackDistance)
         {
@@ -93,6 +95,12 @@ public class Enemy : NetworkBehaviour
             lastAttackTime = Time.time;
             player.GetComponent<Player>().TakeDamageServer(damage);
         }         
+    }
+
+    public void ChangeAgentStatus(bool status)
+    {
+        agent.enabled = status;
+        isStopped = !status;
     }
 
     GameObject GetClosestPlayer()
@@ -153,7 +161,7 @@ public class Enemy : NetworkBehaviour
         }
     }
 
-    [ObserversRpc]
+    [ObserversRpc(BufferLast = true)]
     void RpcDie()
     {
         isDead = true;
@@ -165,7 +173,6 @@ public class Enemy : NetworkBehaviour
             child.gameObject.layer = LayerMask.NameToLayer("NotCollide");
         }
     }
-
 
     private void DropLoot()
     {

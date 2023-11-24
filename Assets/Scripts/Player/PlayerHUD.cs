@@ -11,8 +11,6 @@ public class PlayerHUD : NetworkBehaviour
     private Slider healthBar;
     private Slider staminaBar;
     private TextMeshProUGUI ammo;
-    private TextMeshProUGUI levelText;
-    private Slider expBar;
     private TextMeshProUGUI moneyText;
     private GameObject vignette;
     private Transform weaponParent;
@@ -34,10 +32,6 @@ public class PlayerHUD : NetworkBehaviour
         ammo = GameObject.Find("HUD/Game/BottomRightCorner/Ammo/Amount").GetComponent<TextMeshProUGUI>();
         weaponParent = GameObject.Find("HUD/Game/BottomRightCorner/Weapons").transform;
         reloadingSlider = GameObject.Find("HUD/Game/BottomRightCorner/Ammo/ReloadingSlider").GetComponent<Slider>();
-
-        //Exp Bar
-        levelText = GameObject.Find("HUD/Game/Exp/Level").GetComponent<TextMeshProUGUI>();
-        expBar = GameObject.Find("HUD/Game/Exp/ExpBar").GetComponent<Slider>();
 
         //Center
         vignette = GameObject.Find("HUD/Game/Vignette").gameObject;
@@ -62,13 +56,6 @@ public class PlayerHUD : NetworkBehaviour
     public void RefreshAmmo(int currentAmmo)
     {
         ammo.text = currentAmmo.ToString();
-    }
-
-    public void UpdateLevel(int level, int exp, int requireExp)
-    {
-        levelText.text = $"Level: {level} ({exp}/{requireExp})";
-        float percentage = (float)exp / requireExp;
-        expBar.value = percentage;
     }
 
     public void UpdateMoney(int money)
