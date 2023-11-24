@@ -20,6 +20,8 @@ public class Player : NetworkBehaviour
     private PlayerHUD hud;
     private Ragdoll ragdoll;
     private WeaponManager weaponManager;
+    private bool canControl = true;
+    public bool CanControl => canControl;
 
     public override void OnStartClient()
     {
@@ -93,8 +95,7 @@ public class Player : NetworkBehaviour
 
     public void ChangePlayerControlsStatus(bool status)
     {
-        controller.enabled = status;
-        weaponManager.enabled = status;
+        canControl = status;
     }
 
     public void HandlePickup(PickableItem item, int value)

@@ -7,7 +7,6 @@ public class WeaponManager : NetworkBehaviour
 {
     public GameObject currentWeapon;
     [SerializeField] private Transform weaponHolder;
-    [SerializeField] private int selectedWeapon = -1;
     public Weapon currentWeaponData;
     public Weapon testWeapon;
     [SerializeField] private LayerMask canBeShot;
@@ -17,15 +16,13 @@ public class WeaponManager : NetworkBehaviour
     [SerializeField] private AudioSource weaponSound;
     [SerializeField] private AudioClip equipSound;
     public bool isReloading = false;
-    public bool isEquipping = false;
-
+    public bool canReload = true;
     private float currentCooldown;
     private PlayerInput playerInput;
     private InputAction fireAction;
     private PlayerHUD hud;
     private PlayerController controller;
     private Animator animCharacter;
-    private Coroutine equip;
     private Coroutine reload;
     [SerializeField] private float bulletEjectingSpeed = 0.5f;
     private GameObject closestEnemy;
@@ -38,12 +35,12 @@ public class WeaponManager : NetworkBehaviour
         controller = GetComponent<PlayerController>();
         playerInput = GetComponent<PlayerInput>();
         fireAction = playerInput.actions["Fire"];
-        StartEquip(0);
+        Equip(0);
     }
 
     void Update()
     {
-        if (!IsOwner)
+        if (!IsOwner || !Player.Instance.CanControl)
             return;
 
         closestEnemy = GetClosestEnemy();
@@ -52,7 +49,7 @@ public class WeaponManager : NetworkBehaviour
         {
             if (currentCooldown > 0) currentCooldown -= Time.deltaTime;
 
-            if (currentWeapon != null && !isEquipping && currentCooldown <= 0 && !isReloading && !controller.IsRolling)
+            if (currentWeapon != null && currentCooldown <= 0 && !isReloading && !controller.IsRolling)
             {
                 if (currentWeaponData.OutOfAmmo()) 
                     reload = StartCoroutine(Reload());
@@ -76,46 +73,24 @@ public class WeaponManager : NetworkBehaviour
 
     public void OnReload(InputAction.CallbackContext context)
     {
-        if (context.performed && IsOwner)
-            if (!currentWeaponData.FullAmmo() && !isReloading) reload = StartCoroutine(Reload());
-    }
-
-    private void StartEquip(int index)
-    {
-        if (selectedWeapon == index)
+        if (!IsOwner || !Player.Instance.CanControl)
             return;
 
-        if (isReloading)
-        {
-            StopReload();
-        }
-
-        if (equip != null)
-            StopCoroutine(equip);
-        equip = StartCoroutine(Equip(index));
+        if (context.performed && !currentWeaponData.FullAmmo() && !isReloading)
+            reload = StartCoroutine(Reload());
     }
 
-    IEnumerator Equip(int index)
+    private void Equip(int index)
     {
-        selectedWeapon = index;
         currentWeaponData = testWeapon.GetCopy();
-
-        isEquipping = true;
-        isReloading = false;
-
         ShowWeapon();
         controller.SetSpeed(currentWeaponData.movementSpeed);
         animCharacter.SetInteger("Weapon", (int)currentWeaponData.animSet);
-        weaponSound.Stop();
         weaponSound.PlayOneShot(equipSound);
-
         hud.RefreshAmmo(currentWeaponData.GetAmmo());
-
-        yield return new WaitForSeconds(1f);
-        isEquipping = false;
     }
 
-    public void ShowWeapon()
+    private void ShowWeapon()
     {
         for (int i = 0; i < weaponHolder.childCount; i++)
         {
@@ -132,7 +107,7 @@ public class WeaponManager : NetworkBehaviour
         currentWeapon.SetActive(true);
     }
 
-    void Shoot()
+    private void Shoot()
     {
         if (currentWeaponData.FireBullet())
         {
@@ -143,7 +118,7 @@ public class WeaponManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void ShootServer(int damage, Vector3 postion, Vector3 direction, float range, int pellets)
+    private void ShootServer(int damage, Vector3 postion, Vector3 direction, float range, int pellets)
     {
         //Debug.Log("ShootServer");
 
@@ -161,7 +136,7 @@ public class WeaponManager : NetworkBehaviour
     }
 
     [ObserversRpc]
-    void ShootRpc()
+    private void ShootRpc()
     {
         //muzzle
         ParticleSystem muzzleFlash = weaponHolder.GetChild(currentWeaponData.childNumber).gameObject.GetComponentInChildren<ParticleSystem>();
@@ -204,7 +179,7 @@ public class WeaponManager : NetworkBehaviour
         Gizmos.DrawSphere(transform.position, currentWeaponData.range);
     }
 
-    IEnumerator Reload()
+    private IEnumerator Reload()
     {
         weaponSound.Stop();
 
@@ -223,7 +198,7 @@ public class WeaponManager : NetworkBehaviour
         isReloading = false;
     }
 
-    private void StopReload()
+    public void StopReload()
     {
         StopCoroutine(reload);
         hud.StopReload();

@@ -19,6 +19,7 @@ public class PlayerController : NetworkBehaviour
 
     private bool roll;
     public bool IsRolling => roll;
+    public bool canRoll = true;
 
     private Player player;
     private Camera cam;
@@ -27,7 +28,7 @@ public class PlayerController : NetworkBehaviour
     private WeaponManager weaponManager;
     private AudioSource audioSource;
     private Animator animCharacter;
-    private NetworkAnimator networkAnimator; 
+    private NetworkAnimator networkAnimator;
     private Vector3 lastPos;
     private Vector3 playerVelocity;
     private Vector2 moveInput;
@@ -69,7 +70,7 @@ public class PlayerController : NetworkBehaviour
 
     void Update()
     {
-        if (!IsOwner)
+        if (!IsOwner || !Player.Instance.CanControl)
             return;
 
         if (lastRoll > 0)
@@ -78,16 +79,16 @@ public class PlayerController : NetworkBehaviour
         if (!roll)
         {
             Move();
-            if(!autoAim)
+            if (!autoAim)
                 Look();
         }
     }
 
     void Move()
     {
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);      
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-        if(isGrounded && playerVelocity.y < 0) 
+        if (isGrounded && playerVelocity.y < 0)
         {
             playerVelocity.y = 0f;
         }
@@ -115,7 +116,7 @@ public class PlayerController : NetworkBehaviour
             distMoved = 0;
         }
 
-        if(autoAim)
+        if (autoAim)
         {
             if (weaponManager.ClosestEnemy)
             {
@@ -124,11 +125,11 @@ public class PlayerController : NetworkBehaviour
                 Quaternion targetRotation = Quaternion.LookRotation(directionToEnemy, Vector3.up);
                 transform.rotation = targetRotation;
             }
-            else if(movement != Vector3.zero)
+            else if (movement != Vector3.zero)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(movement, Vector3.up);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10 * Time.deltaTime);
-            }              
+            }
         }
     }
 
@@ -137,7 +138,7 @@ public class PlayerController : NetworkBehaviour
         Plane playerPlane = new Plane(Vector3.up, transform.position);
         Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (playerPlane.Raycast(ray, out float hit))
-        {       
+        {
             Vector3 hitPoint = ray.GetPoint(hit);
             //Debug.DrawLine(ray.origin, hitPoint);
             Quaternion targetRotation = Quaternion.LookRotation(hitPoint - transform.position);
@@ -157,7 +158,7 @@ public class PlayerController : NetworkBehaviour
 
     public void OnRoll(InputAction.CallbackContext context)
     {
-        if (!IsOwner || player.IsDead)
+        if (!IsOwner || player.IsDead || !Player.Instance.CanControl)
             return;
 
         if (context.started && lastRoll <= 0)
@@ -178,6 +179,7 @@ public class PlayerController : NetworkBehaviour
 
     IEnumerator Roll()
     {
+        weaponManager.StopReload();
         Vector3 movement = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
         if(movement == Vector3.zero)
             yield break;
