@@ -105,7 +105,7 @@ public class GameLauncher : MonoBehaviour
         LobbyManager.Instance.OnKickedFromLobby += LobbyManager_OnPlayerLeftLobby;
     }
 
-    private void LobbyManager_OnKickedFromLobby(object sender, LobbyManager.LobbyEventArgs e)
+    private void LobbyManager_OnKickedFromLobby(object sender, EventArgs e)
     {
         menuManager.OpenTab(menuManager.tabLobbies);
     }
@@ -121,7 +121,7 @@ public class GameLauncher : MonoBehaviour
         ShowStartButton();
     }
 
-    private void LobbyManager_OnJoinedLobby(object sender, LobbyManager.LobbyEventArgs e)
+    private void LobbyManager_OnJoinedLobby(object sender, EventArgs e)
     {
         menuManager.OpenTab(menuManager.tabLobby);
         ShowStartButton();
@@ -149,12 +149,7 @@ public class GameLauncher : MonoBehaviour
 
     private void UpdateLobby_Event(object sender, LobbyManager.LobbyEventArgs e)
     {
-        UpdateLobby();
-    }
-
-    private void UpdateLobby()
-    {
-        UpdateLobby(LobbyManager.Instance.GetJoinedLobby());
+        UpdateLobby(e.lobby);
     }
 
     private void UpdateLobby(Lobby lobby)
@@ -235,10 +230,8 @@ public class GameLauncher : MonoBehaviour
         }
 
         Debug.Log("Creating Lobby");
-        warningTextLobby.text = "Creating lobby";
 
         lobbyName = lobbyNameInputField.text;
-
         lobbyNameText.text = lobbyName;
         maxPlayersText.text = maxPlayers.ToString();      
         LobbyManager.Instance.CreateLobby(lobbyName, maxPlayers);

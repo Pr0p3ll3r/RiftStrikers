@@ -1,6 +1,4 @@
-using FishNet.Demo.AdditiveScenes;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
@@ -18,13 +16,17 @@ public class LobbyManager : MonoBehaviour
     private float refreshLobbyListTimer = 5f;
     private string playerName;
 
+    public event EventHandler OnAuthenticateStarted;
+    public event EventHandler OnJoinLobbyStarted;
+    public event EventHandler<LobbyEventArgs> OnJoinedLobby;
+    public event EventHandler OnJoinLobbyFailed;
+    public event EventHandler OnKickedFromLobby;
+    public event EventHandler OnGameStarted;
+    public event EventHandler OnCreateLobbyStarted;
+    public event EventHandler OnCreateLobbyFailed;  
     public event EventHandler OnLeftLobby;
 
-    public event EventHandler<LobbyEventArgs> OnJoinedLobby;
     public event EventHandler<LobbyEventArgs> OnJoinedLobbyUpdate;
-    public event EventHandler<LobbyEventArgs> OnKickedFromLobby;
-    public event EventHandler OnGameStarted;
-
     public class LobbyEventArgs : EventArgs
     {
         public Lobby lobby;
@@ -38,7 +40,10 @@ public class LobbyManager : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
     }
 
     private void Update()
@@ -50,21 +55,22 @@ public class LobbyManager : MonoBehaviour
 
     public async void Authenticate(string playerName)
     {
-        this.playerName = playerName;
-        InitializationOptions initializationOptions = new InitializationOptions();
-        initializationOptions.SetProfile(playerName);
+        if (UnityServices.State != ServicesInitializationState.Initialized)
+        {
+            this.playerName = playerName;
+            InitializationOptions initializationOptions = new InitializationOptions();
+            initializationOptions.SetProfile(playerName);
 
-        await UnityServices.InitializeAsync(initializationOptions);
+            OnAuthenticateStarted?.Invoke(this, EventArgs.Empty);
+            await UnityServices.InitializeAsync(initializationOptions);
 
-        AuthenticationService.Instance.SignedIn += () => {
-            // do nothing
-            Debug.Log("Signed in! " + AuthenticationService.Instance.PlayerId);
+            AuthenticationService.Instance.SignedIn += () => {
+                Debug.Log("Signed in! " + AuthenticationService.Instance.PlayerId);
+                MenuManager.Instance.OpenTab(MenuManager.Instance.tabMain);
+            };
 
-            RefreshLobbyList();
-            MenuManager.Instance.OpenTab(MenuManager.Instance.tabMain);
-        };
-
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        }
     }
 
     private async void HandleLobbyHeartbeat()
@@ -101,7 +107,7 @@ public class LobbyManager : MonoBehaviour
                     // Player was kicked out of this lobby
                     Debug.Log("Kicked from Lobby!");
 
-                    OnKickedFromLobby?.Invoke(this, new LobbyEventArgs { lobby = joinedLobby });
+                    OnKickedFromLobby?.Invoke(this, EventArgs.Empty);
 
                     joinedLobby = null;
                 }
@@ -138,6 +144,7 @@ public class LobbyManager : MonoBehaviour
 
     public async void CreateLobby(string lobbyName, int maxPlayers)
     {
+        OnCreateLobbyStarted?.Invoke(this, EventArgs.Empty);
         try
         {
             CreateLobbyOptions options = new CreateLobbyOptions
@@ -160,6 +167,7 @@ public class LobbyManager : MonoBehaviour
         catch (LobbyServiceException e)
         {
             Debug.Log(e);
+            OnCreateLobbyFailed?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -197,14 +205,23 @@ public class LobbyManager : MonoBehaviour
 
     public async void JoinLobby(Lobby lobby)
     {
-        Unity.Services.Lobbies.Models.Player player = GetPlayer();
-
-        joinedLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobby.Id, new JoinLobbyByIdOptions
+        OnJoinLobbyStarted?.Invoke(this, EventArgs.Empty);
+        try
         {
-            Player = player
-        });
+            Unity.Services.Lobbies.Models.Player player = GetPlayer();
 
-        OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
+            joinedLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobby.Id, new JoinLobbyByIdOptions
+            {
+                Player = player
+            });
+
+            OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
+            OnJoinLobbyFailed?.Invoke(this, EventArgs.Empty);
+        }    
     }
 
     private Unity.Services.Lobbies.Models.Player GetPlayer()
@@ -243,15 +260,6 @@ public class LobbyManager : MonoBehaviour
             }
         }
         return false;
-    }
-
-    private void PrintPlayers(Lobby lobby)
-    {
-        Debug.Log("Players in Lobby " + lobby.Name);
-        foreach(Unity.Services.Lobbies.Models.Player player in lobby.Players)
-        {
-            Debug.Log(player.Id + " " + player.Data["Nickname"].Value);
-        }
     }
 
     public async void LeaveLobby()
