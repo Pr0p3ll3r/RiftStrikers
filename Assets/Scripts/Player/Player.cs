@@ -22,6 +22,7 @@ public class Player : NetworkBehaviour
     private WeaponManager weaponManager;
     private bool canControl = true;
     public bool CanControl => canControl;
+    public bool AutoAim { get; set; }
 
     public override void OnStartClient()
     {
@@ -36,7 +37,8 @@ public class Player : NetworkBehaviour
         controller = GetComponent<PlayerController>();
         ragdoll = GetComponent<Ragdoll>();
         weaponManager = GetComponent<WeaponManager>();
-        hud.RefreshBars(currentHealth);     
+        hud.RefreshBars(currentHealth);
+        AutoAim = PlayerPrefs.GetInt("AutoAim", 1) == 1;
     }
 
     void Update()

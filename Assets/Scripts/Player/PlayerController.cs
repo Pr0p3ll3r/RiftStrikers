@@ -37,8 +37,6 @@ public class PlayerController : NetworkBehaviour
     private float rollTimer;
     private float adjustedSpeed, adjustedNextStep;
     private bool isGrounded;
-    private bool autoAim = true;
-    public bool AutoAim => autoAim;
 
     private void Start()
     {
@@ -79,7 +77,7 @@ public class PlayerController : NetworkBehaviour
         if (!roll)
         {
             Move();
-            if (!autoAim)
+            if (!player.AutoAim)
                 Look();
         }
     }
@@ -116,7 +114,7 @@ public class PlayerController : NetworkBehaviour
             distMoved = 0;
         }
 
-        if (autoAim)
+        if (player.AutoAim)
         {
             if (weaponManager.ClosestEnemy)
             {

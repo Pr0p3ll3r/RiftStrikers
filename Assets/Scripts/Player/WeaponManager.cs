@@ -53,7 +53,7 @@ public class WeaponManager : NetworkBehaviour
             {
                 if (currentWeaponData.OutOfAmmo()) 
                     reload = StartCoroutine(Reload());
-                else if (controller.AutoAim)
+                else if (Player.Instance.AutoAim)
                 {
                     if(closestEnemy)
                     {
