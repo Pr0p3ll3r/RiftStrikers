@@ -4,16 +4,27 @@ using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+public enum BiomeType
+{
+    Forest,
+    Desert,
+    Winter,
+    Beach,
+    Swamp
+}
+
 [System.Serializable]
 public class Biome
 {
-    public string name;
+    public BiomeType biomeType;
     public GameObject[] landPrefabs;
     public GameObject[] naturePrefabs;
 }
 
 public class MapGenerator : NetworkBehaviour
 {
+    public static MapGenerator Instance { get; private set; }
+
     [SerializeField] private List<Biome> biomes;
     [SerializeField] private GameObject waterCollider;
     [SerializeField] private int natureCount = 10;
@@ -28,9 +39,11 @@ public class MapGenerator : NetworkBehaviour
     [SerializeField] private float islandDensityMax = 1f;
 
     private NavMeshSurface navMeshSurface;
+    private int selectedBiome;
 
     private void Awake()
     {
+        Instance = this;
         navMeshSurface = GetComponent<NavMeshSurface>();
     }
 
@@ -52,7 +65,7 @@ public class MapGenerator : NetworkBehaviour
 
         GenerateMap();
     }
-
+#if UNITY_EDITOR
     private void Update()
     {
         if (Keyboard.current.gKey.wasPressedThisFrame)
@@ -60,7 +73,7 @@ public class MapGenerator : NetworkBehaviour
             GenerateMap();
         }
     }
-
+#endif
     private void GenerateMap()
     {
         int natureCountCurrent = natureCount;
@@ -84,7 +97,7 @@ public class MapGenerator : NetworkBehaviour
             }
         }
 
-        int selectedBiome = ChooseRandomBiome();
+        selectedBiome = ChooseRandomBiome();
 
         for (int x = 0; x < mapSizeX; x++)
         {
@@ -148,5 +161,14 @@ public class MapGenerator : NetworkBehaviour
     private GameObject GetNaturePrefab(GameObject[] prefabs)
     {
         return prefabs[Random.Range(0, prefabs.Length)];
+    }
+
+    public BiomeType GetCurrentBiome()
+    {
+        if (biomes != null && biomes.Count > 0)
+        {
+            return biomes[selectedBiome].biomeType;
+        }
+        return BiomeType.Forest;
     }
 }

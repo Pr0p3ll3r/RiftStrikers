@@ -1,6 +1,7 @@
 using FishNet;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using FishNet.Observing;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -9,30 +10,33 @@ using UnityEngine;
 [System.Serializable]
 public class Wave
 {
+    public BiomeType biomeType;
     public GameObject[] enemies;
-    public float spawnInterval;
-    public int maximumAmount;
+    public GameObject bossPrefab;
 }
 
 public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    [Header("Spawn Management")]
-    [SerializeField] private int waveDuration = 60;
+    [SerializeField] private float waitingTimeBeforeStart = 5f;
+    [SerializeField] private int waveDuration = 600;
     [SerializeField] private Transform[] spawnPoints;
-    [SerializeField] private Wave[] waves = new Wave[30];
-    private int currentWaveNumber = -1;
+    [SerializeField] private Wave[] waves = new Wave[5];
+    [SerializeField] private float spawnInterval;
+    [SerializeField] private int maximumAmount;
+    private int waveNumber = 0;
+    private int cycleNumber = 0;
 
     private Wave currentWave;
     private int enemyAmount;
-    private TextMeshProUGUI enemyKilledText;
-
-    private float timeToSpawn;
-    private float timeToNextWave;
     private int enemyKilled;
+    [SerializeField] private TextMeshProUGUI enemyKilledText;
+    private Wave[] availableWaves;
+    private float timeToSpawn;
+    private float timeToNextWave; 
 
-    [SerializeField] private float timeToStart = 0;
+    [SyncVar] private float gameTimer;
     [SerializeField] private TextMeshProUGUI timer;
 
     private int healthMultiplier = 1;
@@ -40,11 +44,10 @@ public class GameManager : NetworkBehaviour
     private float spawnIntervalMultiplier = 1;
     private float maximumAmountMultiplier = 1;
 
-    private bool started = false;
-    [SyncVar] private float gameTimer;
+    private bool started = false; 
     public bool GameStarted => started;
-    private bool canSpawn = true;
-    [SerializeField] private float waitingTimeBeforeStart = 5f;
+    private bool canSpawn = true;  
+
     [SyncObject]
     public readonly SyncList<Player> players = new SyncList<Player>();
     private List<Enemy> enemies = new List<Enemy>();
@@ -52,7 +55,7 @@ public class GameManager : NetworkBehaviour
     private void Awake()
     {
         Instance = this;
-        enemyKilledText = GameObject.Find("HUD/Game/EnemyKilled/Amount").GetComponent<TextMeshProUGUI>();
+        availableWaves = waves; 
     }
 
     void Update()
@@ -81,7 +84,7 @@ public class GameManager : NetworkBehaviour
 
         if (timeToSpawn > 0)
             timeToSpawn -= Time.deltaTime;
-        else if (enemyAmount < currentWave.maximumAmount * maximumAmountMultiplier)
+        else if (enemyAmount < maximumAmount * maximumAmountMultiplier)
         {
             SpawnEnemy();
         }
@@ -106,24 +109,20 @@ public class GameManager : NetworkBehaviour
     [Server]
     private void StartWave()
     {
-        if (currentWaveNumber == waves.Length - 1)
-        {
-            UpgradeWave();
-        }
-        else
-            currentWaveNumber++;
-        currentWave = waves[currentWaveNumber];
+        BiomeType biomeType = MapGenerator.Instance.GetCurrentBiome();
+        currentWave = availableWaves.First(x => x.biomeType == biomeType);
+        waveNumber++;
         timeToNextWave = waveDuration;
     }
 
     [Server]
     private void SpawnEnemy()
     {
-        timeToSpawn = currentWave.spawnInterval * spawnIntervalMultiplier;
+        timeToSpawn = spawnInterval * spawnIntervalMultiplier;
         foreach (GameObject enemyPrefab in currentWave.enemies)
         {
-            Transform spawnPoint = spawnPoints[UnityEngine.Random.Range(0, spawnPoints.Length)];
-            GameObject enemyGO = Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
+            Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
+            GameObject enemyGO = Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
 
             Enemy enemy = enemyGO.GetComponent<Enemy>();
             enemy.maxHealth *= healthMultiplier;
@@ -131,6 +130,32 @@ public class GameManager : NetworkBehaviour
             Spawn(enemyGO);
             enemies.Add(enemy);
         }
+    }
+
+    [Server]
+    private void SpawnBoss()
+    {
+        Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
+        GameObject bossGO = Instantiate(currentWave.bossPrefab, spawnPoint.position, Quaternion.identity);
+
+        Enemy boss = bossGO.GetComponent<Enemy>();
+        boss.maxHealth *= healthMultiplier;
+        boss.damage = (int)(boss.damage * damageMultiplier);
+        Spawn(bossGO);
+        enemies.Add(boss);
+    }
+
+    private void NewCycle()
+    {
+        availableWaves = waves;
+        waveNumber = 0;
+        cycleNumber++;
+        healthMultiplier += 1;
+        damageMultiplier += 0.25f;
+        spawnIntervalMultiplier += 0.5f;
+        maximumAmountMultiplier += 0.5f;
+
+        Debug.Log($"New Cycle started!");
     }
 
     public int GetLivingPlayers()
@@ -152,16 +177,6 @@ public class GameManager : NetworkBehaviour
         enemyKilled++;
         enemyKilledText.text = enemyKilled.ToString();
         enemies.Remove(enemy);
-    }
-
-    private void UpgradeWave()
-    {
-        currentWaveNumber = 0;
-
-        healthMultiplier += 1;
-        damageMultiplier += 0.25f;
-        spawnIntervalMultiplier += 0.5f;
-        maximumAmountMultiplier += 0.5f;
     }
 
     [ObserversRpc]
