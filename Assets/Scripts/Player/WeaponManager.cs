@@ -201,7 +201,7 @@ public class WeaponManager : NetworkBehaviour
 
     public void StopReload()
     {
-        StopCoroutine(reload);
+        if(reload != null) StopCoroutine(reload);
         hud.StopReload();
         animCharacter.SetBool("Reload", false);
         isReloading = false;
