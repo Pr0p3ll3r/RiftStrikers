@@ -32,7 +32,7 @@ public class GameManager : NetworkBehaviour
     private int enemyAmount;
     private int enemyKilled;
     [SerializeField] private TextMeshProUGUI enemyKilledText;
-    private Wave[] availableWaves;
+    private List<Wave> availableWaves;
     private float timeToSpawn;
     private float timeToNextWave; 
 
@@ -46,7 +46,8 @@ public class GameManager : NetworkBehaviour
 
     private bool started = false; 
     public bool GameStarted => started;
-    private bool canSpawn = true;  
+    private bool canSpawn = true;
+    private bool changingBiome = false;
 
     [SyncObject]
     public readonly SyncList<Player> players = new SyncList<Player>();
@@ -55,7 +56,7 @@ public class GameManager : NetworkBehaviour
     private void Awake()
     {
         Instance = this;
-        availableWaves = waves; 
+        availableWaves = waves.ToList(); 
     }
 
     void Update()
@@ -76,6 +77,8 @@ public class GameManager : NetworkBehaviour
         if (!canSpawn) return;
 
         UpdateGameTimer();
+
+        if (!changingBiome) return;
 
         if (timeToNextWave > 0)
             timeToNextWave -= Time.deltaTime;
@@ -103,16 +106,27 @@ public class GameManager : NetworkBehaviour
         Debug.Log("Game Start");
         started = true;
         gameTimer = 0f;
+        cycleNumber = 0;
+        waveNumber = 0;
         RpcUpdateGameTimer(gameTimer);
     }
 
     [Server]
     private void StartWave()
-    {
-        BiomeType biomeType = MapGenerator.Instance.GetCurrentBiome();
-        currentWave = availableWaves.First(x => x.biomeType == biomeType);
-        waveNumber++;
-        timeToNextWave = waveDuration;
+    {     
+        if(!availableWaves.Any())
+        {
+            NewCycle();
+        }
+        else
+        {
+            if(currentWave != null) availableWaves.Remove(currentWave);
+            int randomWave = Random.Range(0, availableWaves.Count);
+            currentWave = availableWaves[randomWave];
+            MapGenerator.Instance.GenerateMapServer(currentWave.biomeType);
+            waveNumber++;
+            timeToNextWave = waveDuration;
+        }    
     }
 
     [Server]
@@ -147,15 +161,18 @@ public class GameManager : NetworkBehaviour
 
     private void NewCycle()
     {
-        availableWaves = waves;
+        changingBiome = true;
+        availableWaves = waves.ToList();
+        currentWave = null;
         waveNumber = 0;
         cycleNumber++;
         healthMultiplier += 1;
         damageMultiplier += 0.25f;
         spawnIntervalMultiplier += 0.5f;
         maximumAmountMultiplier += 0.5f;
+        StartWave();
 
-        Debug.Log($"New Cycle started!");
+        Debug.Log("New Cycle started!");
     }
 
     public int GetLivingPlayers()

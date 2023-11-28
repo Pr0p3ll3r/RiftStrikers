@@ -54,27 +54,23 @@ public class MapGenerator : NetworkBehaviour
         if (IsServer)
         {
             int seed = Random.Range(int.MinValue, int.MaxValue);
-            InitializeWorld(seed);
+            SetSeed(seed);
         }
     }
 
     [ObserversRpc(BufferLast = true)]
-    private void InitializeWorld(int seed)
+    private void SetSeed(int seed)
     {
         Random.InitState(seed);
+    }
 
-        GenerateMap();
+    public void GenerateMapServer(BiomeType selectedBiome)
+    { 
+        GenerateMapRpc(selectedBiome);
     }
-#if UNITY_EDITOR
-    private void Update()
-    {
-        if (Keyboard.current.gKey.wasPressedThisFrame)
-        {
-            GenerateMap();
-        }
-    }
-#endif
-    private void GenerateMap()
+
+    [ObserversRpc(BufferLast = true)]
+    public void GenerateMapRpc(BiomeType selectedBiome)
     {
         int natureCountCurrent = natureCount;
         foreach (Transform t in transform)
@@ -97,8 +93,6 @@ public class MapGenerator : NetworkBehaviour
             }
         }
 
-        selectedBiome = ChooseRandomBiome();
-
         for (int x = 0; x < mapSizeX; x++)
         {
             for (int z = 0; z < mapSizeZ; z++)
@@ -110,13 +104,13 @@ public class MapGenerator : NetworkBehaviour
                 {
                     if (natureCountCurrent > 0 && Random.value < (float)natureCountCurrent / totalLandHexagons)
                     {
-                        GameObject naturePrefab = GetNaturePrefab(biomes[selectedBiome].naturePrefabs);
+                        GameObject naturePrefab = GetNaturePrefab(GetBiome(selectedBiome).naturePrefabs);
                         Instantiate(naturePrefab, position, Quaternion.identity, transform);
                         natureCountCurrent--;
                     }
                     else
                     {
-                        GameObject landPrefab = GetLandPrefab(biomes[selectedBiome].landPrefabs);
+                        GameObject landPrefab = GetLandPrefab(GetBiome(selectedBiome).landPrefabs);
                         Instantiate(landPrefab, position, Quaternion.identity, transform);
                     }
                 }
@@ -148,11 +142,6 @@ public class MapGenerator : NetworkBehaviour
         return new Vector2(xPos, zPos);
     }
 
-    int ChooseRandomBiome()
-    {
-        return Random.Range(0, biomes.Count);
-    }
-
     private GameObject GetLandPrefab(GameObject[] prefabs)
     {
         return prefabs[Random.Range(0, prefabs.Length)];
@@ -163,12 +152,8 @@ public class MapGenerator : NetworkBehaviour
         return prefabs[Random.Range(0, prefabs.Length)];
     }
 
-    public BiomeType GetCurrentBiome()
+    public Biome GetBiome(BiomeType biomeType)
     {
-        if (biomes != null && biomes.Count > 0)
-        {
-            return biomes[selectedBiome].biomeType;
-        }
-        return BiomeType.Forest;
+        return biomes.Find(x => x.biomeType == biomeType);
     }
 }
