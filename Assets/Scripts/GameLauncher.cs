@@ -121,7 +121,7 @@ public class GameLauncher : MonoBehaviour
         ShowStartButton();
     }
 
-    private void LobbyManager_OnJoinedLobby(object sender, EventArgs e)
+    private void LobbyManager_OnJoinedLobby(object sender, LobbyManager.LobbyEventArgs e)
     {
         menuManager.OpenTab(menuManager.tabLobby);
         ShowStartButton();
@@ -149,7 +149,12 @@ public class GameLauncher : MonoBehaviour
 
     private void UpdateLobby_Event(object sender, LobbyManager.LobbyEventArgs e)
     {
-        UpdateLobby(e.lobby);
+        UpdateLobby();
+    }
+
+    private void UpdateLobby()
+    {
+        UpdateLobby(LobbyManager.Instance.GetJoinedLobby());
     }
 
     private void UpdateLobby(Lobby lobby)
