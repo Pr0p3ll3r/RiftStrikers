@@ -94,7 +94,7 @@ public class LevelSystem : NetworkBehaviour
         HighlightSelectedSkill(index);
         yield return new WaitForSeconds(2f);
         SkillChosenRpc(skill);
-        GameManager.Instance.ChangeEnemiesStatus(true);
+        GameManager.Instance.PauseGame(true);
     }
 
     [ObserversRpc]
@@ -141,7 +141,7 @@ public class LevelSystem : NetworkBehaviour
     private void OnNewLevel()
     {
         StartSkillChoose();
-        GameManager.Instance.ChangeEnemiesStatus(false);          
+        GameManager.Instance.PauseGame(false);          
         StartCoroutine(WaitForSkillChoice());
     }
 

@@ -85,6 +85,7 @@ MonoBehaviour:
   speed: 3
   isDead: 0
   maxHealth: 60
+  isBoss: 0
   exp: 5
   money: 5
   loot:

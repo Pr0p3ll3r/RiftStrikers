@@ -70,8 +70,9 @@ public class MapGenerator : NetworkBehaviour
 
     private void Update()
     {
-        if(teleportSpawned)
+        if(!GameManager.Instance.GamePause && teleportSpawned)
         {
+            Debug.Log(GameManager.Instance.GamePause);
             timeForGetToTeleport -= Time.deltaTime;
             if(timeForGetToTeleport <= 0)
             {

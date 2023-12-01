@@ -14,6 +14,7 @@ public class Enemy : NetworkBehaviour
     public float speed = 5f;
     public bool isDead;
     public int maxHealth = 100;
+    public bool isBoss;
 
     public int exp;
     public int money;
@@ -45,7 +46,7 @@ public class Enemy : NetworkBehaviour
     {
         base.OnStartClient();
 
-        if(IsServer)
+        if (IsServer)
         {
             int rand = Random.Range(0, graphics.childCount);
             RpcRandomZombieLook(rand);
