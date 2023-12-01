@@ -147,7 +147,6 @@ public class MapGenerator : NetworkBehaviour
         }
 
         navMeshSurface.BuildNavMesh();
-        GameManager.Instance.ChangingBiome = false;
     }
 
     private bool IsIsland(int x, int z, float islandRadius, float islandDensity)

@@ -68,10 +68,7 @@ public class GameManager : NetworkBehaviour
         {
             int randomWave = Random.Range(0, availableWaves.Count);
             currentWave = availableWaves[randomWave];
-            timeToNextWave = waveDuration;
             MapGenerator.Instance.GenerateMapRpc(currentWave.biomeType);
-            waveNumber++;
-            isBossDefeated = false;
         }
     }
 
@@ -127,51 +124,55 @@ public class GameManager : NetworkBehaviour
         started = true;
         gameTimer = 0f;
         cycleNumber = 0;
-        waveNumber = 0;
+        waveNumber++;
+        timeToNextWave = waveDuration;
+        isBossDefeated = false;
         RpcUpdateGameTimer(gameTimer);
     }
 
     [Server]
     private IEnumerator StartWave()
     {
-        if (waveNumber == 0 && isBossSpawned) yield return null;
-
         if (currentWave != null) availableWaves.Remove(currentWave);
 
-        if (!availableWaves.Any())
+        if (isBossDefeated)
         {
-            NewCycle();
-        }
-        else
-        {
-            if (isBossDefeated)
+            if (!availableWaves.Any())
+                NewCycle();
+            int randomWave = Random.Range(0, availableWaves.Count);
+            currentWave = availableWaves[randomWave];
+            ChangingBiome = true;
+            MapGenerator.Instance.StartRemoving();
+            timeToNextWave = waveDuration;
+            while (ChangingBiome)
             {
-                int randomWave = Random.Range(0, availableWaves.Count);
-                currentWave = availableWaves[randomWave];
-                ChangingBiome = true;
-                MapGenerator.Instance.StartRemoving();
-                timeToNextWave = waveDuration;
-                while (ChangingBiome)
-                {
-                    yield return new WaitForSeconds(0.1f);
-                }
-                foreach(Enemy enemy in enemies)
+                yield return new WaitForSeconds(0.1f);
+            }
+            foreach (Enemy enemy in enemies)
+            {
+                if(!enemy.isDead)
                 {
                     Despawn(enemy.gameObject);
                     enemies.Remove(enemy);
                 }
-                MapGenerator.Instance.GenerateMapRpc(currentWave.biomeType);
-                foreach (PlayerInstance player in players)
-                {
-                    player.SpawnPlayer();
-                }
-                waveNumber++;
-                isBossDefeated = false;
             }
-            else
+            PickupItem[] pickups = FindObjectsByType<PickupItem>(FindObjectsSortMode.None);
+            foreach (PickupItem pickup in pickups)
             {
-                if(!isBossSpawned) SpawnBoss();
+                Despawn(pickup.gameObject);
             }
+            MapGenerator.Instance.GenerateMapRpc(currentWave.biomeType);
+            foreach (PlayerInstance player in players)
+            {
+                player.SpawnPlayer();
+            }
+            waveNumber++;
+            isBossDefeated = false;
+            Debug.Log("New Wave!");
+        }
+        else if(!isBossSpawned)
+        {
+            SpawnBoss();
         }
     }
 
@@ -203,11 +204,11 @@ public class GameManager : NetworkBehaviour
         Spawn(bossGO);
         enemies.Add(boss);
         isBossSpawned = true;
+        Debug.Log("Boss spawned!");
     }
 
     private void NewCycle()
     {
-        Debug.Log("New Cycle");
         availableWaves = waves.ToList();
         currentWave = null;
         waveNumber = 0;
@@ -218,9 +219,7 @@ public class GameManager : NetworkBehaviour
         maximumAmountMultiplier += 0.5f;
         isBossDefeated = false;
         isBossSpawned = false;
-        StartCoroutine(StartWave());
-
-        Debug.Log("New Cycle started!");
+        Debug.Log("New Cycle!");
     }
 
     public int GetLivingPlayers()
