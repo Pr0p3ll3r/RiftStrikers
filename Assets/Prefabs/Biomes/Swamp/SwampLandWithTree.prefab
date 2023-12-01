@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1315908015057190534}
   - component: {fileID: 8461884282327788018}
   - component: {fileID: 8108753137690075677}
+  - component: {fileID: -2733304675834114454}
   m_Layer: 7
   m_Name: SwampLandWithTree
   m_TagString: Untagged
@@ -107,6 +108,21 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: a594cd8ba6e867f4699aa3d16d755581, type: 3}
+--- !u!114 &-2733304675834114454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1910288858744317638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f670e9e2d9fa5b247a3734b1f984ed9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _time: 1
+  _distance: 0.05
+  _delayBetweenShakes: 0
 --- !u!1001 &9056278855709008291
 PrefabInstance:
   m_ObjectHideFlags: 0

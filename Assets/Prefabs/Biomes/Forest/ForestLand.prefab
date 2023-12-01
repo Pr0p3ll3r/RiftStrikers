@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 33339984177340262}
   - component: {fileID: 23362077084455808}
   - component: {fileID: 64021158007163168}
+  - component: {fileID: 6207222367605381101}
   m_Layer: 7
   m_Name: ForestLand
   m_TagString: Untagged
@@ -106,3 +107,18 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: a594cd8ba6e867f4699aa3d16d755581, type: 3}
+--- !u!114 &6207222367605381101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1684324359988056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f670e9e2d9fa5b247a3734b1f984ed9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _time: 1
+  _distance: 0.05
+  _delayBetweenShakes: 0

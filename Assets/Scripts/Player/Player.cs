@@ -27,8 +27,8 @@ public class Player : NetworkBehaviour
     public override void OnStartClient()
     {
         base.OnStartClient();
+
         if(IsOwner) Instance = this;
-        if(IsServer) GameManager.Instance.players.Add(this);
     }
 
     void Start()

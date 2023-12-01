@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5842981392190588175}
   - component: {fileID: 7260643141906173023}
   - component: {fileID: 8124946760672328621}
+  - component: {fileID: -7961118541557426206}
   m_Layer: 7
   m_Name: DesertLandWithCactus1
   m_TagString: Untagged
@@ -107,6 +108,21 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: a594cd8ba6e867f4699aa3d16d755581, type: 3}
+--- !u!114 &-7961118541557426206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5415103880093350401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f670e9e2d9fa5b247a3734b1f984ed9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _time: 1
+  _distance: 0.05
+  _delayBetweenShakes: 0
 --- !u!1001 &2044204608743166053
 PrefabInstance:
   m_ObjectHideFlags: 0

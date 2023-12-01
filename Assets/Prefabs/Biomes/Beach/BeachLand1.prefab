@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 33189438362529392}
   - component: {fileID: 23806632591804510}
   - component: {fileID: 64948271280799566}
+  - component: {fileID: 7556693206962640963}
   m_Layer: 7
   m_Name: BeachLand1
   m_TagString: Untagged
@@ -106,3 +107,18 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: ca9e0f6616063104d839cea15011588f, type: 3}
+--- !u!114 &7556693206962640963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1859274740467254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f670e9e2d9fa5b247a3734b1f984ed9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _time: 1
+  _distance: 0.05
+  _delayBetweenShakes: 0
