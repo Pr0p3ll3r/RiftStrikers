@@ -19,9 +19,7 @@ public class Player : NetworkBehaviour
     private PlayerController controller;
     private PlayerHUD hud;
     private Ragdoll ragdoll;
-    private WeaponManager weaponManager;
-    private bool canControl = true;
-    public bool CanControl => canControl;
+    public bool CanControl { get; set; } = true;
     public bool AutoAim { get; set; }
 
     public override void OnStartClient()
@@ -36,14 +34,13 @@ public class Player : NetworkBehaviour
         hud = GetComponent<PlayerHUD>();
         controller = GetComponent<PlayerController>();
         ragdoll = GetComponent<Ragdoll>();
-        weaponManager = GetComponent<WeaponManager>();
         hud.RefreshBars(currentHealth);
         AutoAim = PlayerPrefs.GetInt("AutoAim", 1) == 1;
     }
 
     void Update()
     {
-        if (!IsOwner) return;
+        if (!IsOwner || GameManager.Instance.currentState == GameState.Paused) return;
 
 #if UNITY_EDITOR
         if (Keyboard.current.tKey.wasPressedThisFrame)
@@ -95,11 +92,6 @@ public class Player : NetworkBehaviour
         }
     }
 
-    public void ChangePlayerControlsStatus(bool status)
-    {
-        canControl = status;
-    }
-
     public void HandlePickup(PickableItem item, int value)
     {
         if (item.itemType == ItemType.Health)
@@ -119,5 +111,13 @@ public class Player : NetworkBehaviour
     public void HandleSkillSelection(Skill skill)
     {
 
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.layer == LayerMask.NameToLayer("Water"))
+        {
+            DieServer();
+        }
     }
 }

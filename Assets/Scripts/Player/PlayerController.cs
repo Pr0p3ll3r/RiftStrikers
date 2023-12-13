@@ -92,7 +92,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         Vector3 movement = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
-        controller.Move(movement * adjustedSpeed * Time.deltaTime);
+        controller.Move(adjustedSpeed * Time.deltaTime * movement);
 
         playerVelocity.y += gravity * Time.deltaTime;
         controller.Move(playerVelocity * Time.deltaTime);
@@ -196,7 +196,7 @@ public class PlayerController : NetworkBehaviour
             }              
             float speed = rollingCurve.Evaluate(timer);              
             transform.rotation = Quaternion.LookRotation(movement);
-            controller.Move(movement * speed * Time.deltaTime);
+            controller.Move(speed * Time.deltaTime * movement);
             timer += Time.deltaTime;
             yield return null;
         }

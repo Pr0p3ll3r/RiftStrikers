@@ -25,7 +25,7 @@ public class LevelSystem : NetworkBehaviour
     private int chosen = 0;
     private int maxPassiveSkills = 6;
     private int maxActiveSkills = 6;
-
+    int luck = 1;
     private void Awake()
     {
         Instance = this;
@@ -94,7 +94,6 @@ public class LevelSystem : NetworkBehaviour
         HighlightSelectedSkill(index);
         yield return new WaitForSeconds(2f);
         SkillChosenRpc(skill);
-        GameManager.Instance.PauseGame(true);
     }
 
     [ObserversRpc]
@@ -122,13 +121,12 @@ public class LevelSystem : NetworkBehaviour
         chosen = 0;
         votes.Clear();
         upgradeUI.SetActive(false);
-        Player.Instance.ChangePlayerControlsStatus(true);
+        GameManager.Instance.PauseGame(false);
     }
 
     [ObserversRpc]
     private void StartSkillChoose()
     {
-        Player.Instance.ChangePlayerControlsStatus(false);
         foreach (Transform skillSlot in skillList)
         {
             skillSlot.GetComponent<Button>().interactable = true;
@@ -141,7 +139,7 @@ public class LevelSystem : NetworkBehaviour
     private void OnNewLevel()
     {
         StartSkillChoose();
-        GameManager.Instance.PauseGame(false);          
+        GameManager.Instance.PauseGame(true);          
         StartCoroutine(WaitForSkillChoice());
     }
 
@@ -179,7 +177,6 @@ public class LevelSystem : NetworkBehaviour
 
     private bool ChooseSkillFromOwnedSkills(List<Skill> ownedSkillsToUpgrade, Transform skillSlot, List<Skill> availableSkills)
     {
-        int luck = 1; //player stat
         float ownedChance = 1 / (1 + luck);
         float randomValue = Random.Range(0f, 1f);
         if (randomValue <= ownedChance)
@@ -193,12 +190,8 @@ public class LevelSystem : NetworkBehaviour
                 SetSkillSlot(randomOwnedSkill, skillSlot);
                 return true;
             }
-            else
-            {
-                return ChooseSkillFromAvailable(availableSkills, skillSlot);
-            }
         }
-        else return ChooseSkillFromAvailable(availableSkills, skillSlot);
+        return ChooseSkillFromAvailable(availableSkills, skillSlot);
     }
 
     private bool ChooseSkillFromAvailable(List<Skill> availableSkills, Transform skillSlot)
@@ -241,7 +234,7 @@ public class LevelSystem : NetworkBehaviour
     }
 
     private void VoteForSkill(Skill skill)
-    {     
+    {
         ServerVote(skill);
         foreach (Transform skillSlot in skillList)
         {

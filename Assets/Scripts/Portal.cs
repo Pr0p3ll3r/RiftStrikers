@@ -15,6 +15,6 @@ public class Portal : NetworkBehaviour
     private void ServerPlayerInPortal(GameObject other)
     {
         Despawn(other);
-        MapGenerator.Instance.PlayersInPortal();
+        GameManager.Instance.PlayersInPortal();
     }
 }

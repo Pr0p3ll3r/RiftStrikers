@@ -100,8 +100,8 @@ public class Enemy : NetworkBehaviour
 
     public void ChangeAgentStatus(bool status)
     {
-        agent.enabled = status;
-        isStopped = !status;
+        agent.enabled = !status;
+        isStopped = status;
     }
 
     GameObject GetClosestPlayer()
@@ -159,6 +159,8 @@ public class Enemy : NetworkBehaviour
             agent.enabled = false;
             DropLoot();
             RpcDie();
+            if (isBoss)
+                GameManager.Instance.ClearedIsland();
         }
     }
 
