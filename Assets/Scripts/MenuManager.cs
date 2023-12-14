@@ -1,7 +1,6 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using FishNet;
 
 public class MenuManager : MonoBehaviour
 {
@@ -24,7 +23,8 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private Button findLobbyButton;
     [SerializeField] private Button optionsButton;
     [SerializeField] private Button aboutButton;
-    [SerializeField] private Button quitGameButton;
+    [SerializeField] private Button quitGameMainMenuButton;
+    [SerializeField] private Button quitGameConnectMenuButton;
 
     private void Awake()
     {
@@ -39,7 +39,12 @@ public class MenuManager : MonoBehaviour
         aboutButton.onClick.AddListener(() => {
             OpenTab(tabAbout);
         });
-        quitGameButton.onClick.AddListener(QuitGame);
+        quitGameMainMenuButton.onClick.AddListener(() => {
+            QuitGame();
+        });
+        quitGameConnectMenuButton.onClick.AddListener(() => {
+            QuitGame();
+        });
     }
 
     private void Start()

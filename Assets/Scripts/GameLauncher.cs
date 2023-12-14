@@ -35,7 +35,7 @@ public class GameLauncher : MonoBehaviour
     [SerializeField] private Button createButton;
 
     private string lobbyName;
-    private int maxPlayers;
+    private int maxPlayers = 2;
 
     [Header("In Lobby")]
     [SerializeField] private GameObject lobbyPlayerPrefab;
@@ -64,7 +64,7 @@ public class GameLauncher : MonoBehaviour
 
         createLobbyButton.onClick.AddListener(() => {
             menuManager.OpenTab(menuManager.tabCreateLobby);
-            DefaultSettings();
+            //DefaultSettings();
         });
         refreshButton.onClick.AddListener(RefreshButtonClick);
 

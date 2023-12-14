@@ -37,7 +37,6 @@ public class SettingsMenu : MonoBehaviour
 	{
 		resolutions = Screen.resolutions;
 
-		int currentResolutionIndex = 0;
 		int x = 0;
 
 		int lw = -1;
@@ -51,19 +50,12 @@ public class SettingsMenu : MonoBehaviour
 				Options.Add(option);
 				lw = res.width;
 				lh = res.height;
-
-				if (lw == Screen.currentResolution.width && lh == Screen.currentResolution.height)
-				{
-					currentResolutionIndex = x;
-				}
-
 				x++;
 			}
 		}
 
 		resolutionDropdown.ClearOptions();
 		resolutionDropdown.AddOptions(Options);
-		resolutionDropdown.value = currentResolutionIndex;
 
         #region PlayerPrefs
 
@@ -77,6 +69,9 @@ public class SettingsMenu : MonoBehaviour
 			Screen.SetResolution(width, height, Screen.fullScreen);
 			resolutionDropdown.value = resolutionIndex;
 		}
+
+        int qualityIndex = PlayerPrefs.GetInt("Quality", 0);
+        qualityDropdown.value = qualityIndex;
 
         bool isFullscreen = PlayerPrefs.GetInt("Fullscreen", 0) == 1;
         fullscreenToggle.isOn = isFullscreen;
@@ -177,7 +172,13 @@ public class SettingsMenu : MonoBehaviour
 		PlayerPrefs.SetInt("Resolution", resolutionIndex);
 	}
 
-	public void Vsync(bool isVsync)
+    public void SetQuality(int qualityIndex)
+    {
+        QualitySettings.SetQualityLevel(qualityIndex);
+        PlayerPrefs.SetInt("Quality", qualityIndex);
+    }
+
+    public void VSync(bool isVsync)
 	{
         QualitySettings.vSyncCount = isVsync ? 1 : 0;
 
