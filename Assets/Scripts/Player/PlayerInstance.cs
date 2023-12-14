@@ -34,7 +34,7 @@ public class PlayerInstance : NetworkBehaviour
     }
 
     [ObserversRpc(BufferLast = true)]
-    public void SpawnPlayer()
+    public void SpawnPlayer(bool canControl = true)
     {
         GameObject spawnPoint = MapGenerator.Instance.GetRandomEmptyLand();
         GameObject player = Instantiate(playerPrefab, spawnPoint.transform.position + Vector3.up, Quaternion.identity);
@@ -43,5 +43,6 @@ public class PlayerInstance : NetworkBehaviour
         Spawn(player, Owner);
 
         controlledPlayer = player.GetComponent<Player>();
+        controlledPlayer.CanControl = canControl;
     }
 }

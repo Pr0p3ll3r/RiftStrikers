@@ -264,19 +264,19 @@ public class GameManager : NetworkBehaviour
             GenerateMap();
             foreach (PlayerInstance player in players)
             {
-                player.SpawnPlayer();
+                player.SpawnPlayer(false);
             }
         }
         yield return new WaitForSeconds(timeToFadeScreen);
         screenTransition.SetBool("Fade", false);
-        yield return new WaitForSeconds(timeToFadeScreen);
-        currentState = GameState.Fighting;
+        PauseGame(false);
     }
 
     private void ClearMap()
     {
         teleportSpawned = false;
         playersInTeleport = 0;
+        previousState = GameState.Fighting;
         Despawn(teleport);
         for (int i = enemies.Count - 1; i >= 0; i--)
         {
