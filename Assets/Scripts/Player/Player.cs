@@ -113,11 +113,11 @@ public class Player : NetworkBehaviour
 
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.gameObject.layer == LayerMask.NameToLayer("Water"))
-        {
-            DieServer();
-        }
-    }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if(other.gameObject.layer == LayerMask.NameToLayer("Water"))
+    //    {
+    //        DieServer();
+    //    }
+    //}
 }

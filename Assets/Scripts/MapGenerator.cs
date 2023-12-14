@@ -1,6 +1,6 @@
 using FishNet.Object;
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections;
 using Unity.AI.Navigation;
 using UnityEngine;
 
@@ -39,7 +39,6 @@ public class MapGenerator : NetworkBehaviour
     [SerializeField] private float islandDensityMax = 1f;
 
     private NavMeshSurface navMeshSurface;
-    private int selectedBiome;
     private List<GameObject> lands;
     private List<GameObject> emptyLands;
 
@@ -123,6 +122,12 @@ public class MapGenerator : NetworkBehaviour
             }
         }
 
+        StartCoroutine(RebuildNavMesh());
+    }
+
+    IEnumerator RebuildNavMesh()
+    {
+        yield return new WaitForSeconds(1f);
         navMeshSurface.BuildNavMesh();
     }
 
