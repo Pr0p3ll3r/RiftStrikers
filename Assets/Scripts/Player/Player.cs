@@ -2,6 +2,7 @@
 using FishNet.Object.Synchronizing;
 using FishNet.Object;
 using UnityEngine.InputSystem;
+using FishNet.Connection;
 
 public class Player : NetworkBehaviour
 {
@@ -57,7 +58,7 @@ public class Player : NetworkBehaviour
     
         currentHealth -= damage;
         hurtSound.Play();
-        TakeDamageRpc(currentHealth);
+        TakeDamageRpc(Owner, currentHealth);
         if (currentHealth <= 0)
         {
             Debug.Log("SERVER: Player died");
@@ -65,8 +66,8 @@ public class Player : NetworkBehaviour
         }
     }
 
-    [ObserversRpc]
-    public void TakeDamageRpc(int newHealth)
+    [TargetRpc]
+    public void TakeDamageRpc(NetworkConnection conn, int newHealth)
     {
         hud.ShowVignette();
         hud.RefreshBars(newHealth);
