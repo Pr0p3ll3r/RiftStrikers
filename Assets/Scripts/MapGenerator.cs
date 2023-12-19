@@ -48,26 +48,11 @@ public class MapGenerator : NetworkBehaviour
         navMeshSurface = GetComponent<NavMeshSurface>();
     }
 
-    public override void OnStartNetwork()
-    {
-        base.OnStartNetwork();
-
-        if (IsServer)
-        {
-            int seed = Random.Range(int.MinValue, int.MaxValue);
-            SetSeed(seed);
-        }
-    }
-
     [ObserversRpc(BufferLast = true)]
-    private void SetSeed(int seed)
+    public void GenerateMapRpc(int seed, BiomeType selectedBiome)
     {
         Random.InitState(seed);
-    }
 
-    [ObserversRpc(BufferLast = true)]
-    public void GenerateMapRpc(BiomeType selectedBiome)
-    {
         int natureCountCurrent = natureCount;
         lands = new List<GameObject>();
         emptyLands = new List<GameObject>();

@@ -67,14 +67,14 @@ public class GameManager : NetworkBehaviour
         availableIslands = islands.ToList();
     }
 
-    public override void OnStartNetwork()
-    {
-        base.OnStartNetwork();
-        if (IsServer)
+        public override void OnStartNetwork()
         {
-            GenerateMap();
+            base.OnStartNetwork();
+            if (IsServer)
+            {
+                GenerateMap();
+            }
         }
-    }
 
     void Update()
     {
@@ -175,9 +175,10 @@ public class GameManager : NetworkBehaviour
 
     private void GenerateMap()
     {
+        int seed = Random.Range(int.MinValue, int.MaxValue);
         int randomWave = Random.Range(0, availableIslands.Count);
         currentIsland = availableIslands[randomWave];
-        MapGenerator.GenerateMapRpc(currentIsland.biomeType);
+        MapGenerator.GenerateMapRpc(seed, currentIsland.biomeType);
         Debug.Log("Generated map!");
     }
 
