@@ -1,5 +1,5 @@
 {
-    "name": "PlayerInput",
+    "name": "PlayerControls",
     "maps": [
         {
             "name": "Player",
@@ -45,6 +45,15 @@
                     "name": "Reload",
                     "type": "Button",
                     "id": "8faa2cf7-03ce-49df-ad32-849d95456db5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "cd4f869b-988c-4a7c-9295-f9110cbb786a",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -258,6 +267,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Reload",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fcab5a5e-c1e2-40a2-9658-07e257de015f",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
