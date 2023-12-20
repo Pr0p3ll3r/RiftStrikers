@@ -3940,6 +3940,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: ee2f41a1-8fa0-4356-b390-300d1eab5df6
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: cd4f869b-988c-4a7c-9295-f9110cbb786a
+    m_ActionName: Player/Pause[/Keyboard/escape]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -4022,6 +4026,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   groundDistance: 0.01
+  canRoll: 1
 --- !u!114 &4124513859907175097
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4056,7 +4061,6 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 3610995976546538049}
   currentWeapon: {fileID: 0}
   weaponHolder: {fileID: 3764887501991101459}
-  selectedWeapon: -1
   currentWeaponData: {fileID: 0}
   testWeapon: {fileID: 11400000, guid: 3c1df7da234888049a6966dc32cc54ac, type: 2}
   canBeShot:
@@ -4064,13 +4068,12 @@ MonoBehaviour:
     m_Bits: 384
   bulletHolePrefab: {fileID: 6516459271596680075, guid: bcd3b5c62ce1e5d40840057a97317914,
     type: 3}
-  bloodPrefab: {fileID: 6506607160380398051, guid: a28055d383f23e649ad06e54e69189c8,
-    type: 3}
+  bloodPrefab: {fileID: 166404, guid: 78e1c8c5b281b8b439229473779ac9aa, type: 3}
   sfx: {fileID: 166195695029462567}
   weaponSound: {fileID: 5460718782169163011}
   equipSound: {fileID: 8300000, guid: d7e02c5ff096dde4191b3ef37e2b1e3e, type: 3}
   isReloading: 0
-  isEquipping: 0
+  canReload: 1
   bulletEjectingSpeed: 0.5
 --- !u!114 &512104183525914352
 MonoBehaviour:
