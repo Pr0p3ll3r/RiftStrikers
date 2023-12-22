@@ -27,6 +27,11 @@ namespace FishNet.Managing.Client
         /// </summary>
         public event Action OnAuthenticated;
         /// <summary>
+        /// Called when the local client connection to the server has timed out.
+        /// This is called immediately before disconnecting.
+        /// </summary>
+        public event Action OnClientTimeOut;
+        /// <summary>
         /// Called after the local client connection state changes.
         /// </summary>
         public event Action<ClientConnectionStateArgs> OnClientConnectionState;
@@ -113,11 +118,12 @@ namespace FishNet.Managing.Client
         /// </summary>
         private float _lastPacketTime;
         /// <summary>
-        /// Updates lastPacketTime to Time.unscaledTime.
+        /// Updates information about the last packet received.
         /// </summary>
-        private void UpdateLastPacketTime()
+        private void UpdateLastPacketDatas()
         {
             _lastPacketTime = Time.unscaledTime;
+            LastPacketLocalTick = NetworkManager.TimeManager.LocalTick;
         }
         /// <summary>
         /// Used to read splits.
@@ -299,7 +305,7 @@ namespace FishNet.Managing.Client
             }
             else
             {
-                UpdateLastPacketTime();
+                UpdateLastPacketDatas();
             }
 
             if (NetworkManager.CanLog(LoggingType.Common))
@@ -345,7 +351,7 @@ namespace FishNet.Managing.Client
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _parseLogger.Reset();
 #endif
-            UpdateLastPacketTime();
+            UpdateLastPacketDatas();
 
             ArraySegment<byte> segment = args.Data;
             NetworkManager.StatisticsManager.NetworkTraffic.LocalClientReceivedData((ulong)segment.Count);
@@ -557,6 +563,14 @@ namespace FishNet.Managing.Client
             if (!networkManager.IsServer)
             {
                 Clients.TryGetValueIL2CPP(connectionId, out Connection);
+                /* This is bad and should never happen unless the connection is dropping
+                 * while receiving authenticated. Would have to be a crazy race condition
+                 * but with the network anything is possible. */
+                if (Connection == null)
+                {
+                    NetworkManager.LogWarning($"Client connection could not be found while parsing authenticated status. This usually occurs when the client is receiving a packet immediately before losing connection.");
+                    Connection = new NetworkConnection(networkManager, connectionId, GetTransportIndex(), false);
+                }
             }
             /* If also the server then use the servers connection
              * for the connectionId. This is to resolve host problems
@@ -588,7 +602,9 @@ namespace FishNet.Managing.Client
              * This still doesn't account for latency but
              * it's the best we can do until the client gets
              * a ping response. */
-            networkManager.TimeManager.Tick = networkManager.TimeManager.LastPacketTick;
+            //Only do this if not also server.
+            if (!networkManager.IsServer)
+                networkManager.TimeManager.Tick = networkManager.TimeManager.LastPacketTick;
 
             //Mark as authenticated.
             Connection.ConnectionAuthenticated();
@@ -641,6 +657,7 @@ namespace FishNet.Managing.Client
              * since it's simple math. */
             if (Time.unscaledTime - _lastPacketTime > _remoteServerTimeoutDuration)
             {
+                OnClientTimeOut?.Invoke();
                 NetworkManager.Log($"Server has timed out. You can modify this feature on the ClientManager component.");
                 StopConnection();
             }

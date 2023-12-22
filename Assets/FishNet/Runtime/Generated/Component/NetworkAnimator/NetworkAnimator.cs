@@ -427,6 +427,10 @@ namespace FishNet.Component.Animating
         /// Tick when the buffer may begin to run.
         /// </summary>
         private uint _startTick = TimeManagerCls.UNSET_TICK;
+        /// <summary>
+        /// True if subscribed to TimeManager for ticks.
+        /// </summary>
+        private bool _subscribedToTicks;
         #endregion
 
         #region Const.
@@ -456,6 +460,10 @@ namespace FishNet.Component.Animating
         {
             InitializeOnce();
         }
+        private void OnDestroy()
+        {
+            ChangeTickSubscription(false);
+        }
 
         [APIExclude]
         public override void OnSpawnServer(NetworkConnection connection)
@@ -469,8 +477,7 @@ namespace FishNet.Component.Animating
 
         public override void OnStartNetwork()
         {
-            base.TimeManager.OnPreTick += TimeManager_OnPreTick;
-            base.TimeManager.OnPostTick += TimeManager_OnPostTick;
+            ChangeTickSubscription(true);
         }
 
         [APIExclude]
@@ -493,8 +500,7 @@ namespace FishNet.Component.Animating
         public override void OnStopNetwork()
         {
             _unsynchronizedLayerStates.Clear();
-            base.TimeManager.OnPreTick -= TimeManager_OnPreTick;
-            base.TimeManager.OnPostTick -= TimeManager_OnPostTick;
+            ChangeTickSubscription(false);
         }
 
 
@@ -540,10 +546,8 @@ namespace FishNet.Component.Animating
             if (!_isAnimatorEnabled)
                 return;
 
-            if (base.IsClient)
-                CheckSendToServer();
-            if (base.IsServer)
-                CheckSendToClients();
+            CheckSendToServer();
+            CheckSendToClients();
         }
 
         private void Update()
@@ -632,6 +636,27 @@ namespace FishNet.Component.Animating
         }
 
         /// <summary>
+        /// Tries to subscribe to TimeManager ticks.
+        /// </summary>
+        private void ChangeTickSubscription(bool subscribe)
+        {
+            if (subscribe == _subscribedToTicks || base.NetworkManager == null)
+                return;
+
+            _subscribedToTicks = subscribe;
+            if (subscribe)
+            {
+                base.NetworkManager.TimeManager.OnPreTick += TimeManager_OnPreTick;
+                base.NetworkManager.TimeManager.OnPostTick += TimeManager_OnPostTick;
+            }
+            else
+            {
+                base.NetworkManager.TimeManager.OnPreTick -= TimeManager_OnPreTick;
+                base.NetworkManager.TimeManager.OnPostTick -= TimeManager_OnPostTick;
+            }
+        }
+
+        /// <summary>
         /// Sets which animator to use. You must call this with the appropriate animator on all clients and server. This change is not automatically synchronized.
         /// </summary>
         /// <param name="animator"></param>
@@ -667,7 +692,7 @@ namespace FishNet.Component.Animating
         private void CheckSendToServer()
         {
             //Cannot send to server if is server or not client.
-            if (base.IsServer || !base.IsClient)
+            if (base.IsServer || !base.IsClientInitialized)
                 return;
             //Cannot send to server if not client authoritative or don't have authority.
             if (!ClientAuthoritative || !base.IsOwner)
@@ -689,8 +714,8 @@ namespace FishNet.Component.Animating
         /// </summary>
         private void CheckSendToClients()
         {
-            //Cannot send to clients if not server.
-            if (!base.IsServer)
+            //Cannot send to clients if not server initialized.
+            if (!base.IsServerInitialized)
                 return;
 
             bool sendFromServer;
@@ -917,7 +942,7 @@ namespace FishNet.Component.Animating
                      * to be processed by Unity, this check ensures that. */
                     if (frameCount == item.Value.FrameCount)
                         continue;
-                    
+
                     //Add to layers being sent. This is so they can be removed from the collection later.
                     sentLayers.Add(item.Key);
                     int layerIndex = item.Key;
@@ -954,7 +979,7 @@ namespace FishNet.Component.Animating
                     for (int i = 0; i < sentLayers.Count; i++)
                         _unsynchronizedLayerStates.Remove(sentLayers[i]);
                     //Store cache.
-                    CollectionCaches<int>.Store(sentLayers);                    
+                    CollectionCaches<int>.Store(sentLayers);
                 }
             }
 
