@@ -39,12 +39,12 @@ public class Enemy : NetworkBehaviour
         animator = GetComponent<Animator>();
         ragdoll = GetComponent<Ragdoll>();
         agent = GetComponent<NavMeshAgent>();
-        agent.speed = speed;
+        agent.speed = speed;    
     }
 
-    public override void OnStartClient()
+    public override void OnStartNetwork()
     {
-        base.OnStartClient();
+        base.OnStartNetwork();
 
         if (IsServer)
         {
@@ -150,7 +150,7 @@ public class Enemy : NetworkBehaviour
     public void ServerTakeDamage(int damage)
     {
         if (isDead) return;
-
+        Debug.Log("ServerTakeDamage");
         currentHealth -= damage;
         RpcSetHealthBar(currentHealth);
         if (currentHealth <= 0)

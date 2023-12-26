@@ -15,17 +15,21 @@ public class LevelSystem : NetworkBehaviour
     private int currentEXP = 0;
 
     [SerializeField] private GameObject upgradeUI;
-    [SerializeField] private Transform skillList;
-    [SerializeField] private Skill money;
-    [SerializeField] private List<Skill> availableSkills;
+    [SerializeField] private Transform itemList;
+    [SerializeField] private Item money;
+    [SerializeField] private List<Item> availableItems;
     [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] private Slider expBar;
-    private List<Skill> ownedSkills = new List<Skill>();
-    private Dictionary<Skill, int> votes = new Dictionary<Skill, int>();
+    private List<Item> ownedItems = new List<Item>();
+    private Dictionary<Item, int> votes = new Dictionary<Item, int>();
     private int chosen = 0;
-    private int maxPassiveSkills = 6;
-    private int maxActiveSkills = 6;
-    int luck = 1;
+    private int maxPassiveItems = 6;
+    private int maxActiveItems = 6;
+    private int countPassiveItems = 0;
+    private int countActiveItems = 0;
+    private int luck = 1;
+    private int gainedLevels = 0;
+
     private void Awake()
     {
         Instance = this;
@@ -49,8 +53,9 @@ public class LevelSystem : NetworkBehaviour
             currentLevel++;
             expNeeded = CalculateEXPNeededForNextLevel();
             UpdateLevel(currentLevel, currentEXP, expNeeded);
-            OnNewLevel();
+            gainedLevels++;
         }
+        OnNewLevel();
         UpdateLevel(currentLevel, currentEXP, expNeeded);
     }
 
@@ -82,215 +87,236 @@ public class LevelSystem : NetworkBehaviour
         return expNeeded;
     }
 
-    IEnumerator WaitForSkillChoice()
+    IEnumerator WaitForItemChoice()
     {
         int seed = Random.Range(int.MinValue, int.MaxValue);
-        ShowSkills(seed);
+        ShowItems(seed);
         while(chosen != GameManager.Instance.GetLivingPlayers())
         {
             yield return new WaitForSeconds(0.1f);
         }
-        (Skill skill, int index) = ChooseSkill();
-        HighlightSelectedSkill(index);
+        (Item item, int index) = ChooseItem();
+        HighlightSelectedItem(index);
         yield return new WaitForSeconds(2f);
-        SkillChosenRpc(skill);
+        if (item.isActive)
+            ActiveItemChosenRpc((ActiveItem)item);
+        else
+            PassiveItemChosenRpc();
     }
 
     [ObserversRpc]
-    private void HighlightSelectedSkill(int chosenSkillIndex)
+    private void HighlightSelectedItem(int chosenSkillIndex)
     {
-        skillList.GetChild(chosenSkillIndex).GetComponent<Image>().color = Color.green;
+        itemList.GetChild(chosenSkillIndex).GetComponent<Image>().color = Color.green;
     }
 
     [ObserversRpc]
-    private void SkillChosenRpc(Skill chosenSkill)
+    private void ActiveItemChosenRpc(ActiveItem chosenItem)
     {
-        if (chosenSkill != money)
+        countActiveItems++;
+        if (!ownedItems.Contains(chosenItem))
         {
-            if (!ownedSkills.Contains(chosenSkill))
-            {
-                ownedSkills.Add(chosenSkill);
-                availableSkills.Remove(chosenSkill);
-            }
-            else
-            {
-                chosenSkill.AddLevel();
-            }
+            Debug.Log("Add new item");
+            chosenItem.AddLevel();
+            ownedItems.Add(chosenItem);
+            availableItems.Remove(chosenItem);
+            Player.Instance.HandleItemSelection(chosenItem);
         }
-        Player.Instance.HandleSkillSelection(chosenSkill);
+        else
+        {
+            Debug.Log("Add level");
+            Item ownedItem = ownedItems.Find(x => x.itemName == chosenItem.itemName);
+            ownedItem.AddLevel();
+        }     
         chosen = 0;
         votes.Clear();
         upgradeUI.SetActive(false);
         GameManager.Instance.PauseGame(false);
+        OnNewLevel();
     }
 
     [ObserversRpc]
-    private void StartSkillChoose()
+    private void PassiveItemChosenRpc()
     {
-        foreach (Transform skillSlot in skillList)
+        countPassiveItems++;
+        chosen = 0;
+        votes.Clear();
+        upgradeUI.SetActive(false);
+        GameManager.Instance.PauseGame(false);
+        OnNewLevel();
+    }
+
+    [ObserversRpc]
+    private void StartItemChoose()
+    {
+        foreach (Transform itemSlot in itemList)
         {
-            skillSlot.GetComponent<Button>().interactable = true;
-            skillSlot.GetComponent<Image>().color = Color.white;
-            skillSlot.gameObject.SetActive(false);
+            itemSlot.GetComponent<Button>().interactable = true;
+            itemSlot.GetComponent<Image>().color = Color.white;
+            itemSlot.gameObject.SetActive(false);
         }
     }
 
     [Server]
     private void OnNewLevel()
     {
-        StartSkillChoose();
+        if (gainedLevels <= 0) return;
+        gainedLevels--;
+        StartItemChoose();
         GameManager.Instance.PauseGame(true);          
-        StartCoroutine(WaitForSkillChoice());
+        StartCoroutine(WaitForItemChoice());
     }
 
     [ObserversRpc]
-    private void ShowSkills(int seed)
+    private void ShowItems(int seed)
     {
         Random.InitState(seed);
-        List<Skill> tempAvailableSkills = new List<Skill>(availableSkills);
+        List<Item> tempAvailableItems = new List<Item>(availableItems);
+        List<Item> ownedItemsToUpgrade = ownedItems.FindAll(x => x.GetLevel() < x.maxLevel).ToList();
 
         int i;
-        for (i = 0; i < skillList.childCount; i++)
+        for (i = 0; i < itemList.childCount; i++)
         {
-            Transform skillSlot = skillList.GetChild(i);
-            skillSlot.GetComponent<Button>().onClick.RemoveAllListeners();
+            Transform itemSlot = itemList.GetChild(i);
+            itemSlot.GetComponent<Button>().onClick.RemoveAllListeners();
 
-            if (ownedSkills.Count < maxPassiveSkills + maxActiveSkills)
-            {
-                List<Skill> tempList = ownedSkills.FindAll(x => x.GetLevel() < x.levels.Length).ToList();
-                if (tempList.Count > 0)
+            if (ownedItems.Count < maxPassiveItems + maxActiveItems)
+            {             
+                if (ownedItemsToUpgrade.Count > 0)
                 {
-                    if (ChooseSkillFromOwnedSkills(tempList, skillSlot, tempAvailableSkills))
+                    if (ChooseItemFromOwnedSkills(ownedItemsToUpgrade, itemSlot))
                         continue;
                 }
-                else if (tempAvailableSkills.Count > 0)
+                if (tempAvailableItems.Count > 0)
                 {
-                    if (ChooseSkillFromAvailable(tempAvailableSkills, skillSlot))
+                    if (ChooseItemFromAvailable(tempAvailableItems, itemSlot))
                         continue;
                 }
             }
-            AddMoneySkill(skillSlot);
+            SetMoneyToSlot(itemSlot);
             break;
         }
-        ActivateSkillSlots(i);
+        ActivateItemSlots(i);
     }
 
-    private bool ChooseSkillFromOwnedSkills(List<Skill> ownedSkillsToUpgrade, Transform skillSlot, List<Skill> availableSkills)
+    private bool ChooseItemFromOwnedSkills(List<Item> ownedItemsToUpgrade, Transform itemSlot)
     {
-        float ownedChance = 1 / (1 + luck);
-        float randomValue = Random.Range(0f, 1f);
+        float ownedChance = 0.5f;
+        float randomValue = 0.5f;
         if (randomValue <= ownedChance)
         {
-            int random1 = Random.Range(0, ownedSkillsToUpgrade.Count);
-            int random2 = Random.Range(0, ownedSkillsToUpgrade.Count);
+            int random1 = Random.Range(0, ownedItemsToUpgrade.Count);
+            //int random2 = Random.Range(0, ownedItemsToUpgrade.Count);
 
-            if (random1 != random2)
-            {
-                Skill randomOwnedSkill = ownedSkillsToUpgrade[random1];
-                SetSkillSlot(randomOwnedSkill, skillSlot);
-                return true;
-            }
+            //if (random1 != random2)
+            //{
+            //    SetItemSlot(ownedItemsToUpgrade[random1], itemSlot);
+            //    ownedItemsToUpgrade.RemoveAt(ownedItemsToUpgrade.IndexOf(ownedItemsToUpgrade[random1]));
+            //    return true;
+            //}
+            SetItemSlot(ownedItemsToUpgrade[random1], itemSlot);
+            ownedItemsToUpgrade.RemoveAt(ownedItemsToUpgrade.IndexOf(ownedItemsToUpgrade[random1]));
+            return true;
         }
-        return ChooseSkillFromAvailable(availableSkills, skillSlot);
+        return false;
     }
 
-    private bool ChooseSkillFromAvailable(List<Skill> availableSkills, Transform skillSlot)
+    private bool ChooseItemFromAvailable(List<Item> availableItems, Transform itemSlot)
     {
-        List<Skill> tempAvailableSkills = new List<Skill>(availableSkills);
-        int countPassiveSkills = ownedSkills.Count(x => !x.isActive);
-        int countActiveSkills = ownedSkills.Count(x => x.isActive);
+        int countPassiveItems = ownedItems.Count(x => !x.isActive);
+        int countActiveItems = ownedItems.Count(x => x.isActive);
 
-        while (tempAvailableSkills.Count > 0)
+        while (availableItems.Count > 0)
         {
-            int randomIndex = Random.Range(0, tempAvailableSkills.Count);
-            Skill selectedSkill = tempAvailableSkills[randomIndex];
+            int randomIndex = Random.Range(0, availableItems.Count);
+            Item selectedItem = availableItems[randomIndex];
 
-            if ((selectedSkill.isActive && countActiveSkills < maxActiveSkills)
-                || (!selectedSkill.isActive && countPassiveSkills < maxPassiveSkills))
+            if ((selectedItem.isActive && countActiveItems < maxActiveItems)
+                || (!selectedItem.isActive && countPassiveItems < maxPassiveItems))
             {
-                SetSkillSlot(selectedSkill, skillSlot);
-                availableSkills.RemoveAt(availableSkills.IndexOf(selectedSkill));
+                SetItemSlot(selectedItem, itemSlot);
+                availableItems.RemoveAt(availableItems.IndexOf(selectedItem));
                 return true;
             }
 
-            tempAvailableSkills.RemoveAt(randomIndex);
+            availableItems.RemoveAt(randomIndex);
         }
 
         return false;
     }
 
-    private void SetSkillSlot(Skill skill, Transform skillSlot)
+    private void SetItemSlot(Item item, Transform itemSlot)
     {
-        skillSlot.GetComponent<SkillSlot>().SetSlot(skill);
-        skillSlot.GetComponent<Button>().onClick.AddListener(delegate { VoteForSkill(skill); });
-        votes.Add(skill, 0);
+        itemSlot.GetComponent<ItemSlot>().SetSlot(item);
+        itemSlot.GetComponent<Button>().onClick.AddListener(delegate { VoteForItem(item); });
+        votes.Add(item, 0);
     }
 
-    private void AddMoneySkill(Transform skillSlot)
+    private void SetMoneyToSlot(Transform itemSlot)
     {
-        skillSlot.GetComponent<SkillSlot>().SetSlot(money);
-        skillSlot.GetComponent<Button>().onClick.AddListener(delegate { VoteForSkill(money); });
+        itemSlot.GetComponent<ItemSlot>().SetSlot(money);
+        itemSlot.GetComponent<Button>().onClick.AddListener(delegate { VoteForItem(money); });
         votes.Add(money, 0);
     }
 
-    private void VoteForSkill(Skill skill)
+    private void VoteForItem(Item skill)
     {
         ServerVote(skill);
-        foreach (Transform skillSlot in skillList)
+        foreach (Transform skillSlot in itemList)
         {
             skillSlot.GetComponent<Button>().interactable = false;
         }
     }
 
     [ObserversRpc]
-    private void ActivateSkillSlots(int index)
+    private void ActivateItemSlots(int index)
     {
         for (int i = 0; i <= index; i++)
         {
-            skillList.GetChild(i).gameObject.SetActive(true);
+            itemList.GetChild(i).gameObject.SetActive(true);
         }
         upgradeUI.SetActive(true);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void ServerVote(Skill skill)
+    private void ServerVote(Item skill)
     {
-        Skill s = votes.First(x => x.Key.skillName == skill.skillName).Key;
+        Item s = votes.First(x => x.Key.itemName == skill.itemName).Key;
         votes[s]++;
         chosen++;
     }
 
-    private (Skill, int) ChooseSkill()
+    private (Item, int) ChooseItem()
     {
-        Skill chosenSkill = null;
+        Item chosenItem = null;
         int chosenIndex = -1;
 
-        List<Skill> maxVotedSkills = new List<Skill>();
+        List<Item> maxVotedItems = new List<Item>();
         int maxVotes = 0;
 
-        foreach (KeyValuePair<Skill, int> pair in votes)
+        foreach (KeyValuePair<Item, int> pair in votes)
         {
             if (pair.Value > maxVotes)
             {
                 maxVotes = pair.Value;
-                maxVotedSkills.Clear();
-                maxVotedSkills.Add(pair.Key);
+                maxVotedItems.Clear();
+                maxVotedItems.Add(pair.Key);
             }
             else if (pair.Value == maxVotes && pair.Value != 0)
             {
-                maxVotedSkills.Add(pair.Key);
+                maxVotedItems.Add(pair.Key);
             }
         }
 
-        if (maxVotedSkills.Count > 0)
+        if (maxVotedItems.Count > 0)
         {
-            int randomIndex = Random.Range(0, maxVotedSkills.Count);
-            chosenSkill = maxVotedSkills[randomIndex];
+            int randomIndex = Random.Range(0, maxVotedItems.Count);
+            chosenItem = maxVotedItems[randomIndex];
 
             int index = 0;
-            foreach (KeyValuePair<Skill, int> pair in votes)
+            foreach (KeyValuePair<Item, int> pair in votes)
             {
-                if (pair.Key.skillName == chosenSkill.skillName)
+                if (pair.Key.itemName == chosenItem.itemName)
                 {
                     chosenIndex = index;
                     break;
@@ -299,6 +325,6 @@ public class LevelSystem : NetworkBehaviour
             }
         }
 
-        return (chosenSkill, chosenIndex);
+        return (chosenItem, chosenIndex);
     }
 }

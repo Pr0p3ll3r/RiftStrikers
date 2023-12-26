@@ -66,7 +66,7 @@ public class PlayerController : NetworkBehaviour
         Camera.main.GetComponent<CameraFollow>().SetPlayer(transform);
     }
 
-    void Update()
+    private void Update()
     {
         if (!IsOwner || !Player.Instance.CanControl)
             return;
@@ -82,7 +82,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    void Move()
+    private void Move()
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
@@ -120,8 +120,7 @@ public class PlayerController : NetworkBehaviour
             {
                 Vector3 directionToEnemy = weaponManager.ClosestEnemy.transform.position - transform.position;
                 directionToEnemy.y = 0;
-                Quaternion targetRotation = Quaternion.LookRotation(directionToEnemy, Vector3.up);
-                transform.rotation = targetRotation;
+                transform.forward = directionToEnemy;
             }
             else if (movement != Vector3.zero)
             {
@@ -131,7 +130,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    void Look()
+    private void Look()
     {
         Plane playerPlane = new Plane(Vector3.up, transform.position);
         Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
@@ -175,7 +174,7 @@ public class PlayerController : NetworkBehaviour
         adjustedNextStep = nextStep * speedMultiplier;
     }
 
-    IEnumerator Roll()
+    private IEnumerator Roll()
     {
         weaponManager.StopReload();
         Vector3 movement = new Vector3(moveInput.x, 0f, moveInput.y).normalized;

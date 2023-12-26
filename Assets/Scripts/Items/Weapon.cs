@@ -8,7 +8,7 @@ public enum AnimationSet
     Melee
 }
 
-[CreateAssetMenu(fileName = "Weapon", menuName = "HumanSurvivors/Items/Weapon")]
+[CreateAssetMenu(fileName = "Weapon", menuName = "ScriptableObjects/Items/Weapon")]
 public class Weapon : ScriptableObject
 {
     public string itemName;

@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa22f8ac8def0634d9380dad1fb3307f, type: 3}
+  m_Name: Knife
+  m_EditorClassIdentifier: 
+  itemName: Knife
+  itemIconIndex: 0
+  isActive: 1
+  maxLevel: 4
+  prefab: {fileID: 5828148292702650109, guid: c48406a87f6a33e43b811e49e6ad93be, type: 3}
+  levels:
+  - description: "Throws 1 knife\r"
+    damage: 50
+    range: 10
+    cooldown: 5
+    speed: 10
+    projectiles: 1
+    pierce: 1
+  - description: 1 knife more
+    damage: 50
+    range: 10
+    cooldown: 5
+    speed: 10
+    projectiles: 2
+    pierce: 1
+  - description: Knife flight speed doubled
+    damage: 50
+    range: 10
+    cooldown: 5
+    speed: 20
+    projectiles: 2
+    pierce: 1
+  - description: 'Knife speed up
+
+      Adds damage'
+    damage: 100
+    range: 10
+    cooldown: 5
+    speed: 40
+    projectiles: 2
+    pierce: 1
+  - description: 1 knife more
+    damage: 100
+    range: 10
+    cooldown: 5
+    speed: 20
+    projectiles: 3
+    pierce: 1

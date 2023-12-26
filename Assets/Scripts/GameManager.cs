@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.XR;
 
 [System.Serializable]
 public class Island
@@ -50,6 +49,7 @@ public class GameManager : NetworkBehaviour
     [SyncObject]
     public readonly SyncList<PlayerInstance> players = new SyncList<PlayerInstance>();
     private List<Enemy> enemies = new List<Enemy>();
+    public List<Enemy> Enemies => enemies;
 
     [SerializeField] private GameObject teleportPrefab;
     [SerializeField] private float timeForGetToTeleport = 30.0f;
@@ -67,14 +67,14 @@ public class GameManager : NetworkBehaviour
         availableIslands = islands.ToList();
     }
 
-        public override void OnStartNetwork()
+    public override void OnStartNetwork()
+    {
+        base.OnStartNetwork();
+        if (IsServer)
         {
-            base.OnStartNetwork();
-            if (IsServer)
-            {
-                GenerateMap();
-            }
+            GenerateMap();
         }
+    }
 
     void Update()
     {
@@ -331,5 +331,29 @@ public class GameManager : NetworkBehaviour
         string minutes = (m / 60).ToString("00");
         string seconds = (m % 60).ToString("00");
         timer.text = $"{hours}:{minutes}:{seconds}";
+    }
+
+    public GameObject GetClosestEnemy(Vector3 pos, float range, List<Enemy> enemyList = null)
+    {
+        List<Enemy> tempList = enemyList != null ? enemyList : enemies;
+
+        GameObject closestEnemy = null;
+        float minimumDistance = Mathf.Infinity;
+
+        foreach (Enemy enemy in tempList)
+        {
+            if (!enemy.isDead)
+            {
+                float distanceToEnemy = Vector3.Distance(pos, enemy.transform.position);
+
+                if (distanceToEnemy < range && distanceToEnemy < minimumDistance)
+                {
+                    closestEnemy = enemy.gameObject;
+                    minimumDistance = distanceToEnemy;
+                }
+            }
+        }
+
+        return closestEnemy;
     }
 }

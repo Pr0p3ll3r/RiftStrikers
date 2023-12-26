@@ -18,11 +18,11 @@ public class Database : MonoBehaviour
         }
     }
 
-    public static Sprite GetSkillIcon(int skillIconIndex)
+    public static Sprite GetItemIcon(int itemIconIndex)
     {
-        if (skillIconIndex >= 0 && skillIconIndex < Instance.data.skilIcons.Length)
+        if (itemIconIndex >= 0 && itemIconIndex < Instance.data.itemIcons.Length)
         {
-            return Instance.data.skilIcons[skillIconIndex];
+            return Instance.data.itemIcons[itemIconIndex];
         }
         return null;
     }

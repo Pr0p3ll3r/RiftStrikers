@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Database", menuName = "HumanSurvivors/Database")]
+[CreateAssetMenu(fileName = "Database", menuName = "ScriptableObjects/Database")]
 public class DatabaseSO : ScriptableObject
 {
-    public Sprite[] skilIcons;
+    public Sprite[] itemIcons;
 }

@@ -10,7 +10,6 @@ public class WeaponManager : NetworkBehaviour
     public Weapon currentWeaponData;
     public Weapon testWeapon;
     [SerializeField] private LayerMask canBeShot;
-    [SerializeField] private GameObject bulletHolePrefab;
     [SerializeField] private GameObject bloodPrefab;
     [SerializeField] private AudioSource sfx;
     [SerializeField] private AudioSource weaponSound;
@@ -43,10 +42,10 @@ public class WeaponManager : NetworkBehaviour
         if (!IsOwner || !Player.Instance.CanControl)
             return;
 
-        closestEnemy = GetClosestEnemy();
-
         if (currentWeapon != null)
         {
+            closestEnemy = GameManager.Instance.GetClosestEnemy(transform.position, currentWeaponData.range);
+
             if (currentCooldown > 0) currentCooldown -= Time.deltaTime;
 
             if (currentWeapon != null && currentCooldown <= 0 && !isReloading && !controller.IsRolling)
@@ -58,14 +57,11 @@ public class WeaponManager : NetworkBehaviour
                     if(closestEnemy)
                     {
                         Shoot();
-                    }
+                    }               
                 }
-                else
-                {
-                    if (fireAction.IsPressed())
-                    {
-                        Shoot();
-                    }
+                else if (fireAction.IsPressed())
+                {   
+                    Shoot();
                 }
             }
         }        
@@ -119,14 +115,14 @@ public class WeaponManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void ShootServer(int damage, Vector3 postion, Vector3 direction, float range, int pellets)
+    private void ShootServer(int damage, Vector3 position, Vector3 direction, float range, int pellets)
     {
         //Debug.Log("ShootServer");
 
         for (int i = 0; i < Mathf.Max(1, pellets); i++)
         {
-            if (Physics.Raycast(postion, direction, out RaycastHit hit, range, canBeShot) && hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
-            {
+            if (Physics.Raycast(position, direction, out RaycastHit hit, range, canBeShot))
+            {             
                 GameObject blood = Instantiate(bloodPrefab, hit.point + hit.normal * 0.001f, Quaternion.identity);
                 blood.transform.LookAt(hit.point + hit.normal);
                 Spawn(blood);
@@ -150,35 +146,13 @@ public class WeaponManager : NetworkBehaviour
         sfx.PlayOneShot(sfx.clip);
 
         //Bullet trail
-
-        //Bullet Case Out
     }
 
-    private GameObject GetClosestEnemy()
-    {
-        Collider[] enemies = Physics.OverlapSphere(transform.position, currentWeaponData.range, LayerMask.GetMask("Enemy"));
-        GameObject closestEnemy = null;
-        float minimumDistance = 1000000f;
-
-        foreach (Collider enemy in enemies)
-        {
-            float distanceToEnemy = Vector3.Distance(transform.position, enemy.transform.position);
-
-            if (distanceToEnemy < minimumDistance)
-            {
-                closestEnemy = enemy.gameObject;
-                minimumDistance = distanceToEnemy;
-            }
-        }
-
-        return closestEnemy;
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawSphere(transform.position, currentWeaponData.range);
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.yellow;
+    //    Gizmos.DrawSphere(transform.position, currentWeaponData.range);
+    //}
 
     private IEnumerator Reload()
     {

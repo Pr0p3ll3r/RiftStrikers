@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Item", menuName = "HumanSurvivors/Items/PickableItem")]
+[CreateAssetMenu(fileName = "Item", menuName = "ScriptableObjects/Items/PickableItem")]
 public class PickableItem : ScriptableObject
 {
     public GameObject prefab;

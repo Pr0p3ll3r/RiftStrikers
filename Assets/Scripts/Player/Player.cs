@@ -3,6 +3,7 @@ using FishNet.Object.Synchronizing;
 using FishNet.Object;
 using UnityEngine.InputSystem;
 using FishNet.Connection;
+using static UnityEngine.Rendering.DebugUI;
 
 public class Player : NetworkBehaviour
 {
@@ -20,6 +21,7 @@ public class Player : NetworkBehaviour
     private PlayerController controller;
     private PlayerHUD hud;
     private Ragdoll ragdoll;
+    private ItemManager itemManager;
     public bool CanControl { get; set; } = true;
     public bool AutoAim { get; set; }
 
@@ -35,6 +37,7 @@ public class Player : NetworkBehaviour
         hud = GetComponent<PlayerHUD>();
         controller = GetComponent<PlayerController>();
         ragdoll = GetComponent<Ragdoll>();
+        itemManager = GetComponent<ItemManager>();
         hud.RefreshBars(currentHealth);
         AutoAim = PlayerPrefs.GetInt("AutoAim", 1) == 1;
     }
@@ -47,6 +50,10 @@ public class Player : NetworkBehaviour
         if (Keyboard.current.tKey.wasPressedThisFrame)
         {
             TakeDamageServer(20);
+        }
+        if (Keyboard.current.eKey.wasPressedThisFrame)
+        {
+            LevelSystem.Instance.GainExperience(20);
         }
 #endif
     }
@@ -109,9 +116,9 @@ public class Player : NetworkBehaviour
         }
     }
 
-    public void HandleSkillSelection(Skill skill)
+    public void HandleItemSelection(Item item)
     {
-
+        itemManager.AddItem(item);
     }
 
     //private void OnTriggerEnter(Collider other)
