@@ -193,8 +193,8 @@ public class GameManager : NetworkBehaviour
             Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
             GameObject enemyGO = Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
             Enemy enemy = enemyGO.GetComponent<Enemy>();
-            enemy.maxHealth *= healthMultiplier;
-            enemy.damage = (int)(enemy.damage * damageMultiplier);
+            enemy.Stats.maxHealth *= healthMultiplier;
+            enemy.Stats.damage = (int)(enemy.Stats.damage * damageMultiplier);
             Spawn(enemyGO);
             enemies.Add(enemy);
         }
@@ -208,9 +208,9 @@ public class GameManager : NetworkBehaviour
         Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
         GameObject bossGO = Instantiate(currentIsland.bossPrefab, spawnPoint.position, Quaternion.identity);
         Enemy boss = bossGO.GetComponent<Enemy>();
-        boss.maxHealth *= healthMultiplier;
-        boss.damage = (int)(boss.damage * damageMultiplier);
-        boss.isBoss = true;
+        boss.Stats.maxHealth *= healthMultiplier;
+        boss.Stats.damage = (int)(boss.Stats.damage * damageMultiplier);
+        boss.Stats.isBoss = true;
         Spawn(bossGO);
         enemies.Add(boss);
         isBossSpawned = true;
@@ -282,7 +282,7 @@ public class GameManager : NetworkBehaviour
         for (int i = enemies.Count - 1; i >= 0; i--)
         {
             Enemy enemy = enemies[i];
-            if (!enemy.isDead)
+            if (!enemy.IsDead)
             {
                 Despawn(enemy.gameObject);
                 enemies.RemoveAt(i);
@@ -342,7 +342,7 @@ public class GameManager : NetworkBehaviour
 
         foreach (Enemy enemy in tempList)
         {
-            if (!enemy.isDead)
+            if (!enemy.IsDead)
             {
                 float distanceToEnemy = Vector3.Distance(pos, enemy.transform.position);
 

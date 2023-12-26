@@ -1,24 +1,16 @@
 ﻿using FishNet.Object;
-using FishNet.Object.Synchronizing;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
 public class Enemy : NetworkBehaviour
 {
-    [SyncVar]
-    public int currentHealth = 100;
+    private int currentHealth;
+    private bool isDead;
+    public bool IsDead => isDead;
 
-    public int damage = 5;
-    public float attackDistance = 5f;
-    public float speed = 5f;
-    public bool isDead;
-    public int maxHealth = 100;
-    public bool isBoss;
-
-    public int exp;
-    public int money;
-    public PickableItem[] loot;
+    [SerializeField] private EnemyStats stats;
+    public EnemyStats Stats => stats;
 
     [SerializeField] private Transform graphics;
     private Transform player;
@@ -39,7 +31,8 @@ public class Enemy : NetworkBehaviour
         animator = GetComponent<Animator>();
         ragdoll = GetComponent<Ragdoll>();
         agent = GetComponent<NavMeshAgent>();
-        agent.speed = speed;    
+        agent.speed = stats.moveSpeed;
+        currentHealth = stats.maxHealth;
     }
 
     public override void OnStartNetwork()
@@ -75,7 +68,7 @@ public class Enemy : NetworkBehaviour
 
         if (player == null || isStopped) return;
 
-        if (Vector3.Distance(transform.position, player.position) <= attackDistance)
+        if (Vector3.Distance(transform.position, player.position) <= stats.attackRange)
         {
             agent.isStopped = true;
             Attack();
@@ -94,7 +87,7 @@ public class Enemy : NetworkBehaviour
         {
             animator.SetBool("Attack", true);
             lastAttackTime = Time.time;
-            player.GetComponent<Player>().TakeDamageServer(damage);
+            player.GetComponent<Player>().TakeDamageServer(stats.damage);
         }         
     }
 
@@ -141,7 +134,7 @@ public class Enemy : NetworkBehaviour
     void RpcSetHealthBar(int currentHealth)
     {
         healthBar.SetActive(true);
-        healthBar.GetComponentInChildren<Slider>().value = (float)currentHealth / maxHealth;
+        healthBar.GetComponentInChildren<Slider>().value = (float)currentHealth / stats.maxHealth;
         if (healthBar.GetComponentInChildren<Slider>().value <= 0)
             healthBar.SetActive(false);
     }
@@ -159,7 +152,7 @@ public class Enemy : NetworkBehaviour
             agent.enabled = false;
             DropLoot();
             RpcDie();
-            if (isBoss)
+            if (stats.isBoss)
                 GameManager.Instance.ClearedIsland();
         }
     }
@@ -179,7 +172,7 @@ public class Enemy : NetworkBehaviour
 
     private void DropLoot()
     {
-        foreach (PickableItem item in loot)
+        foreach (PickableItem item in stats.loot)
         {
             int randomChance = Random.Range(0, 100);
             if (randomChance <= item.dropChance)
@@ -189,10 +182,10 @@ public class Enemy : NetworkBehaviour
                 switch (item.itemType)
                 {
                     case ItemType.Exp:
-                        pickupItem.GetComponent<PickupItem>().SetItem(item, exp);
+                        pickupItem.GetComponent<PickupItem>().SetItem(item, stats.exp);
                         break;
                     case ItemType.Money:
-                        pickupItem.GetComponent<PickupItem>().SetItem(item, money);
+                        pickupItem.GetComponent<PickupItem>().SetItem(item, stats.money);
                         break;
                 }
             }

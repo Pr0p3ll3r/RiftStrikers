@@ -79,18 +79,7 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 5799975719655290014}
   _networkObjectCache: {fileID: 5799975719655290014}
-  currentHealth: 60
-  damage: 5
-  attackDistance: 2
-  speed: 3
-  isDead: 0
-  maxHealth: 60
-  isBoss: 0
-  exp: 5
-  money: 5
-  loot:
-  - {fileID: 11400000, guid: 0f0fadb32803bd04fab5dc133247d773, type: 2}
-  - {fileID: 11400000, guid: 54eb888d49cc7e946b3cd3a0cba742cd, type: 2}
+  stats: {fileID: 11400000, guid: 9c1096ab76b29954789f671095eefbc8, type: 2}
   graphics: {fileID: 7633417698277815300}
   healthBar: {fileID: 7738503667405173057}
   attackCooldown: 2
