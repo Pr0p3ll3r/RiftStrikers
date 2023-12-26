@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ff1600f2ef7c5b4b84c35d7448cd1ab, type: 3}
+  m_Name: PlayerStats
+  m_EditorClassIdentifier: 
+  <MaxHealth>k__BackingField: 100
+  <HealthRecovery>k__BackingField: 0
+  <Armor>k__BackingField: 0
+  <MoveSpeed>k__BackingField: 7
+  <Damage>k__BackingField: 1
+  <ItemRange>k__BackingField: 1
+  <ProjectileSpeed>k__BackingField: 1
+  <ItemDuration>k__BackingField: 1
+  <AttackCooldown>k__BackingField: 1
+  <Luck>k__BackingField: 1
+  <ExpGain>k__BackingField: 1
+  <MoneyGain>k__BackingField: 1
+  <LootRange>k__BackingField: 1

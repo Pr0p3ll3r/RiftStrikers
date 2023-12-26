@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Enemy : NetworkBehaviour
 {
-    private int currentHealth;
+    private float currentHealth;
     private bool isDead;
     public bool IsDead => isDead;
 
@@ -131,19 +131,19 @@ public class Enemy : NetworkBehaviour
     }
 
     [ObserversRpc(RunLocally = true)]
-    void RpcSetHealthBar(int currentHealth)
+    void RpcSetHealthBar(float currentHealth)
     {
         healthBar.SetActive(true);
-        healthBar.GetComponentInChildren<Slider>().value = (float)currentHealth / stats.maxHealth;
+        healthBar.GetComponentInChildren<Slider>().value = currentHealth / stats.maxHealth;
         if (healthBar.GetComponentInChildren<Slider>().value <= 0)
             healthBar.SetActive(false);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void ServerTakeDamage(int damage)
+    public void ServerTakeDamage(float damage)
     {
         if (isDead) return;
-        Debug.Log("ServerTakeDamage");
+        
         currentHealth -= damage;
         RpcSetHealthBar(currentHealth);
         if (currentHealth <= 0)

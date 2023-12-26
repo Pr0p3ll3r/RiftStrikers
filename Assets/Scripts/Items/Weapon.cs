@@ -13,7 +13,7 @@ public class Weapon : ScriptableObject
 {
     public string itemName;
     public Sprite icon;
-    public int damage;
+    public float damage;
     public int ammo;
     public int pellets;
     public float pelletsSpread;
@@ -21,11 +21,10 @@ public class Weapon : ScriptableObject
     public float fireRate;
     public float bulletForce;
     public GameObject bulletPrefab;
-    public float movementSpeed;
+    public float movementSpeedMultiplier;
     public float reloadTime;
     public int childNumber;
     public AnimationSet animSet;
-    [Range(0, 1)] public float mainFOV;
 
     [Header("Sounds")]
     public AudioClip reloadSound;

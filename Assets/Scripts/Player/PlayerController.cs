@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : NetworkBehaviour
 {
-    [SerializeField] private float speed, gravity;
+    [SerializeField] private float gravity;
     [SerializeField] private AudioClip footstepSound;
     [SerializeField] private AudioClip rollSound;
     [SerializeField] private float nextStep;
@@ -35,7 +35,6 @@ public class PlayerController : NetworkBehaviour
     private float distMoved;
     private float lastRoll;
     private float rollTimer;
-    private float adjustedSpeed, adjustedNextStep;
     private bool isGrounded;
 
     private void Start()
@@ -51,9 +50,6 @@ public class PlayerController : NetworkBehaviour
 
         Keyframe roll_LastFrame = rollingCurve[rollingCurve.length - 1];
         rollTimer = roll_LastFrame.time;
-
-        adjustedSpeed = speed;
-        adjustedNextStep = nextStep;
     }
 
     public override void OnStartClient()
@@ -68,7 +64,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsOwner || !Player.Instance.CanControl)
+        if (!IsOwner || !player.CanControl)
             return;
 
         if (lastRoll > 0)
@@ -92,7 +88,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         Vector3 movement = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
-        controller.Move(adjustedSpeed * Time.deltaTime * movement);
+        controller.Move(player.Stats.MoveSpeed * Time.deltaTime * movement);
 
         playerVelocity.y += gravity * Time.deltaTime;
         controller.Move(playerVelocity * Time.deltaTime);
@@ -106,7 +102,7 @@ public class PlayerController : NetworkBehaviour
         distMoved += (lastPos - transform.position).magnitude;
         lastPos = transform.position;
 
-        if (distMoved > adjustedNextStep)
+        if (distMoved > nextStep)
         {
             audioSource.pitch = Random.Range(0.8f, 1.1f);
             audioSource.PlayOneShot(footstepSound);
@@ -166,12 +162,6 @@ public class PlayerController : NetworkBehaviour
     {
         enabled = false;
         weaponManager.enabled = false;
-    }
-
-    public void SetSpeed(float speedMultiplier)
-    {
-        adjustedSpeed = speed * speedMultiplier;
-        adjustedNextStep = nextStep * speedMultiplier;
     }
 
     private IEnumerator Roll()

@@ -34,7 +34,6 @@ public class WeaponManager : NetworkBehaviour
         controller = GetComponent<PlayerController>();
         playerInput = GetComponent<PlayerInput>();
         fireAction = playerInput.actions["Fire"];
-        Equip(0);
     }
 
     void Update()
@@ -64,7 +63,7 @@ public class WeaponManager : NetworkBehaviour
                     Shoot();
                 }
             }
-        }        
+        }
     }
 
     public void OnReload(InputAction.CallbackContext context)
@@ -76,12 +75,12 @@ public class WeaponManager : NetworkBehaviour
             reload = StartCoroutine(Reload());
     }
 
-    private void Equip(int index)
+    public void Equip(int index)
     {
         currentWeaponData = testWeapon.GetCopy();
         ShowWeapon();
         hud.RefreshWeapon(currentWeaponData);
-        controller.SetSpeed(currentWeaponData.movementSpeed);
+        Player.Instance.Stats.MoveSpeed *= currentWeaponData.movementSpeedMultiplier;
         animCharacter.SetInteger("Weapon", (int)currentWeaponData.animSet);
         weaponSound.PlayOneShot(equipSound);
         hud.RefreshAmmo(currentWeaponData.GetAmmo());
@@ -115,7 +114,7 @@ public class WeaponManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void ShootServer(int damage, Vector3 position, Vector3 direction, float range, int pellets)
+    private void ShootServer(float damage, Vector3 position, Vector3 direction, float range, int pellets)
     {
         //Debug.Log("ShootServer");
 

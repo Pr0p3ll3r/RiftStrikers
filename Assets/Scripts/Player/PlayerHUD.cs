@@ -48,7 +48,7 @@ public class PlayerHUD : NetworkBehaviour
         }
     }
 
-    public void RefreshBars(int currentHealth)
+    public void RefreshBars(float currentHealth)
     {
         healthBar.value = currentHealth;
     }

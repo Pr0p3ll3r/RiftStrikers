@@ -116,7 +116,6 @@ public class LevelSystem : NetworkBehaviour
         countActiveItems++;
         if (!ownedItems.Contains(chosenItem))
         {
-            Debug.Log("Add new item");
             chosenItem.AddLevel();
             ownedItems.Add(chosenItem);
             availableItems.Remove(chosenItem);
@@ -124,7 +123,6 @@ public class LevelSystem : NetworkBehaviour
         }
         else
         {
-            Debug.Log("Add level");
             Item ownedItem = ownedItems.Find(x => x.itemName == chosenItem.itemName);
             ownedItem.AddLevel();
         }     

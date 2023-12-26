@@ -1,35 +1,41 @@
 ﻿using UnityEngine;
-using FishNet.Object.Synchronizing;
 using FishNet.Object;
 using UnityEngine.InputSystem;
 using FishNet.Connection;
-using static UnityEngine.Rendering.DebugUI;
 
 public class Player : NetworkBehaviour
 {
     public static Player Instance { get; private set; }
 
-    private bool isDead;
-    public bool IsDead => isDead;
+    [SerializeField] private PlayerStats stats;
+    public PlayerStats Stats => stats;
 
-    [SyncVar]
-    public int currentHealth;
+    private float currentHealth;
+    private bool isDead;
+    public bool IsDead => isDead;    
 
     [SerializeField] private AudioSource hurtSound;
     [SerializeField] private AudioSource deathSound;
 
     private PlayerController controller;
+    private WeaponManager weaponManager;
     private PlayerHUD hud;
     private Ragdoll ragdoll;
     private ItemManager itemManager;
     public bool CanControl { get; set; } = true;
     public bool AutoAim { get; set; }
 
+    private void Awake()
+    {
+        currentHealth = stats.MaxHealth;
+    }
+
     public override void OnStartClient()
     {
         base.OnStartClient();
 
         if(IsOwner) Instance = this;
+        weaponManager.Equip(0);
     }
 
     void Start()
@@ -38,6 +44,7 @@ public class Player : NetworkBehaviour
         controller = GetComponent<PlayerController>();
         ragdoll = GetComponent<Ragdoll>();
         itemManager = GetComponent<ItemManager>();
+        weaponManager = GetComponent<WeaponManager>();
         hud.RefreshBars(currentHealth);
         AutoAim = PlayerPrefs.GetInt("AutoAim", 1) == 1;
     }
@@ -59,7 +66,7 @@ public class Player : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void TakeDamageServer(int damage)
+    public void TakeDamageServer(float damage)
     {
         if (isDead) return;
     
@@ -74,13 +81,12 @@ public class Player : NetworkBehaviour
     }
 
     [TargetRpc]
-    public void TakeDamageRpc(NetworkConnection conn, int newHealth)
+    public void TakeDamageRpc(NetworkConnection conn, float newHealth)
     {
         hud.ShowVignette();
         hud.RefreshBars(newHealth);
     }
 
-    [ServerRpc(RequireOwnership = false)]
     private void DieServer()
     {
         DieRpc();

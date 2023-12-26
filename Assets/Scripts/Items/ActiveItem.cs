@@ -17,7 +17,7 @@ public class ActiveItem : Item
 public class ActiveItemLevel
 {
     [TextArea(4, 6)] public string description;
-    public int damage;
+    public float damage;
     public float range;
     public float cooldown;
     public float speed;

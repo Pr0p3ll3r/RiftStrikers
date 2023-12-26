@@ -3780,7 +3780,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  <PrefabId>k__BackingField: 9
+  <PrefabId>k__BackingField: 11
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 0
   <SceneId>k__BackingField: 0
@@ -3997,7 +3997,7 @@ MonoBehaviour:
   _componentIndexCache: 2
   _addedNetworkObject: {fileID: 3610995976546538049}
   _networkObjectCache: {fileID: 3610995976546538049}
-  currentHealth: 100
+  stats: {fileID: 11400000, guid: caf90fe41f84192418e918f61f9b29b3, type: 2}
   hurtSound: {fileID: 8451478337659106912}
   deathSound: {fileID: 4435237410295346606}
 --- !u!114 &3182755882567150873
@@ -4015,7 +4015,6 @@ MonoBehaviour:
   _componentIndexCache: 3
   _addedNetworkObject: {fileID: 3610995976546538049}
   _networkObjectCache: {fileID: 3610995976546538049}
-  speed: 7
   gravity: -9.81
   footstepSound: {fileID: 8300000, guid: f404f8d3c2a4b4f48989fb1120e78fb8, type: 3}
   rollSound: {fileID: 8300000, guid: 3b09d59f4499d45428baa7a21e954296, type: 3}
