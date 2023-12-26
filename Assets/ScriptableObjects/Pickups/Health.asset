@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 7113402514809473893, guid: 581c2a80e7352c444b8dcc07d56d40ab, type: 3}
   itemType: 0
-  dropChance: 100
+  value: 30
+  weight: 0

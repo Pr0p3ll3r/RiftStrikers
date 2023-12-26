@@ -1,7 +1,10 @@
 ﻿using FishNet.Object;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class Enemy : NetworkBehaviour
 {
@@ -150,7 +153,7 @@ public class Enemy : NetworkBehaviour
         {
             isDead = true;
             agent.enabled = false;
-            DropLoot();
+            DropItem();
             RpcDie();
             if (stats.isBoss)
                 GameManager.Instance.ClearedIsland();
@@ -170,25 +173,11 @@ public class Enemy : NetworkBehaviour
         }
     }
 
-    private void DropLoot()
+    private void DropItem()
     {
-        foreach (PickableItem item in stats.loot)
-        {
-            int randomChance = Random.Range(0, 100);
-            if (randomChance <= item.dropChance)
-            {
-                GameObject pickupItem = Instantiate(item.prefab, transform.position + Vector3.up, Quaternion.identity);
-                Spawn(pickupItem);
-                switch (item.itemType)
-                {
-                    case ItemType.Exp:
-                        pickupItem.GetComponent<PickupItem>().SetItem(item, stats.exp);
-                        break;
-                    case ItemType.Money:
-                        pickupItem.GetComponent<PickupItem>().SetItem(item, stats.money);
-                        break;
-                }
-            }
-        }
+        PickableItem item = LootTable.GetItem(stats.loot);
+        GameObject pickupItem = Instantiate(item.prefab, transform.position + Vector3.up, Quaternion.identity);
+        pickupItem.GetComponent<PickupItem>().SetItem(item);
+        Spawn(pickupItem);
     }
 }

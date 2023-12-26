@@ -4,12 +4,10 @@ using UnityEngine;
 public class PickupItem : NetworkBehaviour
 {
     [SerializeField] private PickableItem item;
-    [SerializeField] private int value;
 
-    public void SetItem(PickableItem item, int value)
+    public void SetItem(PickableItem item)
     {
         this.item = item;
-        this.value = value;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -23,7 +21,7 @@ public class PickupItem : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void ServerPickup(GameObject player)
     {
-        player.GetComponent<Player>().HandlePickup(item, value);
+        player.GetComponent<Player>().HandlePickup(item, item.value);
         Despawn(gameObject);
     }
 }

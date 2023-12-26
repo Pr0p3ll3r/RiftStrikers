@@ -8,8 +8,5 @@ public class EnemyStats : ScriptableObject
     public float moveSpeed;
     public float maxHealth;
     public bool isBoss;
-
-    public int exp;
-    public int money;
     public PickableItem[] loot;
 }
