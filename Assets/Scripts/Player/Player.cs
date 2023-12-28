@@ -102,10 +102,13 @@ public class Player : NetworkBehaviour
     public void TakeDamageServer(float damage)
     {
         if (isDead) return;
-    
-        currentHealth -= damage;
+
+        float reducedDamage = Mathf.Max(0, damage - (damage * (CurrentArmor / 100f)));
+        currentHealth -= reducedDamage;
+
         hurtSound.Play();
         TakeDamageRpc(Owner, currentHealth);
+
         if (currentHealth <= 0)
         {
             Debug.Log("SERVER: Player died");
