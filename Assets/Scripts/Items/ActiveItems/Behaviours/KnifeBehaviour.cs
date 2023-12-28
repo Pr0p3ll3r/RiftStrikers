@@ -11,7 +11,7 @@ public class KnifeBehaviour : NetworkBehaviour
         activeItem = item;
         rb = GetComponent<Rigidbody>();
         Vector3 direction = (enemy.transform.position - transform.position).normalized;
-        rb.velocity = direction * activeItem.GetCurrentLevel().speed;
+        rb.velocity = direction * activeItem.GetCurrentLevel().speed * Player.Instance.CurrentProjectileSpeed;
         transform.rotation = Quaternion.LookRotation(direction);
         transform.Rotate(Vector3.up, -90f);
     }
@@ -20,7 +20,7 @@ public class KnifeBehaviour : NetworkBehaviour
     {
         if (other.transform.root.TryGetComponent<Enemy>(out var enemy))
         {
-            enemy.ServerTakeDamage(activeItem.GetCurrentLevel().damage);
+            enemy.ServerTakeDamage(activeItem.GetCurrentLevel().damage * Player.Instance.CurrentDamage);
             Despawn(gameObject);
         }
     }

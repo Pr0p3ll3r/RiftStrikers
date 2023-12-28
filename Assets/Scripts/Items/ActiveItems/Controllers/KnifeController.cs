@@ -16,7 +16,7 @@ public class Knife : ActiveItemController
         List<Enemy> tempList = new List<Enemy>(GameManager.Instance.Enemies);
         for (int i = 0; i < activeItem.GetCurrentLevel().projectiles; i++)
         {
-            GameObject closestEnemy = GameManager.Instance.GetClosestEnemy(transform.position, activeItem.GetCurrentLevel().range, tempList);
+            GameObject closestEnemy = GameManager.Instance.GetClosestEnemy(transform.position, activeItem.GetCurrentLevel().range * Player.Instance.CurrentAttackRange, tempList);
             if (closestEnemy != null)
             {
                 GameObject spawnedKnife = Instantiate(knifePrefab, transform.position, knifePrefab.transform.rotation);

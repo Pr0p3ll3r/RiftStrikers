@@ -21,7 +21,6 @@ MonoBehaviour:
   <ProjectileSpeed>k__BackingField: 1
   <ItemDuration>k__BackingField: 1
   <AttackCooldown>k__BackingField: 1
-  <Luck>k__BackingField: 1
   <ExpGain>k__BackingField: 1
   <MoneyGain>k__BackingField: 1
   <LootRange>k__BackingField: 1

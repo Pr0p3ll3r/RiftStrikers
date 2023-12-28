@@ -4,29 +4,27 @@ using UnityEngine;
 public class PlayerStats : ScriptableObject
 {
     [field: SerializeField]
-    public float MaxHealth { get; set; }
+    public float MaxHealth { get; private set; }
     [field: SerializeField]
-    public float HealthRecovery { get; set; }
+    public float HealthRecovery { get; private set; }
     [field: SerializeField]
-    public float Armor { get; set; }
+    public float Armor { get; private set; }
     [field: SerializeField]
-    public float MoveSpeed { get; set; }
+    public float MoveSpeed { get; private set; }
     [field: SerializeField]
-    public float Damage { get; set; }
+    public float Damage { get; private set; }
     [field: SerializeField]
-    public float ItemRange { get; set; }
+    public float AttackRange { get; private set; }
     [field: SerializeField]
-    public float ProjectileSpeed { get; set; }
+    public float ProjectileSpeed { get; private set; }
     [field: SerializeField]
-    public float ItemDuration { get; set; }
+    public float AttackDuration { get; private set; }
     [field: SerializeField]
-    public float AttackCooldown { get; set; }
+    public float AttackCooldown { get; private set; }
     [field: SerializeField]
-    public float Luck { get; set; }
+    public float ExpGain { get; private set; }
     [field: SerializeField]
-    public float ExpGain { get; set; }
+    public float MoneyGain { get; private set; }
     [field: SerializeField]
-    public float MoneyGain { get; set; }
-    [field: SerializeField]
-    public float LootRange { get; set; }
+    public float LootRange { get; private set; }
 }

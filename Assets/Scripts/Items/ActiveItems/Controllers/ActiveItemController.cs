@@ -8,7 +8,7 @@ public abstract class ActiveItemController : NetworkBehaviour
 
     protected virtual void Start()
     {
-        currentCooldown = activeItem.GetCurrentLevel().cooldown;
+        currentCooldown = activeItem.GetCurrentLevel().cooldown * Player.Instance.CurrentAttackCooldown;
     }
 
     protected virtual void Update()
@@ -29,6 +29,6 @@ public abstract class ActiveItemController : NetworkBehaviour
 
     protected virtual void Attack()
     {
-        currentCooldown = activeItem.GetCurrentLevel().cooldown;
+        currentCooldown = activeItem.GetCurrentLevel().cooldown * Player.Instance.CurrentAttackCooldown;
     }
 }

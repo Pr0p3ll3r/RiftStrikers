@@ -80,7 +80,7 @@ public class WeaponManager : NetworkBehaviour
         currentWeaponData = testWeapon.GetCopy();
         ShowWeapon();
         hud.RefreshWeapon(currentWeaponData);
-        Player.Instance.Stats.MoveSpeed *= currentWeaponData.movementSpeedMultiplier;
+        Player.Instance.CurrentMoveSpeed *= currentWeaponData.movementSpeedMultiplier;
         animCharacter.SetInteger("Weapon", (int)currentWeaponData.animSet);
         weaponSound.PlayOneShot(equipSound);
         hud.RefreshAmmo(currentWeaponData.GetAmmo());
@@ -108,7 +108,7 @@ public class WeaponManager : NetworkBehaviour
         if (currentWeaponData.FireBullet())
         {
             ShootServer(currentWeaponData.damage, transform.position, transform.forward * 1000f, currentWeaponData.range, currentWeaponData.pellets);
-            currentCooldown = currentWeaponData.fireRate;
+            currentCooldown = currentWeaponData.fireRate * Player.Instance.CurrentAttackCooldown;
             hud.RefreshAmmo(currentWeaponData.GetAmmo());
         }
     }
@@ -120,12 +120,12 @@ public class WeaponManager : NetworkBehaviour
 
         for (int i = 0; i < Mathf.Max(1, pellets); i++)
         {
-            if (Physics.Raycast(position, direction, out RaycastHit hit, range, canBeShot))
+            if (Physics.Raycast(position, direction, out RaycastHit hit, range * Player.Instance.CurrentAttackRange, canBeShot))
             {             
                 GameObject blood = Instantiate(bloodPrefab, hit.point + hit.normal * 0.001f, Quaternion.identity);
                 blood.transform.LookAt(hit.point + hit.normal);
                 Spawn(blood);
-                hit.collider.gameObject.GetComponent<Enemy>().ServerTakeDamage(damage);
+                hit.collider.gameObject.GetComponent<Enemy>().ServerTakeDamage(damage * Player.Instance.CurrentDamage);
             }
         }
         ShootRpc();

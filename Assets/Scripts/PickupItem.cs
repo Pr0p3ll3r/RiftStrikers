@@ -21,7 +21,7 @@ public class PickupItem : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void ServerPickup(GameObject player)
     {
-        player.GetComponent<Player>().HandlePickup(item, item.value);
-        Despawn(gameObject);
+        if(player.GetComponent<Player>().HandlePickup(item, item.value))
+            Despawn(gameObject);
     }
 }

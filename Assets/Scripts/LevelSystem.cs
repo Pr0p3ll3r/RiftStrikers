@@ -27,7 +27,6 @@ public class LevelSystem : NetworkBehaviour
     private int maxActiveItems = 6;
     private int countPassiveItems = 0;
     private int countActiveItems = 0;
-    private int luck = 1;
     private int gainedLevels = 0;
 
     private void Awake()
@@ -44,7 +43,7 @@ public class LevelSystem : NetworkBehaviour
 
     public void GainExperience(int experience)
     {
-        currentEXP += experience;
+        currentEXP += Mathf.RoundToInt(experience * Player.Instance.CurrentExpGain);
 
         int expNeeded = CalculateEXPNeededForNextLevel();
         while (currentEXP >= expNeeded)
@@ -199,22 +198,19 @@ public class LevelSystem : NetworkBehaviour
 
     private bool ChooseItemFromOwnedSkills(List<Item> ownedItemsToUpgrade, Transform itemSlot)
     {
-        float ownedChance = 0.5f;
-        float randomValue = 0.5f;
-        if (randomValue <= ownedChance)
+        float ownedChance = Random.Range(0f, 1f);
+
+        if (ownedChance <= 0.5f)
         {
             int random1 = Random.Range(0, ownedItemsToUpgrade.Count);
-            //int random2 = Random.Range(0, ownedItemsToUpgrade.Count);
+            int random2 = Random.Range(0, ownedItemsToUpgrade.Count);
 
-            //if (random1 != random2)
-            //{
-            //    SetItemSlot(ownedItemsToUpgrade[random1], itemSlot);
-            //    ownedItemsToUpgrade.RemoveAt(ownedItemsToUpgrade.IndexOf(ownedItemsToUpgrade[random1]));
-            //    return true;
-            //}
-            SetItemSlot(ownedItemsToUpgrade[random1], itemSlot);
-            ownedItemsToUpgrade.RemoveAt(ownedItemsToUpgrade.IndexOf(ownedItemsToUpgrade[random1]));
-            return true;
+            if(random1 != random2) 
+            {
+                SetItemSlot(ownedItemsToUpgrade[random1], itemSlot);
+                ownedItemsToUpgrade.RemoveAt(ownedItemsToUpgrade.IndexOf(ownedItemsToUpgrade[random1]));
+                return true;
+            }            
         }
         return false;
     }

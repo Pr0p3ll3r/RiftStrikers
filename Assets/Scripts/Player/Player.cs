@@ -10,9 +10,23 @@ public class Player : NetworkBehaviour
     [SerializeField] private PlayerStats stats;
     public PlayerStats Stats => stats;
 
+    public float CurrentMaxHealth { get; set; }
+    public float CurrentHealthRecovery { get; set; }
+    public float CurrentArmor { get; set; }
+    public float CurrentMoveSpeed { get; set; }
+    public float CurrentDamage { get; set; }
+    public float CurrentAttackRange { get; set; }
+    public float CurrentProjectileSpeed { get; set; }
+    public float CurrentAttackDuration { get; set; } 
+    public float CurrentAttackCooldown { get; set; }
+    public float CurrentExpGain { get; set; }
+    public float CurrentMoneyGain { get; set; }
+    public float CurrentLootRange { get; set; }
+
     private float currentHealth;
     private bool isDead;
-    public bool IsDead => isDead;    
+    public bool IsDead => isDead;
+    private int currentMoney;
 
     [SerializeField] private AudioSource hurtSound;
     [SerializeField] private AudioSource deathSound;
@@ -28,6 +42,19 @@ public class Player : NetworkBehaviour
     private void Awake()
     {
         currentHealth = stats.MaxHealth;
+        CurrentMaxHealth = stats.MaxHealth;
+        CurrentHealthRecovery = stats.HealthRecovery;
+        CurrentArmor = stats.Armor;
+        CurrentMoveSpeed = stats.MoveSpeed;
+        CurrentDamage = stats.Damage;
+        CurrentAttackRange = stats.AttackRange;
+        CurrentProjectileSpeed = stats.ProjectileSpeed;
+        CurrentAttackDuration = stats.AttackDuration;
+        CurrentAttackCooldown = stats.AttackCooldown;
+        CurrentExpGain = stats.ExpGain;
+        CurrentMoneyGain = stats.MoneyGain;
+        CurrentLootRange = stats.LootRange;
+        currentMoney = 0;
     }
 
     public override void OnStartClient()
@@ -106,11 +133,13 @@ public class Player : NetworkBehaviour
         }
     }
 
-    public void HandlePickup(PickableItem item, int value)
+    public bool HandlePickup(PickableItem item, int value)
     {
         if (item.itemType == ItemType.Health)
         {
-            // Obsługa zdrowia
+            if (currentHealth >= CurrentMaxHealth) return false;
+
+            currentHealth += value;
         }
         else if (item.itemType == ItemType.Exp)
         {
@@ -118,8 +147,9 @@ public class Player : NetworkBehaviour
         }
         else if (item.itemType == ItemType.Money)
         {
-            // Obsługa pieniędzy
+            currentMoney += Mathf.RoundToInt(value * CurrentMoneyGain);
         }
+        return true;
     }
 
     public void HandleItemSelection(Item item)
