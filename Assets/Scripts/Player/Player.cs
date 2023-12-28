@@ -27,6 +27,8 @@ public class Player : NetworkBehaviour
     private bool isDead;
     public bool IsDead => isDead;
     private int currentMoney;
+    private float healthRecoveryTime = 5f;
+    private float currentHealthRecoveryTime;
 
     [SerializeField] private AudioSource hurtSound;
     [SerializeField] private AudioSource deathSound;
@@ -55,6 +57,7 @@ public class Player : NetworkBehaviour
         CurrentMoneyGain = stats.MoneyGain;
         CurrentLootRange = stats.LootRange;
         currentMoney = 0;
+        currentHealthRecoveryTime = healthRecoveryTime;
     }
 
     public override void OnStartClient()
@@ -79,6 +82,8 @@ public class Player : NetworkBehaviour
     void Update()
     {
         if (!IsOwner || GameManager.Instance.currentState == GameState.Paused) return;
+
+        HealthRecovery();
 
 #if UNITY_EDITOR
         if (Keyboard.current.tKey.wasPressedThisFrame)
@@ -130,6 +135,21 @@ public class Player : NetworkBehaviour
         foreach (Transform child in gameObject.GetComponentsInChildren<Transform>(true))
         {
             child.gameObject.layer = LayerMask.NameToLayer("NotCollide");
+        }
+    }
+
+    private void HealthRecovery()
+    {
+        if (currentHealth < CurrentMaxHealth)
+        {
+            currentHealthRecoveryTime -= Time.deltaTime;
+            if(currentHealthRecoveryTime <= 0) 
+            {
+                currentHealth += CurrentMaxHealth * (CurrentHealthRecovery / 100f);
+                currentHealth = Mathf.Min(currentHealth, CurrentMaxHealth);
+                currentHealthRecoveryTime = healthRecoveryTime;
+                hud.RefreshBars(currentHealth);
+            }
         }
     }
 

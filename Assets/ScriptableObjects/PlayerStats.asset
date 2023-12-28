@@ -17,9 +17,9 @@ MonoBehaviour:
   <Armor>k__BackingField: 0
   <MoveSpeed>k__BackingField: 7
   <Damage>k__BackingField: 1
-  <ItemRange>k__BackingField: 1
+  <AttackRange>k__BackingField: 1
   <ProjectileSpeed>k__BackingField: 1
-  <ItemDuration>k__BackingField: 1
+  <AttackDuration>k__BackingField: 1
   <AttackCooldown>k__BackingField: 1
   <ExpGain>k__BackingField: 1
   <MoneyGain>k__BackingField: 1
