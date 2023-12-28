@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 3014224595368868598}
   m_Layer: 0
   m_Name: PickupHealth
-  m_TagString: Untagged
+  m_TagString: HealthPickup
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -123,7 +123,6 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 3014224595368868598}
   _networkObjectCache: {fileID: 3014224595368868598}
   item: {fileID: 11400000, guid: bde585d95b562344fbcf46ebf3754315, type: 2}
-  value: 100
 --- !u!114 &3014224595368868598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,7 +151,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  <PrefabId>k__BackingField: 0
+  <PrefabId>k__BackingField: 18
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 0
   <SceneId>k__BackingField: 0

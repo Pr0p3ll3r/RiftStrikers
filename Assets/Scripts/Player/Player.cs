@@ -84,6 +84,7 @@ public class Player : NetworkBehaviour
         if (!IsOwner || GameManager.Instance.currentState == GameState.Paused) return;
 
         HealthRecovery();
+        PullItemsTowardsPlayer();
 
 #if UNITY_EDITOR
         if (Keyboard.current.tKey.wasPressedThisFrame)
@@ -149,6 +150,23 @@ public class Player : NetworkBehaviour
                 currentHealth = Mathf.Min(currentHealth, CurrentMaxHealth);
                 currentHealthRecoveryTime = healthRecoveryTime;
                 hud.RefreshBars(currentHealth);
+            }
+        }
+    }
+
+    private void PullItemsTowardsPlayer()
+    {
+        Collider[] itemsInRadius = Physics.OverlapSphere(transform.position, CurrentLootRange);
+
+        foreach (Collider itemCollider in itemsInRadius)
+        {
+            if (itemCollider.TryGetComponent<PickupItem>(out var pickupItem) && !itemCollider.CompareTag("HealthPickup"))
+            {
+                Vector3 directionToPlayer = transform.position - pickupItem.transform.position;
+                if (directionToPlayer.magnitude < CurrentLootRange)
+                {
+                    pickupItem.transform.position = Vector3.MoveTowards(pickupItem.transform.position, transform.position, 5f * Time.deltaTime);
+                }
             }
         }
     }
