@@ -18,9 +18,9 @@ public class ItemSlot : MonoBehaviour
         {
             descriptionText.text = activeItem.GetNextLevelDescription();
         }
-        //else if (item is PassiveItem passiveItem)
-        //{
-        //    descriptionText.text = passiveItem.GetNextLevelDescription();
-        //}
+        else if (item is PassiveItem passiveItem)
+        {
+            descriptionText.text = passiveItem.description;
+        }
     }
 }

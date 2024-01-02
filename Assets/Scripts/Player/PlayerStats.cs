@@ -8,7 +8,7 @@ public class PlayerStats : ScriptableObject
     [field: SerializeField]
     public float HealthRecovery { get; private set; }
     [field: SerializeField]
-    public float Armor { get; private set; }
+    public float DamageReduction { get; private set; }
     [field: SerializeField]
     public float MoveSpeed { get; private set; }
     [field: SerializeField]

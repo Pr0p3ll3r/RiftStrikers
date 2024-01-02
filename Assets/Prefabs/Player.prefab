@@ -3998,6 +3998,18 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 3610995976546538049}
   _networkObjectCache: {fileID: 3610995976546538049}
   stats: {fileID: 11400000, guid: caf90fe41f84192418e918f61f9b29b3, type: 2}
+  currentMaxHealth: 0
+  currentHealthRecovery: 0
+  currentDamageReduction: 0
+  currentMoveSpeed: 0
+  currentDamage: 0
+  currentAttackRange: 0
+  currentProjectileSpeed: 0
+  currentAttackDuration: 0
+  currentAttackCooldown: 0
+  currentExpGain: 0
+  currentMoneyGain: 0
+  currentLootRange: 0
   hurtSound: {fileID: 8451478337659106912}
   deathSound: {fileID: 4435237410295346606}
 --- !u!114 &3182755882567150873
@@ -4018,7 +4030,7 @@ MonoBehaviour:
   gravity: -9.81
   footstepSound: {fileID: 8300000, guid: f404f8d3c2a4b4f48989fb1120e78fb8, type: 3}
   rollSound: {fileID: 8300000, guid: 3b09d59f4499d45428baa7a21e954296, type: 3}
-  nextStep: 2.3
+  nextStep: 1.5
   nextRoll: 2
   rollingCurve:
     serializedVersion: 2
@@ -4104,7 +4116,6 @@ MonoBehaviour:
   equipSound: {fileID: 8300000, guid: d7e02c5ff096dde4191b3ef37e2b1e3e, type: 3}
   isReloading: 0
   canReload: 1
-  bulletEjectingSpeed: 0.5
 --- !u!114 &993058921445530952
 MonoBehaviour:
   m_ObjectHideFlags: 0

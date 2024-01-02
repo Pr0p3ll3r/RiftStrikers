@@ -23,11 +23,10 @@ MonoBehaviour:
   bulletForce: 20
   bulletPrefab: {fileID: 1029217829519620, guid: 1f1fceae8db39824aa9059aec112a98a,
     type: 3}
-  movementSpeedMultiplier: 0.7
+  movementSpeedMultiplier: 0
   reloadTime: 2.8
   childNumber: 0
   animSet: 1
   reloadSound: {fileID: 8300000, guid: 5cbc0a42c05d9184d912d1308566356a, type: 3}
   gunshotSound: {fileID: 8300000, guid: 7c2281521487bbd42b48542bbe6aa1a7, type: 3}
-  pitchRandom: 0
   shotVolume: 0.5

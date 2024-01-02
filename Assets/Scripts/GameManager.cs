@@ -40,7 +40,7 @@ public class GameManager : NetworkBehaviour
     [SyncVar] private float gameTimer;
     [SerializeField] private TextMeshProUGUI timer;
 
-    private int healthMultiplier = 1;
+    private int healthMultiplier = 2;
     private float damageMultiplier = 1;
     private float spawnIntervalMultiplier = 1;
     private float maximumAmountMultiplier = 1;
@@ -193,8 +193,8 @@ public class GameManager : NetworkBehaviour
             Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
             GameObject enemyGO = Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
             Enemy enemy = enemyGO.GetComponent<Enemy>();
-            enemy.Stats.maxHealth *= healthMultiplier;
-            enemy.Stats.damage = (int)(enemy.Stats.damage * damageMultiplier);
+            enemy.CurrentMaxHealth *= healthMultiplier;
+            enemy.CurrentDamage = (int)(enemy.CurrentDamage * damageMultiplier);
             Spawn(enemyGO);
             enemies.Add(enemy);
         }
@@ -208,9 +208,8 @@ public class GameManager : NetworkBehaviour
         Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
         GameObject bossGO = Instantiate(currentIsland.bossPrefab, spawnPoint.position, Quaternion.identity);
         Enemy boss = bossGO.GetComponent<Enemy>();
-        boss.Stats.maxHealth *= healthMultiplier;
-        boss.Stats.damage = (int)(boss.Stats.damage * damageMultiplier);
-        boss.Stats.isBoss = true;
+        boss.CurrentMaxHealth *= healthMultiplier;
+        boss.CurrentDamage = (int)(boss.CurrentDamage * damageMultiplier);
         Spawn(bossGO);
         enemies.Add(boss);
         isBossSpawned = true;

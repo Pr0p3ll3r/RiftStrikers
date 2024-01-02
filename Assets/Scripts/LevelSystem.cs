@@ -1,11 +1,11 @@
-﻿using FishNet;
-using FishNet.Object;
+﻿using FishNet.Object;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class LevelSystem : NetworkBehaviour
 {
@@ -20,7 +20,7 @@ public class LevelSystem : NetworkBehaviour
     [SerializeField] private List<Item> availableItems;
     [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] private Slider expBar;
-    private List<Item> ownedItems = new List<Item>();
+    [SerializeField] private List<Item> ownedItems = new List<Item>();
     private Dictionary<Item, int> votes = new Dictionary<Item, int>();
     private int chosen = 0;
     private int maxPassiveItems = 6;
@@ -43,8 +43,7 @@ public class LevelSystem : NetworkBehaviour
 
     public void GainExperience(int experience)
     {
-        currentEXP += Mathf.RoundToInt(experience * Player.Instance.CurrentExpGain);
-
+        currentEXP += experience;
         int expNeeded = CalculateEXPNeededForNextLevel();
         while (currentEXP >= expNeeded)
         {
@@ -100,7 +99,7 @@ public class LevelSystem : NetworkBehaviour
         if (item.isActive)
             ActiveItemChosenRpc((ActiveItem)item);
         else
-            PassiveItemChosenRpc();
+            PassiveItemChosenRpc((PassiveItem)item);
     }
 
     [ObserversRpc]
@@ -112,30 +111,50 @@ public class LevelSystem : NetworkBehaviour
     [ObserversRpc]
     private void ActiveItemChosenRpc(ActiveItem chosenItem)
     {
-        countActiveItems++;
         if (!ownedItems.Contains(chosenItem))
         {
+            countActiveItems++;
             chosenItem.AddLevel();
             ownedItems.Add(chosenItem);
             availableItems.Remove(chosenItem);
             Player.Instance.HandleItemSelection(chosenItem);
+            Debug.Log("Add item: " + chosenItem.itemName);
         }
         else
         {
             Item ownedItem = ownedItems.Find(x => x.itemName == chosenItem.itemName);
             ownedItem.AddLevel();
-        }     
-        chosen = 0;
-        votes.Clear();
-        upgradeUI.SetActive(false);
-        GameManager.Instance.PauseGame(false);
-        OnNewLevel();
+            Debug.Log("Level up item: " + chosenItem.itemName);
+        }
+        StopItemChoose();
     }
 
     [ObserversRpc]
-    private void PassiveItemChosenRpc()
+    private void PassiveItemChosenRpc(PassiveItem chosenItem)
     {
-        countPassiveItems++;
+        if (chosenItem.itemName != money.itemName)
+        {
+            if (!ownedItems.Contains(chosenItem))
+            {
+                countPassiveItems++;
+                chosenItem.AddLevel();
+                ownedItems.Add(chosenItem);
+                availableItems.Remove(chosenItem);
+                Debug.Log("Add item: " + chosenItem.itemName);
+            }
+            else
+            {
+                Item ownedItem = ownedItems.Find(x => x.itemName == chosenItem.itemName);
+                ownedItem.AddLevel();
+                Debug.Log("Level up item: " + chosenItem.itemName);
+            }
+        }     
+        Player.Instance.HandleItemSelection(chosenItem);
+        StopItemChoose();
+    }
+
+    private void StopItemChoose()
+    {
         chosen = 0;
         votes.Clear();
         upgradeUI.SetActive(false);
@@ -149,7 +168,7 @@ public class LevelSystem : NetworkBehaviour
         foreach (Transform itemSlot in itemList)
         {
             itemSlot.GetComponent<Button>().interactable = true;
-            itemSlot.GetComponent<Image>().color = Color.white;
+            itemSlot.GetComponent<Image>().color = new Color32(10, 10, 10, 255);
             itemSlot.gameObject.SetActive(false);
         }
     }
@@ -171,8 +190,7 @@ public class LevelSystem : NetworkBehaviour
         List<Item> tempAvailableItems = new List<Item>(availableItems);
         List<Item> ownedItemsToUpgrade = ownedItems.FindAll(x => x.GetLevel() < x.maxLevel).ToList();
 
-        int i;
-        for (i = 0; i < itemList.childCount; i++)
+        for (int i = 0; i < itemList.childCount; i++)
         {
             Transform itemSlot = itemList.GetChild(i);
             itemSlot.GetComponent<Button>().onClick.RemoveAllListeners();
@@ -182,7 +200,7 @@ public class LevelSystem : NetworkBehaviour
                 if (ownedItemsToUpgrade.Count > 0)
                 {
                     if (ChooseItemFromOwnedSkills(ownedItemsToUpgrade, itemSlot))
-                        continue;
+                        continue;           
                 }
                 if (tempAvailableItems.Count > 0)
                 {
@@ -190,17 +208,24 @@ public class LevelSystem : NetworkBehaviour
                         continue;
                 }
             }
-            SetMoneyToSlot(itemSlot);
+            SetItemSlot(money, itemSlot);
             break;
         }
-        ActivateItemSlots(i);
+        ActivateItemSlots();
     }
 
     private bool ChooseItemFromOwnedSkills(List<Item> ownedItemsToUpgrade, Transform itemSlot)
-    {
-        float ownedChance = Random.Range(0f, 1f);
+    {     
+        if (availableItems.Count == 0 || (countActiveItems + countPassiveItems) == (maxActiveItems + maxPassiveItems))
+        {
+            int random = Random.Range(0, ownedItemsToUpgrade.Count);
+            SetItemSlot(ownedItemsToUpgrade[random], itemSlot);
+            ownedItemsToUpgrade.RemoveAt(ownedItemsToUpgrade.IndexOf(ownedItemsToUpgrade[random]));
+            return true;
+        }
 
-        if (ownedChance <= 0.5f)
+        float ownedChance = Random.Range(0f, 1f);
+        if (ownedChance > 0.5f)
         {
             int random1 = Random.Range(0, ownedItemsToUpgrade.Count);
             int random2 = Random.Range(0, ownedItemsToUpgrade.Count);
@@ -217,9 +242,6 @@ public class LevelSystem : NetworkBehaviour
 
     private bool ChooseItemFromAvailable(List<Item> availableItems, Transform itemSlot)
     {
-        int countPassiveItems = ownedItems.Count(x => !x.isActive);
-        int countActiveItems = ownedItems.Count(x => x.isActive);
-
         while (availableItems.Count > 0)
         {
             int randomIndex = Random.Range(0, availableItems.Count);
@@ -246,13 +268,6 @@ public class LevelSystem : NetworkBehaviour
         votes.Add(item, 0);
     }
 
-    private void SetMoneyToSlot(Transform itemSlot)
-    {
-        itemSlot.GetComponent<ItemSlot>().SetSlot(money);
-        itemSlot.GetComponent<Button>().onClick.AddListener(delegate { VoteForItem(money); });
-        votes.Add(money, 0);
-    }
-
     private void VoteForItem(Item skill)
     {
         ServerVote(skill);
@@ -262,10 +277,9 @@ public class LevelSystem : NetworkBehaviour
         }
     }
 
-    [ObserversRpc]
-    private void ActivateItemSlots(int index)
+    private void ActivateItemSlots()
     {
-        for (int i = 0; i <= index; i++)
+        for (int i = 0; i < votes.Count; i++)
         {
             itemList.GetChild(i).gameObject.SetActive(true);
         }
@@ -318,7 +332,6 @@ public class LevelSystem : NetworkBehaviour
                 index++;
             }
         }
-
         return (chosenItem, chosenIndex);
     }
 }

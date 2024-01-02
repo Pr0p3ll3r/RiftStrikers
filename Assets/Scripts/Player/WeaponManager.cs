@@ -23,7 +23,6 @@ public class WeaponManager : NetworkBehaviour
     private PlayerController controller;
     private Animator animCharacter;
     private Coroutine reload;
-    [SerializeField] private float bulletEjectingSpeed = 0.5f;
     private GameObject closestEnemy;
     public GameObject ClosestEnemy => closestEnemy;
 
@@ -43,7 +42,7 @@ public class WeaponManager : NetworkBehaviour
 
         if (currentWeapon != null)
         {
-            closestEnemy = GameManager.Instance.GetClosestEnemy(transform.position, currentWeaponData.range);
+            closestEnemy = GameManager.Instance.GetClosestEnemy(transform.position, currentWeaponData.range * Player.Instance.currentAttackRange);
 
             if (currentCooldown > 0) currentCooldown -= Time.deltaTime;
 
@@ -80,7 +79,7 @@ public class WeaponManager : NetworkBehaviour
         currentWeaponData = testWeapon.GetCopy();
         ShowWeapon();
         hud.RefreshWeapon(currentWeaponData);
-        Player.Instance.CurrentMoveSpeed *= currentWeaponData.movementSpeedMultiplier;
+        Player.Instance.currentMoveSpeed *= 1 + currentWeaponData.movementSpeedMultiplier / 100f;
         animCharacter.SetInteger("Weapon", (int)currentWeaponData.animSet);
         weaponSound.PlayOneShot(equipSound);
         hud.RefreshAmmo(currentWeaponData.GetAmmo());
@@ -107,8 +106,8 @@ public class WeaponManager : NetworkBehaviour
     {
         if (currentWeaponData.FireBullet())
         {
-            ShootServer(currentWeaponData.damage, transform.position, transform.forward * 1000f, currentWeaponData.range, currentWeaponData.pellets);
-            currentCooldown = currentWeaponData.fireRate * Player.Instance.CurrentAttackCooldown;
+            ShootServer(currentWeaponData.damage, transform.position, transform.forward * 1000f, currentWeaponData.range * Player.Instance.currentAttackRange, currentWeaponData.pellets);
+            currentCooldown = currentWeaponData.fireRate * Player.Instance.currentAttackCooldown;
             hud.RefreshAmmo(currentWeaponData.GetAmmo());
         }
     }
@@ -120,12 +119,12 @@ public class WeaponManager : NetworkBehaviour
 
         for (int i = 0; i < Mathf.Max(1, pellets); i++)
         {
-            if (Physics.Raycast(position, direction, out RaycastHit hit, range * Player.Instance.CurrentAttackRange, canBeShot))
+            if (Physics.Raycast(position, direction, out RaycastHit hit, range, canBeShot))
             {             
                 GameObject blood = Instantiate(bloodPrefab, hit.point + hit.normal * 0.001f, Quaternion.identity);
                 blood.transform.LookAt(hit.point + hit.normal);
                 Spawn(blood);
-                hit.collider.gameObject.GetComponent<Enemy>().ServerTakeDamage(damage * Player.Instance.CurrentDamage);
+                hit.collider.gameObject.GetComponent<Enemy>().ServerTakeDamage(damage * Player.Instance.currentDamage);
             }
         }
         ShootRpc();
@@ -140,7 +139,6 @@ public class WeaponManager : NetworkBehaviour
 
         //sfx
         sfx.clip = currentWeaponData.gunshotSound;
-        sfx.pitch = 1 - currentWeaponData.pitchRandom + Random.Range(-currentWeaponData.pitchRandom, currentWeaponData.pitchRandom);
         sfx.volume = currentWeaponData.shotVolume;
         sfx.PlayOneShot(sfx.clip);
 

@@ -15,7 +15,7 @@ MonoBehaviour:
   <MaxHealth>k__BackingField: 100
   <HealthRecovery>k__BackingField: 0
   <Armor>k__BackingField: 0
-  <MoveSpeed>k__BackingField: 7
+  <MoveSpeed>k__BackingField: 5
   <Damage>k__BackingField: 1
   <AttackRange>k__BackingField: 1
   <ProjectileSpeed>k__BackingField: 1

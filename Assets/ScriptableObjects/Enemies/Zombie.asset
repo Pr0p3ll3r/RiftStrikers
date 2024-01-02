@@ -12,13 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb681700cc607c45aa761a4efba7323, type: 3}
   m_Name: Zombie
   m_EditorClassIdentifier: 
-  damage: 10
-  attackRange: 2
-  moveSpeed: 4
-  maxHealth: 60
-  isBoss: 0
-  exp: 5
-  money: 5
-  loot:
+  <Damage>k__BackingField: 10
+  <AttackRange>k__BackingField: 1.5
+  <MoveSpeed>k__BackingField: 5
+  <MaxHealth>k__BackingField: 60
+  <IsBoss>k__BackingField: 0
+  <Loot>k__BackingField:
   - {fileID: 11400000, guid: 0f0fadb32803bd04fab5dc133247d773, type: 2}
   - {fileID: 11400000, guid: 54eb888d49cc7e946b3cd3a0cba742cd, type: 2}

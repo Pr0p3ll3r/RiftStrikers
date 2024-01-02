@@ -88,7 +88,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         Vector3 movement = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
-        controller.Move(player.Stats.MoveSpeed * Time.deltaTime * movement);
+        controller.Move(player.currentMoveSpeed * Time.deltaTime * movement);
 
         playerVelocity.y += gravity * Time.deltaTime;
         controller.Move(playerVelocity * Time.deltaTime);
@@ -99,16 +99,14 @@ public class PlayerController : NetworkBehaviour
         animCharacter.SetFloat("Direction", localMove.x, 0.05f, Time.deltaTime);
 
         //footsteps
-        distMoved += (lastPos - transform.position).magnitude;
-        lastPos = transform.position;
-
-        if (distMoved > nextStep)
+        distMoved += (transform.position - lastPos).magnitude;
+        if (distMoved >= nextStep)
         {
             audioSource.pitch = Random.Range(0.8f, 1.1f);
             audioSource.PlayOneShot(footstepSound);
-
             distMoved = 0;
         }
+        lastPos = transform.position;
 
         if (player.AutoAim)
         {

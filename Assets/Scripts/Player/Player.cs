@@ -10,18 +10,18 @@ public class Player : NetworkBehaviour
     [SerializeField] private PlayerStats stats;
     public PlayerStats Stats => stats;
 
-    public float CurrentMaxHealth { get; set; }
-    public float CurrentHealthRecovery { get; set; }
-    public float CurrentArmor { get; set; }
-    public float CurrentMoveSpeed { get; set; }
-    public float CurrentDamage { get; set; }
-    public float CurrentAttackRange { get; set; }
-    public float CurrentProjectileSpeed { get; set; }
-    public float CurrentAttackDuration { get; set; } 
-    public float CurrentAttackCooldown { get; set; }
-    public float CurrentExpGain { get; set; }
-    public float CurrentMoneyGain { get; set; }
-    public float CurrentLootRange { get; set; }
+    [HideInInspector] public float currentMaxHealth;
+    [HideInInspector] public float currentHealthRecovery;
+    [HideInInspector] public float currentDamageReduction;
+    [HideInInspector] public float currentMoveSpeed;
+    [HideInInspector] public float currentDamage;
+    [HideInInspector] public float currentAttackRange;
+    [HideInInspector] public float currentProjectileSpeed;
+    [HideInInspector] public float currentAttackDuration;
+    [HideInInspector] public float currentAttackCooldown;
+    [HideInInspector] public float currentExpGain;
+    [HideInInspector] public float currentMoneyGain;
+    [HideInInspector] public float currentLootRange;
 
     private float currentHealth;
     private bool isDead;
@@ -44,20 +44,20 @@ public class Player : NetworkBehaviour
     private void Awake()
     {
         currentHealth = stats.MaxHealth;
-        CurrentMaxHealth = stats.MaxHealth;
-        CurrentHealthRecovery = stats.HealthRecovery;
-        CurrentArmor = stats.Armor;
-        CurrentMoveSpeed = stats.MoveSpeed;
-        CurrentDamage = stats.Damage;
-        CurrentAttackRange = stats.AttackRange;
-        CurrentProjectileSpeed = stats.ProjectileSpeed;
-        CurrentAttackDuration = stats.AttackDuration;
-        CurrentAttackCooldown = stats.AttackCooldown;
-        CurrentExpGain = stats.ExpGain;
-        CurrentMoneyGain = stats.MoneyGain;
-        CurrentLootRange = stats.LootRange;
-        currentMoney = 0;
+        currentMaxHealth = stats.MaxHealth;
+        currentHealthRecovery = stats.HealthRecovery;
+        currentDamageReduction = stats.DamageReduction;
+        currentMoveSpeed = stats.MoveSpeed;
+        currentDamage = stats.Damage;
+        currentAttackRange = stats.AttackRange;
+        currentProjectileSpeed = stats.ProjectileSpeed;
+        currentAttackDuration = stats.AttackDuration;
+        currentAttackCooldown = stats.AttackCooldown;
+        currentExpGain = stats.ExpGain;
+        currentMoneyGain = stats.MoneyGain;
+        currentLootRange = stats.LootRange;
         currentHealthRecoveryTime = healthRecoveryTime;
+        currentMoney = 0;
     }
 
     public override void OnStartClient()
@@ -103,8 +103,8 @@ public class Player : NetworkBehaviour
     {
         if (isDead) return;
 
-        float reducedDamage = Mathf.Max(0, damage - (damage * (CurrentArmor / 100f)));
-        currentHealth -= reducedDamage;
+        float modifiedDamage = damage * (1 - currentDamageReduction);
+        currentHealth -= modifiedDamage;
 
         hurtSound.Play();
         TakeDamageRpc(Owner, currentHealth);
@@ -144,29 +144,31 @@ public class Player : NetworkBehaviour
 
     private void HealthRecovery()
     {
-        if (currentHealth < CurrentMaxHealth)
+        if (currentHealthRecovery == 0) return;
+
+        if (currentHealth < currentMaxHealth)
         {
             currentHealthRecoveryTime -= Time.deltaTime;
             if(currentHealthRecoveryTime <= 0) 
             {
-                currentHealth += CurrentMaxHealth * (CurrentHealthRecovery / 100f);
-                currentHealth = Mathf.Min(currentHealth, CurrentMaxHealth);
+                currentHealth += currentMaxHealth * currentHealthRecovery;
+                currentHealth = Mathf.Min(currentHealth, currentMaxHealth);
                 currentHealthRecoveryTime = healthRecoveryTime;
                 hud.RefreshBars(currentHealth);
             }
-        }
+        }      
     }
 
     private void PullItemsTowardsPlayer()
     {
-        Collider[] itemsInRadius = Physics.OverlapSphere(transform.position, CurrentLootRange);
+        Collider[] itemsInRadius = Physics.OverlapSphere(transform.position, currentLootRange);
 
         foreach (Collider itemCollider in itemsInRadius)
         {
             if (itemCollider.TryGetComponent<PickupItem>(out var pickupItem) && !itemCollider.CompareTag("HealthPickup"))
             {
                 Vector3 directionToPlayer = transform.position - pickupItem.transform.position;
-                if (directionToPlayer.magnitude < CurrentLootRange)
+                if (directionToPlayer.magnitude < currentLootRange)
                 {
                     pickupItem.transform.position = Vector3.MoveTowards(pickupItem.transform.position, transform.position, 5f * Time.deltaTime);
                 }
@@ -178,24 +180,40 @@ public class Player : NetworkBehaviour
     {
         if (item.itemType == ItemType.Health)
         {
-            if (currentHealth >= CurrentMaxHealth) return false;
+            if (currentHealth >= currentMaxHealth) return false;
 
             currentHealth += value;
         }
         else if (item.itemType == ItemType.Exp)
         {
+            value = Mathf.RoundToInt(value * currentExpGain);
             LevelSystem.Instance.GainExperience(value);
         }
         else if (item.itemType == ItemType.Money)
         {
-            currentMoney += Mathf.RoundToInt(value * CurrentMoneyGain);
+            value = Mathf.RoundToInt(value * currentMoneyGain);
+            currentMoney += value;
         }
         return true;
     }
 
     public void HandleItemSelection(Item item)
     {
-        itemManager.AddItem(item);
+        if(item is ActiveItem activeItem)
+        {
+            itemManager.AddActiveItem(activeItem);
+        }
+        else if(item is PassiveItem passiveItem)
+        {
+            if (passiveItem.name == "Money")
+            {
+                currentMoney += (int)passiveItem.multiplier;
+            }
+            else
+            {
+                itemManager.AddPassiveItem(passiveItem);
+            }           
+        }
     }
 
     //private void OnTriggerEnter(Collider other)

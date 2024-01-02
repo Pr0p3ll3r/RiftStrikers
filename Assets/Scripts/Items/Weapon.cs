@@ -29,7 +29,6 @@ public class Weapon : ScriptableObject
     [Header("Sounds")]
     public AudioClip reloadSound;
     public AudioClip gunshotSound;
-    public float pitchRandom;
     public float shotVolume;
 
     private int currentAmmo;
