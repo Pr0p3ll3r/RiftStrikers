@@ -8,7 +8,7 @@ public abstract class ActiveItemController : NetworkBehaviour
 
     protected virtual void Start()
     {
-        currentCooldown = activeItem.GetCurrentLevel().Cooldown * Player.Instance.currentAttackCooldown;
+        currentCooldown = activeItem.GetCurrentLevel().cooldown * Player.Instance.currentAttackCooldown;
     }
 
     protected virtual void Update()
@@ -22,13 +22,13 @@ public abstract class ActiveItemController : NetworkBehaviour
         }
     }
 
-    public void SetData(ActiveItem activeItem)
+    public virtual void SetData(ActiveItem activeItem)
     {
         this.activeItem = activeItem;
     }
 
     protected virtual void Attack()
     {
-        currentCooldown = activeItem.GetCurrentLevel().Cooldown * Player.Instance.currentAttackCooldown;
+        currentCooldown = activeItem.GetCurrentLevel().cooldown * Player.Instance.currentAttackCooldown;
     }
 }

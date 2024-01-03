@@ -12,26 +12,18 @@ public class ActiveItem : Item
     }
     public string GetNextLevelDescription()
     {
-        return levels[GetLevel() + 1].Description;
+        return levels[GetLevel() + 1].description;
     }
 }
 
 [Serializable]
 public class ActiveItemLevel
 {
-    [SerializeField]
-    [TextArea(4, 6)] private string description;
-    public string Description { get => description; private set => description = value; }
-    [field: SerializeField]
-    public float Damage { get; private set; }
-    [field: SerializeField]
-    public float Range { get; private set; }
-    [field: SerializeField]
-    public float Cooldown { get; private set; }
-    [field: SerializeField]
-    public float Speed { get; private set; }
-    [field: SerializeField]
-    public int Projectiles { get; private set; }
-    [field: SerializeField]
-    public int Pierce { get; private set; }
+    [TextArea(4, 6)] public string description;
+    public float damage;
+    public float range;
+    public float cooldown;
+    public float speed;
+    public int projectiles;
+    public int pierce;
 }

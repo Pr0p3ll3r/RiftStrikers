@@ -17,6 +17,7 @@ public class Enemy : NetworkBehaviour
     [SerializeField] private EnemyStats stats;
     public EnemyStats Stats => stats;
 
+    [SerializeField] private GameObject bloodPrefab;
     [SerializeField] private Transform graphics;
     private Transform player;
     private Animator animator;
@@ -155,6 +156,9 @@ public class Enemy : NetworkBehaviour
         
         currentHealth -= damage;
         RpcSetHealthBar(currentHealth);
+        GameObject blood = Instantiate(bloodPrefab, transform.position + Vector3.up, Quaternion.identity);
+        Spawn(blood);
+
         if (currentHealth <= 0)
         {
             isDead = true;

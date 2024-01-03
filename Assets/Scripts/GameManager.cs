@@ -345,7 +345,7 @@ public class GameManager : NetworkBehaviour
             {
                 float distanceToEnemy = Vector3.Distance(pos, enemy.transform.position);
 
-                if (distanceToEnemy < range && distanceToEnemy < minimumDistance)
+                if (distanceToEnemy <= range && distanceToEnemy < minimumDistance)
                 {
                     closestEnemy = enemy.gameObject;
                     minimumDistance = distanceToEnemy;
@@ -354,5 +354,25 @@ public class GameManager : NetworkBehaviour
         }
 
         return closestEnemy;
+    }
+
+    public Enemy[] GetEnemiesInRange(Vector3 pos, float range)
+    {
+        List<Enemy> tempList = new List<Enemy>();
+
+        foreach (Enemy enemy in enemies)
+        {
+            if (!enemy.IsDead)
+            {
+                float distanceToEnemy = Vector3.Distance(pos, enemy.transform.position);
+
+                if (distanceToEnemy <= range)
+                {
+                    tempList.Add(enemy);
+                }
+            }
+        }
+
+        return tempList.ToArray();
     }
 }

@@ -93,7 +93,7 @@ public class Player : NetworkBehaviour
         }
         if (Keyboard.current.eKey.wasPressedThisFrame)
         {
-            LevelSystem.Instance.GainExperience(20);
+            LevelSystem.Instance.GainExperience(5);
         }
 #endif
     }

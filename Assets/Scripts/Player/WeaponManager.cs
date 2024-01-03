@@ -10,7 +10,6 @@ public class WeaponManager : NetworkBehaviour
     public Weapon currentWeaponData;
     public Weapon testWeapon;
     [SerializeField] private LayerMask canBeShot;
-    [SerializeField] private GameObject bloodPrefab;
     [SerializeField] private AudioSource sfx;
     [SerializeField] private AudioSource weaponSound;
     [SerializeField] private AudioClip equipSound;
@@ -121,9 +120,6 @@ public class WeaponManager : NetworkBehaviour
         {
             if (Physics.Raycast(position, direction, out RaycastHit hit, range, canBeShot))
             {             
-                GameObject blood = Instantiate(bloodPrefab, hit.point + hit.normal * 0.001f, Quaternion.identity);
-                blood.transform.LookAt(hit.point + hit.normal);
-                Spawn(blood);
                 hit.collider.gameObject.GetComponent<Enemy>().ServerTakeDamage(damage * Player.Instance.currentDamage);
             }
         }

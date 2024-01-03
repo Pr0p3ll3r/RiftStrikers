@@ -80,6 +80,7 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 5799975719655290014}
   _networkObjectCache: {fileID: 5799975719655290014}
   stats: {fileID: 11400000, guid: 9c1096ab76b29954789f671095eefbc8, type: 2}
+  bloodPrefab: {fileID: 166404, guid: 78e1c8c5b281b8b439229473779ac9aa, type: 3}
   graphics: {fileID: 7633417698277815300}
   healthBar: {fileID: 7738503667405173057}
   attackCooldown: 2
@@ -110,7 +111,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 1000
-  m_StoppingDistance: 2
+  m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -288,7 +289,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  <PrefabId>k__BackingField: 2
+  <PrefabId>k__BackingField: 5
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 0
   <SceneId>k__BackingField: 0
