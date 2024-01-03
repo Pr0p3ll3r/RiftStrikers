@@ -341,7 +341,7 @@ public class GameManager : NetworkBehaviour
 
         foreach (Enemy enemy in tempList)
         {
-            if (!enemy.IsDead)
+            if (enemy.IsClientInitialized && !enemy.IsDead)
             {
                 float distanceToEnemy = Vector3.Distance(pos, enemy.transform.position);
 

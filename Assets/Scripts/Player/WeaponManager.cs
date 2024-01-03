@@ -56,7 +56,7 @@ public class WeaponManager : NetworkBehaviour
                         Shoot();
                     }               
                 }
-                else if (fireAction.IsPressed())
+                else if (!Pause.paused && fireAction.IsPressed())
                 {   
                     Shoot();
                 }
@@ -105,7 +105,11 @@ public class WeaponManager : NetworkBehaviour
     {
         if (currentWeaponData.FireBullet())
         {
-            ShootServer(currentWeaponData.damage, transform.position, transform.forward * 1000f, currentWeaponData.range * Player.Instance.currentAttackRange, currentWeaponData.pellets);
+            if (Player.Instance.AutoAim)
+                ShootServer(currentWeaponData.damage, transform.position, (closestEnemy.transform.position - transform.position).normalized, currentWeaponData.range * Player.Instance.currentAttackRange, currentWeaponData.pellets);
+            else
+                ShootServer(currentWeaponData.damage, transform.position, transform.forward, currentWeaponData.range * Player.Instance.currentAttackRange, currentWeaponData.pellets);
+           
             currentCooldown = currentWeaponData.fireRate * Player.Instance.currentAttackCooldown;
             hud.RefreshAmmo(currentWeaponData.GetAmmo());
         }
@@ -114,8 +118,6 @@ public class WeaponManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void ShootServer(float damage, Vector3 position, Vector3 direction, float range, int pellets)
     {
-        //Debug.Log("ShootServer");
-
         for (int i = 0; i < Mathf.Max(1, pellets); i++)
         {
             if (Physics.Raycast(position, direction, out RaycastHit hit, range, canBeShot))
