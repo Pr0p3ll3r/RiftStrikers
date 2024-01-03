@@ -4110,7 +4110,6 @@ MonoBehaviour:
   canBeShot:
     serializedVersion: 2
     m_Bits: 384
-  bloodPrefab: {fileID: 166404, guid: 78e1c8c5b281b8b439229473779ac9aa, type: 3}
   sfx: {fileID: 166195695029462567}
   weaponSound: {fileID: 5460718782169163011}
   equipSound: {fileID: 8300000, guid: d7e02c5ff096dde4191b3ef37e2b1e3e, type: 3}
@@ -4554,6 +4553,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3764887501991101459}
     m_Modifications:
+    - target: {fileID: 2780133124037824224, guid: cc13683c27d98f04fa33d3e1d11fa486,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3208839122610089303, guid: cc13683c27d98f04fa33d3e1d11fa486,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4276975700187129327, guid: cc13683c27d98f04fa33d3e1d11fa486,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6781609157058118771, guid: cc13683c27d98f04fa33d3e1d11fa486,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7249932446002296136, guid: cc13683c27d98f04fa33d3e1d11fa486,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4611,6 +4630,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8058979916973862898, guid: cc13683c27d98f04fa33d3e1d11fa486,
         type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8058979916973862898, guid: cc13683c27d98f04fa33d3e1d11fa486,
+        type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -4637,15 +4661,55 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 171554796694198267}
     m_Modifications:
+    - target: {fileID: 7935683374892804610, guid: c8959e886bc5b9b4fb7fd7b66171952e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7935922844673115084, guid: c8959e886bc5b9b4fb7fd7b66171952e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7935922844673115084, guid: c8959e886bc5b9b4fb7fd7b66171952e,
         type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7936289184182009406, guid: c8959e886bc5b9b4fb7fd7b66171952e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7936303257282367042, guid: c8959e886bc5b9b4fb7fd7b66171952e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7936329820696100080, guid: c8959e886bc5b9b4fb7fd7b66171952e,
         type: 3}
       propertyPath: m_Name
       value: MuzzleFlash
+      objectReference: {fileID: 0}
+    - target: {fileID: 7936329820696100080, guid: c8959e886bc5b9b4fb7fd7b66171952e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7936356616000908014, guid: c8959e886bc5b9b4fb7fd7b66171952e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7936401879973243658, guid: c8959e886bc5b9b4fb7fd7b66171952e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7936689540672005768, guid: c8959e886bc5b9b4fb7fd7b66171952e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7941893370770244570, guid: c8959e886bc5b9b4fb7fd7b66171952e,
         type: 3}

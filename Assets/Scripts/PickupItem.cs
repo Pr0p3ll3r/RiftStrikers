@@ -4,24 +4,29 @@ using UnityEngine;
 public class PickupItem : NetworkBehaviour
 {
     [SerializeField] private PickableItem item;
+    private float timer;
 
-    public void SetItem(PickableItem item)
+    private void Update()
     {
-        this.item = item;
+        if(timer > 0)
+        {
+            timer -= Time.deltaTime;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") && other.gameObject.GetComponent<NetworkObject>().IsOwner)
+        if (IsClientInitialized && timer <= 0 && other.transform.root.TryGetComponent(out Player player))
         {
-            ServerPickup(other.gameObject);
+            timer = 0.1f;
+            ServerPickup(player);
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void ServerPickup(GameObject player)
+    private void ServerPickup(Player player)
     {
-        if(player.GetComponent<Player>().HandlePickup(item, item.value))
+        if(player.HandlePickup(item, item.value))
             Despawn(gameObject);
     }
 }

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6561184452205593314}
   - component: {fileID: 4459580390924338214}
   m_Layer: 0
-  m_Name: PickupExp
+  m_Name: PickupExpBig
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -123,7 +123,6 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 4459580390924338214}
   _networkObjectCache: {fileID: 4459580390924338214}
   item: {fileID: 11400000, guid: 0f0fadb32803bd04fab5dc133247d773, type: 2}
-  value: 0
 --- !u!114 &4459580390924338214
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,8 +151,8 @@ MonoBehaviour:
   _initializeOrder: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  <PrefabId>k__BackingField: 0
+  <PrefabId>k__BackingField: 13
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 0
   <SceneId>k__BackingField: 0
-  <AssetPathHash>k__BackingField: 10102888681006413229
+  <AssetPathHash>k__BackingField: 13139930174762311563

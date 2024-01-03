@@ -187,7 +187,6 @@ public class Enemy : NetworkBehaviour
     {
         PickableItem item = LootTable.GetItem(stats.Loot);
         GameObject pickupItem = Instantiate(item.prefab, transform.position + Vector3.up, Quaternion.identity);
-        pickupItem.GetComponent<PickupItem>().SetItem(item);
         Spawn(pickupItem);
     }
 }
