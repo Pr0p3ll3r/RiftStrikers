@@ -13,6 +13,7 @@ public class Enemy : NetworkBehaviour
     private float currentHealth;
     private bool isDead;
     public bool IsDead => isDead;
+    [HideInInspector] public float CanBeDamagedByForceField;
 
     [SerializeField] private EnemyStats stats;
     public EnemyStats Stats => stats;
@@ -77,6 +78,9 @@ public class Enemy : NetworkBehaviour
             player = GetClosestPlayer().transform;
 
         if (player == null || isStopped) return;
+
+        if (CanBeDamagedByForceField > 0)
+            CanBeDamagedByForceField -= Time.deltaTime;
 
         if (Vector3.Distance(transform.position, player.position) <= CurrentAttackRange)
         {

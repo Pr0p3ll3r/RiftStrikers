@@ -16,18 +16,30 @@ public class ForcefieldController : ActiveItemController
         transform.localScale = new Vector3(currentRange, 1, currentRange);
     }
 
-    protected override void Attack()
+    protected override void Update()
     {
-        base.Attack();
-        if(currentRange != activeItem.GetCurrentLevel().range)
+        if (currentRange != activeItem.GetCurrentLevel().range)
         {
             currentRange = activeItem.GetCurrentLevel().range;
             transform.localScale = new Vector3(currentRange, 1, currentRange);
-        }        
-        Enemy[] enemiesInRange = GameManager.Instance.GetEnemiesInRange(transform.position, currentRange * Player.Instance.currentAttackRange);
-        foreach (Enemy enemy in enemiesInRange)
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.transform.root.TryGetComponent<Enemy>(out var enemy) && enemy.CanBeDamagedByForceField <= 0)
         {
             enemy.ServerTakeDamage(activeItem.GetCurrentLevel().damage * Player.Instance.currentDamage);
+            enemy.CanBeDamagedByForceField = activeItem.GetCurrentLevel().cooldown;
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.transform.root.TryGetComponent<Enemy>(out var enemy) && enemy.CanBeDamagedByForceField <= 0)
+        {
+            enemy.ServerTakeDamage(activeItem.GetCurrentLevel().damage * Player.Instance.currentDamage);
+            enemy.CanBeDamagedByForceField = activeItem.GetCurrentLevel().cooldown;
         }
     }
 }

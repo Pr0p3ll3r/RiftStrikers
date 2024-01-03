@@ -4,23 +4,25 @@ using UnityEngine.UI;
 
 public class ItemSlot : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private Image iconImage;
-    [SerializeField] private TextMeshProUGUI levelText;
-    [SerializeField] private TextMeshProUGUI descriptionText;
+    [SerializeField] private TextMeshProUGUI itemName;
+    [SerializeField] private TextMeshProUGUI level;
+    [SerializeField] private TextMeshProUGUI type;
+    [SerializeField] private TextMeshProUGUI description;
 
     public void SetSlot(Item item)
     {
-        nameText.text = item.itemName;
+        itemName.text = item.itemName;
         iconImage.sprite = Database.GetItemIcon(item.itemIconIndex);
-        levelText.text = (item.GetLevel() + 2).ToString();
+        level.text = (item.GetLevel() + 2).ToString();
+        type.text = item.isActive ? "Active" : "Passive";
         if (item is ActiveItem activeItem)
         {
-            descriptionText.text = activeItem.GetNextLevelDescription();
+            description.text = activeItem.GetNextLevelDescription();
         }
         else if (item is PassiveItem passiveItem)
         {
-            descriptionText.text = passiveItem.description;
+            description.text = passiveItem.description;
         }
     }
 }

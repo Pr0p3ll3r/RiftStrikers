@@ -32,6 +32,7 @@ public class Player : NetworkBehaviour
 
     [SerializeField] private AudioSource hurtSound;
     [SerializeField] private AudioSource deathSound;
+    [SerializeField] private GameObject itemsContainer;
 
     private PlayerController controller;
     private WeaponManager weaponManager;
@@ -135,6 +136,7 @@ public class Player : NetworkBehaviour
         deathSound.Play();
         isDead = true;
         controller.OnDeath();
+        Destroy(itemsContainer);
         gameObject.layer = LayerMask.NameToLayer("NotCollide");
         foreach (Transform child in gameObject.GetComponentsInChildren<Transform>(true))
         {

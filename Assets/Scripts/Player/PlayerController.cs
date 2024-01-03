@@ -3,6 +3,7 @@ using FishNet.Object;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -29,6 +30,7 @@ public class PlayerController : NetworkBehaviour
     private AudioSource audioSource;
     private Animator animCharacter;
     private NetworkAnimator networkAnimator;
+    private LineRenderer lineRenderer;
     private Vector3 lastPos;
     private Vector3 playerVelocity;
     private Vector2 moveInput;
@@ -46,6 +48,7 @@ public class PlayerController : NetworkBehaviour
         controller = GetComponent<CharacterController>();
         networkAnimator = GetComponent<NetworkAnimator>();
         weaponManager = GetComponent<WeaponManager>();
+        lineRenderer = GetComponent<LineRenderer>();
         cam = Camera.main;
 
         Keyframe roll_LastFrame = rollingCurve[rollingCurve.length - 1];
@@ -69,6 +72,11 @@ public class PlayerController : NetworkBehaviour
 
         if (lastRoll > 0)
             lastRoll -= Time.deltaTime;
+
+        if (player.AutoAim)
+            lineRenderer.enabled = false;
+        else
+            lineRenderer.enabled = true;
 
         if (!roll)
         {
@@ -131,11 +139,12 @@ public class PlayerController : NetworkBehaviour
         if (playerPlane.Raycast(ray, out float hit))
         {
             Vector3 hitPoint = ray.GetPoint(hit);
-            //Debug.DrawLine(ray.origin, hitPoint);
-            Quaternion targetRotation = Quaternion.LookRotation(hitPoint - transform.position);
-            targetRotation.x = 0;
-            targetRotation.z = 0;
-            transform.rotation = targetRotation;
+            var direction = hitPoint - transform.position;
+            direction.y = 0;
+            transform.forward = direction;
+
+            lineRenderer.SetPosition(0, transform.position);
+            lineRenderer.SetPosition(1, hitPoint);
         }
     }
 
