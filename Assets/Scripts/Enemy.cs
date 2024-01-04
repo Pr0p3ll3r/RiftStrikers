@@ -43,6 +43,7 @@ public class Enemy : NetworkBehaviour
         CurrentAttackRange = stats.AttackRange;
         CurrentDamage = stats.Damage;
         agent.speed = CurrentMoveSpeed;
+        agent.stoppingDistance = CurrentAttackRange;
         currentHealth = CurrentMaxHealth;
     }
 

@@ -22,8 +22,7 @@ public class Knife : ActiveItemController
                 GameObject spawnedKnife = Instantiate(knifePrefab, transform.position, knifePrefab.transform.rotation);
                 Spawn(spawnedKnife);
                 spawnedKnife.GetComponent<KnifeBehaviour>().SetProjectile(closestEnemy, activeItem);
-                Enemy enemyComponent = closestEnemy.GetComponent<Enemy>();
-                if (enemyComponent != null)
+                if (closestEnemy.TryGetComponent<Enemy>(out var enemyComponent))
                 {
                     tempList.Remove(enemyComponent);
                 }

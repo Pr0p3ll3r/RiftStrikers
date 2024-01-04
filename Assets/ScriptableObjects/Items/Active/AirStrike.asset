@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa22f8ac8def0634d9380dad1fb3307f, type: 3}
+  m_Name: AirStrike
+  m_EditorClassIdentifier: 
+  itemName: Air Strike
+  itemIconIndex: 0
+  isActive: 1
+  maxLevel: 4
+  prefab: {fileID: 5828148292702650109, guid: 429178ccd336bea49af94cecc04ddef9, type: 3}
+  levels:
+  - description: Strikes at random enemies
+    damage: 15
+    range: 4
+    cooldown: 4.5
+    speed: 0
+    projectiles: 1
+    pierce: 0
+  - description: Fires 1 more projectile
+    damage: 15
+    range: 4
+    cooldown: 4.5
+    speed: 0
+    projectiles: 2
+    pierce: 0
+  - description: '-0.5s cooldown
+
+      +10 damage '
+    damage: 25
+    range: 4
+    cooldown: 4
+    speed: 0
+    projectiles: 2
+    pierce: 0
+  - description: Fires 1 more projectile
+    damage: 25
+    range: 4
+    cooldown: 4.5
+    speed: 0
+    projectiles: 3
+    pierce: 0
+  - description: '-0.5s cooldown
+
+      +20 damage'
+    damage: 45
+    range: 4
+    cooldown: 3.5
+    speed: 0
+    projectiles: 3
+    pierce: 0
