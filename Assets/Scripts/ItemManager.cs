@@ -1,15 +1,34 @@
 using FishNet.Object;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemManager : NetworkBehaviour
 {
     [SerializeField] private Transform itemsList;
+    private List<ActiveItemController> activeItems = new List<ActiveItemController>();
 
+    [ServerRpc(RequireOwnership = false)]
     public void AddActiveItem(ActiveItem item)
     {
         GameObject itemGO = Instantiate(item.prefab, itemsList);
-        itemGO.GetComponent<ActiveItemController>().SetData(item);
         Spawn(itemGO, Owner);
+        itemGO.transform.SetParent(itemsList);
+        itemGO.transform.localPosition = Vector3.zero;
+        ActiveItemController controller = itemGO.GetComponent<ActiveItemController>();
+        controller.SetData(item, transform);
+        AddActiveItemRpc(controller);
+    }
+
+    [ObserversRpc]
+    private void AddActiveItemRpc(ActiveItemController controller)
+    {
+        activeItems.Add(controller);
+    }
+
+    public void LevelUpActiveItem(ActiveItem item)
+    {
+        ActiveItemController ownedItem = activeItems.Find(x => x.activeItem.itemName == item.itemName);
+        ownedItem.AddLevel();
     }
 
     public void AddPassiveItem(PassiveItem item)

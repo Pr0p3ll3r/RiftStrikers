@@ -1,13 +1,10 @@
+using FishNet.Connection;
+using FishNet.Object;
 using UnityEngine;
 
 public class SawbladeController : ActiveItemController
 {
     [SerializeField] private GameObject sawbladePrefab;
-
-    protected override void Start()
-    {
-        currentCooldown = (activeItem.GetCurrentLevel().cooldown * Player.Instance.currentAttackCooldown) + (activeItem.GetCurrentLevel().duration * Player.Instance.currentAttackDuration);
-    }
 
     protected override void Attack()
     {
@@ -18,10 +15,15 @@ public class SawbladeController : ActiveItemController
         {
             float angle = i * angleStep;
             Vector3 spawnPosition = transform.position + Quaternion.Euler(0f, angle, 0f) * (Vector3.forward * activeItem.GetCurrentLevel().range);
-
-            GameObject sawblade = Instantiate(sawbladePrefab, spawnPosition, Quaternion.identity);
-            sawblade.GetComponent<SawbladeBehaviour>().SetProjectile(activeItem, Player.Instance.transform);
-            Spawn(sawblade);
+            SpawnServer(spawnPosition, angle, Owner);
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SpawnServer(Vector3 spawnPosition, float angle, NetworkConnection Owner)
+    {
+        GameObject sawblade = Instantiate(sawbladePrefab, spawnPosition, Quaternion.identity);
+        Spawn(sawblade, Owner);
+        sawblade.GetComponent<SawbladeBehaviour>().SetProjectileRpc(activeItem, angle, playerTransform);
     }
 }

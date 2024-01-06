@@ -65,7 +65,7 @@ public class Player : NetworkBehaviour
     {
         base.OnStartNetwork();
 
-        if (Owner.IsLocalClient)
+        if (base.Owner.IsLocalClient)
             Instance = this;
     }
 
@@ -102,8 +102,9 @@ public class Player : NetworkBehaviour
     {
         if (isDead) return;
 
-        float modifiedDamage = damage * (1 - currentDamageReduction);
-        currentHealth -= modifiedDamage;
+        //float modifiedDamage = damage * (1 - currentDamageReduction);
+        //currentHealth -= modifiedDamage;
+        currentHealth -= 0;
 
         hurtSound.Play();
         TakeDamageRpc(Owner, currentHealth);
@@ -201,7 +202,10 @@ public class Player : NetworkBehaviour
     {
         if(item is ActiveItem activeItem)
         {
-            itemManager.AddActiveItem(activeItem);
+            if(activeItem.level > 0)
+                itemManager.LevelUpActiveItem(activeItem);
+            else
+                itemManager.AddActiveItem(activeItem);
         }
         else if(item is PassiveItem passiveItem)
         {

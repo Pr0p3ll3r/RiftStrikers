@@ -18,7 +18,7 @@ public class PickupItem : NetworkBehaviour
     {
         if (IsClientInitialized && timer <= 0 && other.transform.root.TryGetComponent(out Player player))
         {
-            timer = 0.1f;
+            timer = 0.2f;
             ServerPickup(player);
         }
     }

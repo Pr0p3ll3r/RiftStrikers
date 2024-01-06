@@ -3770,6 +3770,7 @@ MonoBehaviour:
   - {fileID: 3182755882567150873}
   - {fileID: 4124513859907175097}
   - {fileID: 4794672592407554630}
+  - {fileID: 993058921445530952}
   <ParentNetworkObject>k__BackingField: {fileID: 0}
   <ChildNetworkObjects>k__BackingField: []
   SerializedTransformProperties:
@@ -3801,7 +3802,7 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 3610995976546538049}
   _networkObjectCache: {fileID: 3610995976546538049}
-  _componentConfiguration: 0
+  _componentConfiguration: 1
   _synchronizeParent: 0
   _packing:
     Position: 1
@@ -4129,6 +4130,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cc68b1f7c46e64488db247e9d3264c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _componentIndexCache: 6
+  _addedNetworkObject: {fileID: 3610995976546538049}
+  _networkObjectCache: {fileID: 3610995976546538049}
   itemsList: {fileID: 7632339502349730276}
 --- !u!114 &512104183525914352
 MonoBehaviour:
@@ -4253,7 +4257,7 @@ LineRenderer:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_ColorSpace: 0
+      m_ColorSpace: -1
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 0

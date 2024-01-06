@@ -133,6 +133,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Environment_2
       objectReference: {fileID: 0}
+    - target: {fileID: 5668282553346320851, guid: a3e05ec547fe3fe48ac5b0b6b14caca2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 7910237949794252991, guid: a3e05ec547fe3fe48ac5b0b6b14caca2,
         type: 3}
       propertyPath: m_Convex

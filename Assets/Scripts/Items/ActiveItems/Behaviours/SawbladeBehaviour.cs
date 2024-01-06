@@ -1,5 +1,4 @@
 using FishNet.Object;
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -7,46 +6,37 @@ public class SawbladeBehaviour : NetworkBehaviour
 {
     private ActiveItem activeItem;
     private Transform playerTransform;
-    private GameObject parent;
-
-    private void Start()
-    {
-        StartCoroutine(Despawn());
-        CreateSawbladeParent();
-    }
+    private float angle;
 
     private IEnumerator Despawn()
     {
         yield return new WaitForSeconds(activeItem.GetCurrentLevel().duration);
         Despawn(gameObject);
-        Destroy(parent);
     }
 
     private void Update()
     {
-        RotateSawblade();
-    }
+        if (!IsOwner) return;
 
-    private void CreateSawbladeParent()
-    {
-        GameObject parent = new GameObject("SawbladeParent");
-        this.parent = parent;
-        parent.transform.position = transform.position;
-        transform.SetParent(parent.transform);
+        RotateSawblade();
     }
 
     private void RotateSawblade()
     {
-        parent.transform.Rotate(Vector3.up, activeItem.GetCurrentLevel().speed * Time.deltaTime);
+        transform.Rotate(Vector3.up, activeItem.GetCurrentLevel().speed * Time.deltaTime);
 
-        Vector3 desiredPosition = playerTransform.position + (Quaternion.Euler(0f, parent.transform.eulerAngles.y, 0f) * Vector3.forward * activeItem.GetCurrentLevel().range);
+        Vector3 desiredPosition = playerTransform.position + (Quaternion.Euler(0f, transform.eulerAngles.y + angle, 0f) * Vector3.forward * activeItem.GetCurrentLevel().range);
         transform.position = desiredPosition;
     }
 
-    public void SetProjectile(ActiveItem item, Transform player)
+    [ObserversRpc]
+    public void SetProjectileRpc(ActiveItem activeItem, float angle, Transform player)
     {
-        activeItem = item;
+        this.activeItem = activeItem;
+        this.angle = angle;
         playerTransform = player;
+        if (IsServer)
+            StartCoroutine(Despawn());
     }
 
     private void OnTriggerEnter(Collider other)

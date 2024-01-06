@@ -133,6 +133,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Environment_9
       objectReference: {fileID: 0}
+    - target: {fileID: 4814576087336339005, guid: fe4b3d10fd2c1a44fa02cc1a3eb2cfc2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 5644212398096117592, guid: fe4b3d10fd2c1a44fa02cc1a3eb2cfc2,
         type: 3}
       propertyPath: m_LocalPosition.x

@@ -1,27 +1,53 @@
 using FishNet.Object;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class KnifeBehaviour : NetworkBehaviour
 {
     private ActiveItem activeItem;
     private Rigidbody rb;
+    private int currentPierce;
+    private bool despawning = false;
+    private HashSet<Enemy> hitEnemies = new HashSet<Enemy>();
 
-    public void SetProjectile(GameObject enemy, ActiveItem item)
+    [ObserversRpc]
+    public void SetProjectileRpc(GameObject enemy, ActiveItem activeItem)
     {
-        activeItem = item;
+        this.activeItem = activeItem;
         rb = GetComponent<Rigidbody>();
         Vector3 direction = (enemy.transform.position - transform.position).normalized;
         rb.velocity = activeItem.GetCurrentLevel().speed * Player.Instance.currentProjectileSpeed * direction;
-        transform.rotation = Quaternion.LookRotation(direction);
-        transform.Rotate(Vector3.up, -90f);
+        Quaternion lookRotation = Quaternion.LookRotation(direction, Vector3.up);
+        transform.rotation = Quaternion.Euler(0f, lookRotation.eulerAngles.y, 0f);
+        currentPierce = activeItem.GetCurrentLevel().pierce;
+        if (IsServer)
+            StartCoroutine(Despawn());
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.transform.root.TryGetComponent<Enemy>(out var enemy))
+        if (IsServer && !despawning && other.transform.root.TryGetComponent<Enemy>(out var enemy))
         {
-            enemy.ServerTakeDamage(activeItem.GetCurrentLevel().damage * Player.Instance.currentDamage);
-            Despawn(gameObject);
+            if (!hitEnemies.Contains(enemy))
+            {
+                enemy.ServerTakeDamage(activeItem.GetCurrentLevel().damage * Player.Instance.currentDamage);
+                hitEnemies.Add(enemy);
+                currentPierce--;
+            }
+
+            if (currentPierce <= 0)
+            {
+                despawning = true;
+                Despawn(gameObject);
+            }
         }
+    }
+
+    private IEnumerator Despawn()
+    {
+        yield return new WaitForSeconds(activeItem.GetCurrentLevel().duration);
+        despawning = true;
+        Despawn(gameObject);
     }
 }

@@ -48,8 +48,7 @@ public class GameManager : NetworkBehaviour
 
     [SyncObject]
     public readonly SyncList<PlayerInstance> players = new SyncList<PlayerInstance>();
-    private List<Enemy> enemies = new List<Enemy>();
-    public List<Enemy> Enemies => enemies;
+    [SyncObject] public readonly SyncList<Enemy> enemies = new SyncList<Enemy>();
 
     [SerializeField] private GameObject teleportPrefab;
     [SerializeField] private float timeForGetToTeleport = 30.0f;
@@ -70,16 +69,19 @@ public class GameManager : NetworkBehaviour
     public override void OnStartNetwork()
     {
         base.OnStartNetwork();
-        if (IsServer)
+        if (!IsServerInitialized)
         {
-            GenerateMap();
+            enabled = false;
+            return;
         }
+        gameTimer = 0;
+        waitingTimeBeforeStart = 2f;
+        currentState = GameState.WaitingForPlayers;
+        GenerateMap();
     }
 
     void Update()
     {
-        if (!IsServer) return;
-
         switch (currentState)
         {
             case GameState.WaitingForPlayers:
@@ -93,17 +95,17 @@ public class GameManager : NetworkBehaviour
             case GameState.Fighting:
                 UpdateGameTimer();
 
-                //if (timeToNextIsland > 0)
-                //    timeToNextIsland -= Time.deltaTime;
-                //else
-                //    SpawnBoss();
+                if (timeToNextIsland > 0)
+                    timeToNextIsland -= Time.deltaTime;
+                else
+                    SpawnBoss();
 
-                //if (timeToSpawnEnemy > 0)
-                //    timeToSpawnEnemy -= Time.deltaTime;
-                //else if (enemyAmount < maximumAmount * maximumAmountMultiplier)
-                //{
-                //    SpawnEnemy();
-                //}
+                if (timeToSpawnEnemy > 0)
+                    timeToSpawnEnemy -= Time.deltaTime;
+                else if (enemyAmount < maximumAmount * maximumAmountMultiplier)
+                {
+                    SpawnEnemy();
+                }
                 break;
             case GameState.ChangingMap:
                 UpdateGameTimer();
@@ -140,14 +142,12 @@ public class GameManager : NetworkBehaviour
         Player.Instance.TakeDamageServer(1000);
     }
 
-    [Server]
     private void UpdateGameTimer()
     {
         gameTimer += Time.deltaTime;
         RpcUpdateGameTimer(gameTimer);
     }
 
-    [Server]
     private void StartGame()
     {
         Debug.Log("Game Start");
@@ -182,7 +182,6 @@ public class GameManager : NetworkBehaviour
         Debug.Log("Generated map!");
     }
 
-    [Server]
     private void SpawnEnemy()
     {
         if (currentIsland == null) return;
@@ -200,7 +199,6 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    [Server]
     private void SpawnBoss()
     {
         if (isBossSpawned) return;
@@ -334,7 +332,7 @@ public class GameManager : NetworkBehaviour
 
     public GameObject GetClosestEnemy(Vector3 pos, float range, List<Enemy> enemyList = null)
     {
-        List<Enemy> tempList = enemyList != null ? enemyList : enemies;
+        List<Enemy> tempList = enemyList != null ? enemyList : enemies.ToList();      
 
         GameObject closestEnemy = null;
         float minimumDistance = Mathf.Infinity;

@@ -3,13 +3,9 @@ using UnityEngine;
 
 public abstract class ActiveItemController : NetworkBehaviour
 {
-    protected ActiveItem activeItem;
+    [HideInInspector] public ActiveItem activeItem;
+    protected Transform playerTransform;
     protected float currentCooldown;
-
-    protected virtual void Start()
-    {
-        currentCooldown = activeItem.GetCurrentLevel().cooldown * Player.Instance.currentAttackCooldown;
-    }
 
     protected virtual void Update()
     {
@@ -24,9 +20,18 @@ public abstract class ActiveItemController : NetworkBehaviour
         }
     }
 
-    public virtual void SetData(ActiveItem activeItem)
+    [ObserversRpc]
+    public virtual void SetData(ActiveItem activeItem, Transform playerTransform)
     {
         this.activeItem = activeItem;
+        this.playerTransform = playerTransform;
+        currentCooldown = activeItem.GetCurrentLevel().cooldown * Player.Instance.currentAttackCooldown;
+    }
+
+    public void AddLevel()
+    {
+        activeItem.AddLevel();
+        currentCooldown = activeItem.GetCurrentLevel().cooldown * Player.Instance.currentAttackCooldown;
     }
 
     protected virtual void Attack()

@@ -33,7 +33,6 @@ public class PlayerInstance : NetworkBehaviour
         Instance = this;
     }
 
-    [ObserversRpc(BufferLast = true)]
     public void SpawnPlayer(bool canControl = true)
     {
         GameObject spawnPoint = MapGenerator.Instance.GetRandomEmptyLand();

@@ -31,13 +31,18 @@ public class LevelSystem : NetworkBehaviour
     private void Awake()
     {
         Instance = this;
+        foreach(var item in availableItems)
+        {
+            item.Initialize();
+        }
     }
 
     public override void OnStartClient()
     {
         base.OnStartClient(); 
         upgradeUI.SetActive(false);
-        UpdateLevel(currentLevel, currentEXP, CalculateEXPNeededForNextLevel());
+        if (IsServer)
+            UpdateLevel(currentLevel, currentEXP, CalculateEXPNeededForNextLevel());
     }
 
     public void GainExperience(int experience)
@@ -95,10 +100,10 @@ public class LevelSystem : NetworkBehaviour
         (Item item, int index) = ChooseItem();
         HighlightSelectedItem(index);
         yield return new WaitForSeconds(2f);
-        if (item.isActive)
-            ActiveItemChosenRpc((ActiveItem)item);
-        else
-            PassiveItemChosenRpc((PassiveItem)item);
+        if (item is ActiveItem activeItem)
+            ActiveItemChosenRpc(activeItem);
+        else if (item is PassiveItem passiveItem)
+            PassiveItemChosenRpc(passiveItem);
     }
 
     [ObserversRpc]
@@ -123,12 +128,12 @@ public class LevelSystem : NetworkBehaviour
         {
             Item ownedItem = ownedItems.Find(x => x.itemName == chosenItem.itemName);
             ownedItem.AddLevel();
+            Player.Instance.HandleItemSelection(ownedItem);
             Debug.Log("Level up item: " + chosenItem.itemName);
         }
         StopItemChoose();
     }
 
-    [ObserversRpc]
     private void PassiveItemChosenRpc(PassiveItem chosenItem)
     {
         if (chosenItem.itemName != money.itemName)
@@ -147,7 +152,7 @@ public class LevelSystem : NetworkBehaviour
                 ownedItem.AddLevel();
                 Debug.Log("Level up item: " + chosenItem.itemName);
             }
-        }     
+        }
         Player.Instance.HandleItemSelection(chosenItem);
         StopItemChoose();
     }
@@ -158,7 +163,8 @@ public class LevelSystem : NetworkBehaviour
         votes.Clear();
         upgradeUI.SetActive(false);
         GameManager.Instance.PauseGame(false);
-        OnNewLevel();
+        if (IsServer)
+            OnNewLevel();
     }
 
     [ObserversRpc]

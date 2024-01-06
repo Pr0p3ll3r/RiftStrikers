@@ -42,7 +42,7 @@ public class WeaponManager : NetworkBehaviour
 
         if (currentWeapon != null)
         {
-            closestEnemy = GameManager.Instance.GetClosestEnemy(transform.position, currentWeaponData.range * Player.Instance.currentAttackRange);
+            //closestEnemy = GameManager.Instance.GetClosestEnemy(transform.position, currentWeaponData.range * Player.Instance.currentAttackRange);
 
             if (currentCooldown > 0) currentCooldown -= Time.deltaTime;
 
@@ -123,7 +123,10 @@ public class WeaponManager : NetworkBehaviour
         {
             if (Physics.Raycast(position, direction, out RaycastHit hit, range, canBeShot))
             {             
-                hit.collider.gameObject.GetComponent<Enemy>().ServerTakeDamage(damage * Player.Instance.currentDamage);
+                if(hit.collider.TryGetComponent(out Enemy enemy))
+                {
+                    enemy.ServerTakeDamage(damage * Player.Instance.currentDamage);
+                }
             }
         }
         ShootRpc();
