@@ -61,12 +61,12 @@ public class Player : NetworkBehaviour
         currentMoney = 0;
     }
 
-    public override void OnStartClient()
+    public override void OnStartNetwork()
     {
-        base.OnStartClient();
+        base.OnStartNetwork();
 
-        if(IsOwner) Instance = this;
-        weaponManager.Equip(0);
+        if (Owner.IsLocalClient)
+            Instance = this;
     }
 
     void Start()
@@ -87,7 +87,6 @@ public class Player : NetworkBehaviour
         HealthRecovery();
         PullItemsTowardsPlayer();
 
-#if UNITY_EDITOR
         if (Keyboard.current.tKey.wasPressedThisFrame)
         {
             TakeDamageServer(20);
@@ -96,7 +95,6 @@ public class Player : NetworkBehaviour
         {
             LevelSystem.Instance.GainExperience(5);
         }
-#endif
     }
 
     [ServerRpc(RequireOwnership = false)]

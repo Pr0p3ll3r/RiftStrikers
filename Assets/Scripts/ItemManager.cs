@@ -1,7 +1,7 @@
-using FishNet;
+using FishNet.Object;
 using UnityEngine;
 
-public class ItemManager : MonoBehaviour
+public class ItemManager : NetworkBehaviour
 {
     [SerializeField] private Transform itemsList;
 
@@ -9,7 +9,7 @@ public class ItemManager : MonoBehaviour
     {
         GameObject itemGO = Instantiate(item.prefab, itemsList);
         itemGO.GetComponent<ActiveItemController>().SetData(item);
-        InstanceFinder.ServerManager.Spawn(itemGO);
+        Spawn(itemGO, Owner);
     }
 
     public void AddPassiveItem(PassiveItem item)

@@ -32,6 +32,7 @@ public class WeaponManager : NetworkBehaviour
         controller = GetComponent<PlayerController>();
         playerInput = GetComponent<PlayerInput>();
         fireAction = playerInput.actions["Fire"];
+        Equip(0);
     }
 
     void Update()

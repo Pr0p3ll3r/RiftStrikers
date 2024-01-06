@@ -5,11 +5,6 @@ public class AirStrikeController : ActiveItemController
 {
     [SerializeField] private GameObject laserPrefab;
 
-    protected override void Start()
-    {
-        base.Start();
-    }
-
     protected override void Attack()
     {
         base.Attack();

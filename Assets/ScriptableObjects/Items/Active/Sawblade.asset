@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa22f8ac8def0634d9380dad1fb3307f, type: 3}
+  m_Name: Sawblade
+  m_EditorClassIdentifier: 
+  itemName: Sawblade
+  itemIconIndex: 0
+  isActive: 1
+  maxLevel: 4
+  prefab: {fileID: 5828148292702650109, guid: 27195fd41c07b50419bba9c573562187, type: 3}
+  levels:
+  - description: Summons a blade that orbits around the character
+    damage: 10
+    range: 2
+    cooldown: 3
+    speed: 250
+    duration: 3
+    projectiles: 1
+    pierce: 0
+  - description: Fires 1 more projectile
+    damage: 10
+    range: 2
+    cooldown: 3
+    speed: 250
+    duration: 3
+    projectiles: 2
+    pierce: 0
+  - description: '-0.5s cooldown
+
+      +10 damage'
+    damage: 20
+    range: 2
+    cooldown: 2.5
+    speed: 250
+    duration: 3
+    projectiles: 2
+    pierce: 0
+  - description: Fires 1 more projectile
+    damage: 20
+    range: 2
+    cooldown: 2.5
+    speed: 250
+    duration: 3
+    projectiles: 3
+    pierce: 0
+  - description: '-0.5s cooldown
+
+      +10 damage'
+    damage: 30
+    range: 2
+    cooldown: 2
+    speed: 250
+    duration: 3
+    projectiles: 3
+    pierce: 0

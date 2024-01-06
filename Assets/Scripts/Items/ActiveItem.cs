@@ -24,6 +24,7 @@ public class ActiveItemLevel
     public float range;
     public float cooldown;
     public float speed;
+    public float duration;
     public int projectiles;
     public int pierce;
 }

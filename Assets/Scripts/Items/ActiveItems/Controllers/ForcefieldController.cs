@@ -4,11 +4,6 @@ public class ForcefieldController : ActiveItemController
 {
     private float currentRange;
 
-    protected override void Start()
-    {
-        base.Start();
-    }
-
     public override void SetData(ActiveItem activeItem)
     {
         base.SetData(activeItem);

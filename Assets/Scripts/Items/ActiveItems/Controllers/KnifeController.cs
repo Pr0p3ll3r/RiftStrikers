@@ -5,11 +5,6 @@ public class Knife : ActiveItemController
 {
     [SerializeField] private GameObject knifePrefab;
 
-    protected override void Start()
-    {
-        base.Start();
-    }
-
     protected override void Attack()
     {
         base.Attack();

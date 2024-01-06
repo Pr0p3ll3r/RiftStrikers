@@ -93,17 +93,17 @@ public class GameManager : NetworkBehaviour
             case GameState.Fighting:
                 UpdateGameTimer();
 
-                if (timeToNextIsland > 0)
-                    timeToNextIsland -= Time.deltaTime;
-                else
-                    SpawnBoss();
+                //if (timeToNextIsland > 0)
+                //    timeToNextIsland -= Time.deltaTime;
+                //else
+                //    SpawnBoss();
 
-                if (timeToSpawnEnemy > 0)
-                    timeToSpawnEnemy -= Time.deltaTime;
-                else if (enemyAmount < maximumAmount * maximumAmountMultiplier)
-                {
-                    SpawnEnemy();
-                }
+                //if (timeToSpawnEnemy > 0)
+                //    timeToSpawnEnemy -= Time.deltaTime;
+                //else if (enemyAmount < maximumAmount * maximumAmountMultiplier)
+                //{
+                //    SpawnEnemy();
+                //}
                 break;
             case GameState.ChangingMap:
                 UpdateGameTimer();

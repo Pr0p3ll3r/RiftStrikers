@@ -19,37 +19,39 @@ MonoBehaviour:
   prefab: {fileID: 5828148292702650109, guid: c48406a87f6a33e43b811e49e6ad93be, type: 3}
   levels:
   - description: Throws 1 knife
-    <Damage>k__BackingField: 50
-    <Range>k__BackingField: 10
-    <Cooldown>k__BackingField: 5
-    <Speed>k__BackingField: 10
-    <Projectiles>k__BackingField: 1
-    <Pierce>k__BackingField: 1
-  - description: 1 knife more
-    <Damage>k__BackingField: 50
-    <Range>k__BackingField: 10
-    <Cooldown>k__BackingField: 5
-    <Speed>k__BackingField: 10
-    <Projectiles>k__BackingField: 2
-    <Pierce>k__BackingField: 1
-  - description: Knife flight speed doubled
-    <Damage>k__BackingField: 50
-    <Range>k__BackingField: 10
-    <Cooldown>k__BackingField: 5
-    <Speed>k__BackingField: 20
-    <Projectiles>k__BackingField: 2
-    <Pierce>k__BackingField: 1
-  - description: Speed and damage doubled
-    <Damage>k__BackingField: 100
-    <Range>k__BackingField: 10
-    <Cooldown>k__BackingField: 5
-    <Speed>k__BackingField: 40
-    <Projectiles>k__BackingField: 2
-    <Pierce>k__BackingField: 1
-  - description: 1 knife more
-    <Damage>k__BackingField: 100
-    <Range>k__BackingField: 10
-    <Cooldown>k__BackingField: 5
-    <Speed>k__BackingField: 40
-    <Projectiles>k__BackingField: 3
-    <Pierce>k__BackingField: 1
+    damage: 6.5
+    range: 4
+    cooldown: 1
+    speed: 4
+    projectiles: 1
+    pierce: 0
+  - description: Fires 1 more projectile
+    damage: 6.5
+    range: 4
+    cooldown: 1
+    speed: 4
+    projectiles: 2
+    pierce: 0
+  - description: 'Fires 1 more projectile
+
+      +5 damage'
+    damage: 11.5
+    range: 4
+    cooldown: 1
+    speed: 4
+    projectiles: 3
+    pierce: 0
+  - description: Fires 1 more projectile
+    damage: 11.5
+    range: 4
+    cooldown: 1
+    speed: 4
+    projectiles: 4
+    pierce: 0
+  - description: Fires 1 more projectile
+    damage: 11.5
+    range: 4
+    cooldown: 1
+    speed: 4
+    projectiles: 5
+    pierce: 0

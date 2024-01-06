@@ -4,7 +4,7 @@ using UnityEngine;
 public abstract class ActiveItemController : NetworkBehaviour
 {
     protected ActiveItem activeItem;
-    private float currentCooldown;
+    protected float currentCooldown;
 
     protected virtual void Start()
     {
@@ -13,6 +13,8 @@ public abstract class ActiveItemController : NetworkBehaviour
 
     protected virtual void Update()
     {
+        if (!IsOwner) return;
+
         if (GameManager.Instance.currentState == GameState.Paused) return;
 
         currentCooldown -= Time.deltaTime;
