@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ForcefieldController : ActiveItemController
 {
-    private float currentRange;
+    private float currentArea;
 
     [ObserversRpc]
     public override void SetData(ActiveItem activeItem, Transform playerTransform)
@@ -11,19 +11,18 @@ public class ForcefieldController : ActiveItemController
         this.activeItem = activeItem;
         this.playerTransform = playerTransform;
         currentCooldown = activeItem.GetCurrentLevel().cooldown * Player.Instance.currentAttackCooldown;
-        currentRange = activeItem.GetCurrentLevel().range * Player.Instance.currentAttackRange;
-        transform.localScale = new Vector3(currentRange, 1, currentRange);
+        currentArea = activeItem.GetCurrentLevel().area * Player.Instance.currentAttackRange;
+        transform.localScale = new Vector3(currentArea, 1, currentArea);
+        transform.localPosition = new Vector3(0f, -0.9f, 0f);
     }
 
-    protected override void Update()
+    [ObserversRpc]
+    public override void AddLevel()
     {
-        if (!IsOwner) return;
-
-        if (currentRange != activeItem.GetCurrentLevel().range * Player.Instance.currentAttackRange)
-        {
-            currentRange = activeItem.GetCurrentLevel().range * Player.Instance.currentAttackRange;
-            transform.localScale = new Vector3(currentRange, 1, currentRange);
-        }
+        activeItem.AddLevel();
+        currentCooldown = activeItem.GetCurrentLevel().cooldown * Player.Instance.currentAttackCooldown;
+        currentArea = activeItem.GetCurrentLevel().area * Player.Instance.currentAttackRange;
+        transform.localScale = new Vector3(currentArea, 1, currentArea);
     }
 
     private void OnTriggerEnter(Collider other)

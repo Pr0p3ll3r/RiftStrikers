@@ -22,44 +22,90 @@ MonoBehaviour:
   - description: Fires an explosive rocket
     damage: 10
     range: 5
-    cooldown: 5
+    cooldown: 3
     speed: 5
-    duration: 3
-    projectiles: 1
-    pierce: 2
-  - description: ' +10 damage'
+    duration: 2
+    area: 2
+    hitDelay: 0
+    projectile: 1
+    pierce: 0
+  - description: '+25% explosion area
+
+      +30% speed'
+    damage: 10
+    range: 5
+    cooldown: 3
+    speed: 6.5
+    duration: 2
+    area: 2.5
+    hitDelay: 0
+    projectile: 1
+    pierce: 0
+  - description: '+30% speed
+
+      +5 damage'
+    damage: 15
+    range: 5
+    cooldown: 3
+    speed: 8.45
+    duration: 2
+    area: 2.5
+    hitDelay: 0
+    projectile: 1
+    pierce: 0
+  - description: +1 projectile
+    damage: 15
+    range: 5
+    cooldown: 3
+    speed: 8.45
+    duration: 2
+    area: 2.5
+    hitDelay: 0
+    projectile: 2
+    pierce: 0
+  - description: '+25% explosion area
+
+      +5 damage'
     damage: 20
     range: 5
-    cooldown: 5
-    speed: 5
-    duration: 3
-    projectiles: 1
-    pierce: 2
-  - description: '+1 projectile
-
-      +100% area attack'
+    cooldown: 3
+    speed: 8.45
+    duration: 2
+    area: 3.125
+    hitDelay: 0
+    projectile: 2
+    pierce: 0
+  - description: +1 projectile
     damage: 20
     range: 5
-    cooldown: 5
-    speed: 5
-    duration: 3
-    projectiles: 2
-    pierce: 3
-  - description: ' +10 damage'
-    damage: 30
-    range: 5
-    cooldown: 5
-    speed: 5
-    duration: 3
-    projectiles: 2
-    pierce: 3
-  - description: '+1 projectile
+    cooldown: 3
+    speed: 8.45
+    duration: 2
+    area: 3.125
+    hitDelay: 0
+    projectile: 3
+    pierce: 0
+  - description: '+25% explosion area
 
-      +100% area attack'
-    damage: 30
+      +30% speed'
+    damage: 20
     range: 5
-    cooldown: 5
-    speed: 5
-    duration: 3
-    projectiles: 3
-    pierce: 4
+    cooldown: 3
+    speed: 10.985
+    duration: 2
+    area: 3.90625
+    hitDelay: 0
+    projectile: 3
+    pierce: 0
+  - description: '+25% explosion area
+
+      +5 damage'
+    damage: 25
+    range: 5
+    cooldown: 3
+    speed: 10.985
+    duration: 2
+    area: 4.8828125
+    hitDelay: 0
+    projectile: 3
+    pierce: 0

@@ -16,48 +16,100 @@ MonoBehaviour:
   itemIconIndex: 0
   isActive: 1
   maxLevel: 4
+  level: -1
   prefab: {fileID: 1289543790355709915, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
   levels:
-  - description: Generates a dissolving forcefield that deals damage to nearby enemies
+  - description: Damages nearby enemies
     damage: 5
     range: 2
     cooldown: 1.3
     speed: 0
-    projectiles: 0
+    duration: 0
+    area: 2
+    hitDelay: 1.3
+    projectile: 0
     pierce: 0
   - description: '+40% size
 
       +2 damage'
     damage: 7
-    range: 2.4
+    range: 2
     cooldown: 1.3
     speed: 0
-    projectiles: 0
+    duration: 0
+    area: 2.8
+    hitDelay: 1.3
+    projectile: 0
     pierce: 0
   - description: '-0.1s cooldown
 
       +1 damage'
     damage: 8
-    range: 2.4
+    range: 2
     cooldown: 1.2
     speed: 0
-    projectiles: 0
+    duration: 0
+    area: 2.8
+    hitDelay: 1.2
+    projectile: 0
     pierce: 0
   - description: '+20% size
 
       +1 damage'
     damage: 9
-    range: 2.68
+    range: 2
     cooldown: 1.2
     speed: 0
-    projectiles: 0
+    duration: 0
+    area: 3.36
+    hitDelay: 1.2
+    projectile: 0
     pierce: 0
   - description: '-0.1s cooldown
 
       +2 damage'
     damage: 11
-    range: 2.68
+    range: 2
     cooldown: 1.1
     speed: 0
-    projectiles: 0
+    duration: 0
+    area: 3.36
+    hitDelay: 1.1
+    projectile: 0
+    pierce: 0
+  - description: '+20% size
+
+      +1 damage'
+    damage: 12
+    range: 2
+    cooldown: 1.1
+    speed: 0
+    duration: 0
+    area: 4.032
+    hitDelay: 1.1
+    projectile: 0
+    pierce: 0
+  - description: '-0.1s cooldown
+
+      +1 damage'
+    damage: 13
+    range: 2
+    cooldown: 1
+    speed: 0
+    duration: 0
+    area: 4.032
+    hitDelay: 1
+    projectile: 0
+    pierce: 0
+  - description: '+20% size
+
+      +1 damage'
+    damage: 14
+    range: 2
+    cooldown: 1
+    speed: 0
+    duration: 0
+    area: 4.8384
+    hitDelay: 1
+    projectile: 0
     pierce: 0

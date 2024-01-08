@@ -5,13 +5,11 @@ using UnityEngine;
 
 public class AirStrikeController : ActiveItemController
 {
-    [SerializeField] private GameObject laserPrefab;
-
     protected override void Attack()
     {
         base.Attack();
         List<Enemy> tempList = new List<Enemy>(GameManager.Instance.enemies);
-        for (int i = 0; i < activeItem.GetCurrentLevel().projectiles; i++)
+        for (int i = 0; i < activeItem.GetCurrentLevel().projectile; i++)
         {
             GameObject closestEnemy = GameManager.Instance.GetClosestEnemy(playerTransform.position, activeItem.GetCurrentLevel().range * Player.Instance.currentAttackRange, tempList);
             if (closestEnemy != null)
@@ -29,7 +27,7 @@ public class AirStrikeController : ActiveItemController
     [ServerRpc(RequireOwnership = false)]
     private void SpawnServer(Vector3 spawnPosition, NetworkConnection Owner)
     {
-        GameObject spawnedLaser = Instantiate(laserPrefab, spawnPosition, Quaternion.identity);
+        GameObject spawnedLaser = Instantiate(projectilePrefab, spawnPosition, Quaternion.identity);
         Spawn(spawnedLaser, Owner);
     }
 }

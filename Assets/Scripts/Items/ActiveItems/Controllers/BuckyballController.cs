@@ -4,12 +4,10 @@ using UnityEngine;
 
 public class BuckyballController : ActiveItemController
 {
-    [SerializeField] private GameObject ballPrefab;
-
     protected override void Attack()
     {
         currentCooldown = (activeItem.GetCurrentLevel().cooldown * Player.Instance.currentAttackCooldown);
-        for (int i = 0; i < activeItem.GetCurrentLevel().projectiles; i++)
+        for (int i = 0; i < activeItem.GetCurrentLevel().projectile; i++)
         {
             SpawnServer(Owner);
         }
@@ -18,7 +16,7 @@ public class BuckyballController : ActiveItemController
     [ServerRpc(RequireOwnership = false)]
     private void SpawnServer(NetworkConnection Owner)
     {
-        GameObject spawnedBall = Instantiate(ballPrefab, transform.position, ballPrefab.transform.rotation);
+        GameObject spawnedBall = Instantiate(projectilePrefab, transform.position, projectilePrefab.transform.rotation);
         Spawn(spawnedBall, Owner);
         spawnedBall.GetComponent<BuckyballBehaviour>().SetProjectileRpc(activeItem);
     }

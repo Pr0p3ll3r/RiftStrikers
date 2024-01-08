@@ -16,44 +16,92 @@ MonoBehaviour:
   itemIconIndex: 0
   isActive: 1
   maxLevel: 4
+  level: -1
   prefab: {fileID: 5828148292702650109, guid: 429178ccd336bea49af94cecc04ddef9, type: 3}
   levels:
   - description: Strikes at random enemies
     damage: 15
-    range: 4
+    range: 5
     cooldown: 4.5
     speed: 0
-    projectiles: 1
+    duration: 0
+    area: 0
+    hitDelay: 0
+    projectile: 2
     pierce: 0
-  - description: Fires 1 more projectile
+  - description: +1 projectile
     damage: 15
-    range: 4
+    range: 5
     cooldown: 4.5
     speed: 0
-    projectiles: 2
+    duration: 0
+    area: 0
+    hitDelay: 0
+    projectile: 3
     pierce: 0
   - description: '-0.5s cooldown
 
-      +10 damage '
+      +10 damage'
     damage: 25
-    range: 4
+    range: 5
     cooldown: 4
     speed: 0
-    projectiles: 2
+    duration: 0
+    area: 0
+    hitDelay: 0
+    projectile: 3
     pierce: 0
-  - description: Fires 1 more projectile
+  - description: +1 projectile
     damage: 25
-    range: 4
-    cooldown: 4.5
+    range: 5
+    cooldown: 4
     speed: 0
-    projectiles: 3
+    duration: 0
+    area: 0
+    hitDelay: 0
+    projectile: 4
     pierce: 0
   - description: '-0.5s cooldown
 
       +20 damage'
     damage: 45
-    range: 4
+    range: 5
     cooldown: 3.5
     speed: 0
-    projectiles: 3
+    duration: 0
+    area: 0
+    hitDelay: 0
+    projectile: 4
+    pierce: 0
+  - description: +1 projectile
+    damage: 45
+    range: 5
+    cooldown: 3.5
+    speed: 0
+    duration: 0
+    area: 0
+    hitDelay: 0
+    projectile: 5
+    pierce: 0
+  - description: '-0.5s cooldown
+
+      +20 damage'
+    damage: 65
+    range: 5
+    cooldown: 3
+    speed: 0
+    duration: 0
+    area: 0
+    hitDelay: 0
+    projectile: 5
+    pierce: 0
+  - description: +1 projectile
+    damage: 65
+    range: 5
+    cooldown: 3
+    speed: 0
+    duration: 0
+    area: 0
+    hitDelay: 0
+    projectile: 6
     pierce: 0

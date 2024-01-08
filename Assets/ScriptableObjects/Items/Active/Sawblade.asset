@@ -16,49 +16,94 @@ MonoBehaviour:
   itemIconIndex: 0
   isActive: 1
   maxLevel: 4
+  level: -1
   prefab: {fileID: 5828148292702650109, guid: 27195fd41c07b50419bba9c573562187, type: 3}
   levels:
-  - description: Summons a blade that orbits around the character
+  - description: Orbits around the character
     damage: 10
     range: 2
     cooldown: 3
-    speed: 250
+    speed: 100
     duration: 3
-    projectiles: 1
+    area: 2
+    hitDelay: 1.7
+    projectile: 1
     pierce: 0
-  - description: Fires 1 more projectile
+  - description: +1 projectile
     damage: 10
     range: 2
     cooldown: 3
-    speed: 250
+    speed: 100
     duration: 3
-    projectiles: 2
+    area: 2
+    hitDelay: 1.7
+    projectile: 2
     pierce: 0
-  - description: '-0.5s cooldown
+  - description: '+25% spin area
+
+      +30% speed'
+    damage: 10
+    range: 2.5
+    cooldown: 3
+    speed: 130
+    duration: 3
+    area: 2
+    hitDelay: 1.7
+    projectile: 2
+    pierce: 0
+  - description: '+0.5 duration
 
       +10 damage'
     damage: 20
-    range: 2
-    cooldown: 2.5
-    speed: 250
-    duration: 3
-    projectiles: 2
+    range: 2.5
+    cooldown: 3
+    speed: 130
+    duration: 3.5
+    area: 2
+    hitDelay: 1.7
+    projectile: 2
     pierce: 0
-  - description: Fires 1 more projectile
+  - description: +1 projectile
     damage: 20
-    range: 2
-    cooldown: 2.5
-    speed: 250
-    duration: 3
-    projectiles: 3
+    range: 2.5
+    cooldown: 3
+    speed: 130
+    duration: 3.5
+    area: 2
+    hitDelay: 1.7
+    projectile: 3
     pierce: 0
-  - description: '-0.5s cooldown
+  - description: '+25% spin area
+
+      +30% speed'
+    damage: 20
+    range: 3.125
+    cooldown: 3
+    speed: 169
+    duration: 3.5
+    area: 2
+    hitDelay: 1.7
+    projectile: 3
+    pierce: 0
+  - description: '+0.5 duration
 
       +10 damage'
     damage: 30
-    range: 2
-    cooldown: 2
-    speed: 250
-    duration: 3
-    projectiles: 3
+    range: 3.125
+    cooldown: 3
+    speed: 169
+    duration: 4
+    area: 2
+    hitDelay: 1.7
+    projectile: 3
+    pierce: 0
+  - description: +1 projectile
+    damage: 30
+    range: 3.125
+    cooldown: 3
+    speed: 169
+    duration: 4
+    area: 2
+    hitDelay: 1.7
+    projectile: 4
     pierce: 0

@@ -45,11 +45,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea454dcd38119734da8634cd595f3e70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 255
+  _componentIndexCache: 0
   _addedNetworkObject: {fileID: 4593732995094497446}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 4593732995094497446}
   activeItem: {fileID: 0}
-  boomerangPrefab: {fileID: 7220804876780835432, guid: a9bc6c96a9a1fe742af223930dc53fff,
+  projectilePrefab: {fileID: 7220804876780835432, guid: a9bc6c96a9a1fe742af223930dc53fff,
     type: 3}
 --- !u!114 &4593732995094497446
 MonoBehaviour:
@@ -67,7 +67,7 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   _networkBehaviours:
-  - {fileID: 0}
+  - {fileID: 5482441327082102401}
   <ParentNetworkObject>k__BackingField: {fileID: 0}
   <ChildNetworkObjects>k__BackingField: []
   SerializedTransformProperties:

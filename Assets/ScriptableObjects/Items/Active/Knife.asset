@@ -23,41 +23,83 @@ MonoBehaviour:
     damage: 6.5
     range: 5
     cooldown: 1
-    speed: 4
+    speed: 5
     duration: 3
-    projectiles: 1
+    area: 0
+    hitDelay: 0
+    projectile: 1
     pierce: 1
-  - description: Fires 1 more projectile
+  - description: +1 projectile
     damage: 6.5
     range: 5
     cooldown: 1
-    speed: 4
+    speed: 5
     duration: 3
-    projectiles: 2
+    area: 0
+    hitDelay: 0
+    projectile: 2
     pierce: 1
-  - description: 'Fires 1 more projectile
+  - description: '+1 projectile
 
       +5 damage'
     damage: 11.5
     range: 5
     cooldown: 1
-    speed: 4
+    speed: 5
     duration: 3
-    projectiles: 3
+    area: 0
+    hitDelay: 0
+    projectile: 3
     pierce: 1
-  - description: Fires 1 more projectile
+  - description: +1 projectile
     damage: 11.5
     range: 5
     cooldown: 1
-    speed: 4
+    speed: 5
     duration: 3
-    projectiles: 4
+    area: 0
+    hitDelay: 0
+    projectile: 4
     pierce: 1
-  - description: Passes through 1 more enemy
+  - description: +1 pierce
     damage: 11.5
     range: 5
     cooldown: 1
-    speed: 4
+    speed: 5
     duration: 3
-    projectiles: 5
+    area: 0
+    hitDelay: 0
+    projectile: 4
     pierce: 2
+  - description: +1 projectile
+    damage: 11.5
+    range: 5
+    cooldown: 1
+    speed: 5
+    duration: 3
+    area: 0
+    hitDelay: 0
+    projectile: 5
+    pierce: 2
+  - description: '+1 projectile
+
+      +5 damage'
+    damage: 16.5
+    range: 5
+    cooldown: 1
+    speed: 5
+    duration: 3
+    area: 0
+    hitDelay: 0
+    projectile: 6
+    pierce: 2
+  - description: +1 pierce
+    damage: 16.5
+    range: 5
+    cooldown: 1
+    speed: 5
+    duration: 3
+    area: 0
+    hitDelay: 0
+    projectile: 6
+    pierce: 3

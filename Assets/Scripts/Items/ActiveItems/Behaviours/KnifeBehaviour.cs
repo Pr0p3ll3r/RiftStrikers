@@ -1,14 +1,10 @@
 using FishNet.Object;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KnifeBehaviour : NetworkBehaviour
+public class KnifeBehaviour : ProjectileBehaviour
 {
-    private ActiveItem activeItem;
-    private Rigidbody rb;
     private int currentPierce;
-    private bool despawning = false;
     private HashSet<Enemy> hitEnemies = new HashSet<Enemy>();
 
     [ObserversRpc]
@@ -45,12 +41,5 @@ public class KnifeBehaviour : NetworkBehaviour
                 Despawn(gameObject);
             }
         }
-    }
-
-    private IEnumerator Despawn()
-    {
-        yield return new WaitForSeconds(activeItem.GetCurrentLevel().duration * Player.Instance.currentAttackDuration);
-        despawning = true;
-        Despawn(gameObject);
     }
 }

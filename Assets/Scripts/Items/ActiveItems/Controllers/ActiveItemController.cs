@@ -4,6 +4,7 @@ using UnityEngine;
 public abstract class ActiveItemController : NetworkBehaviour
 {
     [HideInInspector] public ActiveItem activeItem;
+    [SerializeField] protected GameObject projectilePrefab;
     protected Transform playerTransform;
     protected float currentCooldown;
 
@@ -28,6 +29,7 @@ public abstract class ActiveItemController : NetworkBehaviour
         currentCooldown = activeItem.GetCurrentLevel().cooldown * Player.Instance.currentAttackCooldown;
     }
 
+    [ObserversRpc]
     public virtual void AddLevel()
     {
         activeItem.AddLevel();

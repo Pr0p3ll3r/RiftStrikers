@@ -22,44 +22,84 @@ MonoBehaviour:
   - description: Throws a boomerang
     damage: 5
     range: 5
-    cooldown: 3
+    cooldown: 2
     speed: 5
     duration: 3
-    projectiles: 1
-    pierce: 1
-  - description: +10 damage
-    damage: 15
-    range: 5
-    cooldown: 3
-    speed: 5
-    duration: 3
-    projectiles: 1
-    pierce: 1
-  - description: '+1 projectile
-
-      +25% speed'
-    damage: 15
-    range: 5
-    cooldown: 3
-    speed: 7.5
-    duration: 3
-    projectiles: 2
-    pierce: 1
-  - description: +10 damage
-    damage: 25
-    range: 5
-    cooldown: 3
-    speed: 7.5
-    duration: 3
-    projectiles: 2
+    area: 1
+    hitDelay: 0
+    projectile: 1
     pierce: 0
-  - description: '+1 projectile
+  - description: +10 damage
+    damage: 15
+    range: 5
+    cooldown: 2
+    speed: 5
+    duration: 3
+    area: 1
+    hitDelay: 0
+    projectile: 1
+    pierce: 0
+  - description: '+10% size
+
+      +25% speed'
+    damage: 15
+    range: 5
+    cooldown: 2
+    speed: 6.25
+    duration: 3
+    area: 1.1
+    hitDelay: 0
+    projectile: 1
+    pierce: 0
+  - description: +1 projectile
+    damage: 15
+    range: 5
+    cooldown: 2
+    speed: 6.25
+    duration: 3
+    area: 1.1
+    hitDelay: 0
+    projectile: 2
+    pierce: 0
+  - description: +10 damage
+    damage: 25
+    range: 5
+    cooldown: 2
+    speed: 6.25
+    duration: 3
+    area: 1.1
+    hitDelay: 0
+    projectile: 2
+    pierce: 0
+  - description: '+10% size
 
       +25% speed'
     damage: 25
     range: 5
-    cooldown: 3
-    speed: 9.375
+    cooldown: 2
+    speed: 7.8125
     duration: 3
-    projectiles: 3
-    pierce: 1
+    area: 1.21
+    hitDelay: 0
+    projectile: 2
+    pierce: 0
+  - description: +1 projectile
+    damage: 25
+    range: 5
+    cooldown: 2
+    speed: 7.8125
+    duration: 3
+    area: 1.21
+    hitDelay: 0
+    projectile: 3
+    pierce: 0
+  - description: +10 damage
+    damage: 35
+    range: 5
+    cooldown: 2
+    speed: 7.8125
+    duration: 3
+    area: 1.21
+    hitDelay: 0
+    projectile: 3
+    pierce: 0

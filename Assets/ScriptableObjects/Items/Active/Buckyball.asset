@@ -23,47 +23,77 @@ MonoBehaviour:
     damage: 5
     range: 1
     cooldown: 3
-    speed: 10
-    duration: 5
-    projectiles: 1
-    pierce: 1
-  - description: '+0.5 duration
+    speed: 5
+    duration: 2
+    area: 1
+    hitDelay: 0
+    projectile: 1
+    pierce: 0
+  - description: '+20% size
+
+      +0.2 duration'
+    damage: 5
+    range: 1
+    cooldown: 3
+    speed: 5
+    duration: 2.2
+    area: 1.2
+    hitDelay: 0
+    projectile: 1
+    pierce: 0
+  - description: '+20% size
 
       +50% speed'
     damage: 5
     range: 1
     cooldown: 3
-    speed: 15
-    duration: 5.5
-    projectiles: 1
-    pierce: 1
-  - description: 'Fires 1 more projectile
+    speed: 7.5
+    duration: 2.2
+    area: 1.44
+    hitDelay: 0
+    projectile: 1
+    pierce: 0
+  - description: '+1 projectile
 
-      +5 damage'
-    damage: 10
+      +20 damage'
+    damage: 25
     range: 1
     cooldown: 3
-    speed: 15
-    duration: 5.5
-    projectiles: 2
-    pierce: 1
-  - description: '+0.5 duration
+    speed: 7.5
+    duration: 2.2
+    area: 1.44
+    hitDelay: 0
+    projectile: 2
+    pierce: 0
+  - description: +0.2 duration
+    damage: 25
+    range: 1
+    cooldown: 3
+    speed: 7.5
+    duration: 2.4
+    area: 1.44
+    hitDelay: 0
+    projectile: 2
+    pierce: 0
+  - description: +20 damage
+    damage: 45
+    range: 1
+    cooldown: 3
+    speed: 7.5
+    duration: 2.4
+    area: 1.44
+    hitDelay: 0
+    projectile: 2
+    pierce: 0
+  - description: '+0.2 duration
 
       +50% speed'
-    damage: 10
+    damage: 45
     range: 1
     cooldown: 3
-    speed: 22.5
-    duration: 6
-    projectiles: 2
-    pierce: 1
-  - description: 'Fires 1 more projectile
-
-      +5 damage'
-    damage: 15
-    range: 1
-    cooldown: 3
-    speed: 22.5
-    duration: 6
-    projectiles: 3
-    pierce: 1
+    speed: 11.25
+    duration: 2.6
+    area: 1.44
+    hitDelay: 0
+    projectile: 2
+    pierce: 0

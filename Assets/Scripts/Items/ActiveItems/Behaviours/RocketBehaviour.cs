@@ -1,12 +1,8 @@
 using FishNet.Object;
-using System.Collections;
 using UnityEngine;
 
-public class RocketBehaviour : NetworkBehaviour
+public class RocketBehaviour : ProjectileBehaviour
 {
-    private ActiveItem activeItem;
-    private Rigidbody rb;
-    private bool despawning = false;
     [SerializeField] private GameObject explosionPrefab;
 
     [ObserversRpc]
@@ -31,10 +27,10 @@ public class RocketBehaviour : NetworkBehaviour
         {
             GameObject explosion = Instantiate(explosionPrefab, transform.position + Vector3.down, explosionPrefab.transform.rotation);
             Spawn(explosion);
-            Collider[] objectsInRange = Physics.OverlapSphere(gameObject.transform.position, activeItem.GetCurrentLevel().pierce * Player.Instance.currentAttackRange);
+            Collider[] objectsInRange = Physics.OverlapSphere(gameObject.transform.position, activeItem.GetCurrentLevel().area * Player.Instance.currentAttackRange);
             foreach (Collider col in objectsInRange)
             {
-                if (col.TryGetComponent(out Enemy enemy))
+                if (col.transform.root.TryGetComponent(out Enemy enemy))
                 {
                     enemy.ServerTakeDamage(activeItem.GetCurrentLevel().damage * Player.Instance.currentDamage);
                 }
@@ -42,12 +38,5 @@ public class RocketBehaviour : NetworkBehaviour
             despawning = true;
             Despawn(gameObject);
         }
-    }
-
-    private IEnumerator Despawn()
-    {
-        yield return new WaitForSeconds(activeItem.GetCurrentLevel().duration * Player.Instance.currentAttackDuration);
-        despawning = true;
-        Despawn(gameObject);
     }
 }

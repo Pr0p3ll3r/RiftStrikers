@@ -14,6 +14,8 @@ public class Enemy : NetworkBehaviour
     private bool isDead;
     public bool IsDead => isDead;
     [HideInInspector] public float CanBeDamagedByForceField;
+    [HideInInspector] public float CanBeDamagedByFire;
+    [HideInInspector] public float CanBeDamagedBySawblade;
 
     [SerializeField] private EnemyStats stats;
     public EnemyStats Stats => stats;
@@ -82,6 +84,12 @@ public class Enemy : NetworkBehaviour
 
         if (CanBeDamagedByForceField > 0)
             CanBeDamagedByForceField -= Time.deltaTime;
+
+        if (CanBeDamagedByFire > 0)
+            CanBeDamagedByFire -= Time.deltaTime;
+
+        if (CanBeDamagedBySawblade > 0)
+            CanBeDamagedBySawblade -= Time.deltaTime;
 
         if (Vector3.Distance(transform.position, player.position) <= CurrentAttackRange)
         {

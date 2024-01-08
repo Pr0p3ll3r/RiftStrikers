@@ -1,11 +1,8 @@
 using FishNet.Object;
-using System.Collections;
 using UnityEngine;
 
-public class BoomerangBehaviour : NetworkBehaviour
+public class BoomerangBehaviour : ProjectileBehaviour
 {
-    private ActiveItem activeItem;
-    private Rigidbody rb;
     private Vector3 initialDirection;
     private float returnTimer;
     private bool isReturning = false;
@@ -15,19 +12,23 @@ public class BoomerangBehaviour : NetworkBehaviour
     {
         this.activeItem = activeItem;
         rb = GetComponent<Rigidbody>();
-        initialDirection = (closestEnemyPosition - transform.position).normalized;
-        returnTimer = activeItem.GetCurrentLevel().duration * Player.Instance.currentAttackDuration / 2;
         if (IsOwner)
         {
+            initialDirection = (closestEnemyPosition - transform.position).normalized;
+            returnTimer = activeItem.GetCurrentLevel().duration * Player.Instance.currentAttackDuration / 2;
             rb.velocity = activeItem.GetCurrentLevel().speed * Player.Instance.currentProjectileSpeed * initialDirection;
+            float currentArea = activeItem.GetCurrentLevel().area * Player.Instance.currentAttackRange;
+            transform.localScale = new Vector3(currentArea, currentArea, currentArea);
         }
         if (IsServer)
             StartCoroutine(Despawn());
     }
 
-    private void Update()
+    protected override void Update()
     {
+        base.Update();
         if (!IsOwner) return;
+        if (GameManager.Instance.currentState == GameState.Paused) return;
 
         transform.Rotate(Vector3.right, 100f * Time.deltaTime);
 
@@ -39,22 +40,4 @@ public class BoomerangBehaviour : NetworkBehaviour
             rb.velocity = -rb.velocity;
         }
     }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (IsServer && IsClientInitialized)
-        {
-            if (other.transform.root.gameObject.TryGetComponent<Enemy>(out var enemy))
-            {
-                enemy.ServerTakeDamage(activeItem.GetCurrentLevel().damage * Player.Instance.currentDamage);
-            }
-        }
-    }
-
-    private IEnumerator Despawn()
-    {
-        yield return new WaitForSeconds(activeItem.GetCurrentLevel().duration * Player.Instance.currentAttackDuration);
-        Despawn(gameObject);
-    }
 }
-
