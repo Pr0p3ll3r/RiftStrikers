@@ -3,7 +3,6 @@ using FishNet.Object;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 public class PlayerController : NetworkBehaviour
 {

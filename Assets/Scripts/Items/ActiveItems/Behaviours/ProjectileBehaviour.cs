@@ -5,7 +5,7 @@ using UnityEngine;
 public class ProjectileBehaviour : NetworkBehaviour
 {
     protected ActiveItem activeItem;
-    private Vector3 lastVelocity;
+    protected Vector3 lastVelocity;
     protected bool despawning = false;
     private bool isPaused = false;
     protected Rigidbody rb;

@@ -4116,6 +4116,8 @@ MonoBehaviour:
   sfx: {fileID: 166195695029462567}
   weaponSound: {fileID: 5460718782169163011}
   equipSound: {fileID: 8300000, guid: d7e02c5ff096dde4191b3ef37e2b1e3e, type: 3}
+  bulletTrail: {fileID: 328621789431213768, guid: 43559d27d223bf340b413fde1315c256,
+    type: 3}
   isReloading: 0
   canReload: 1
 --- !u!114 &993058921445530952

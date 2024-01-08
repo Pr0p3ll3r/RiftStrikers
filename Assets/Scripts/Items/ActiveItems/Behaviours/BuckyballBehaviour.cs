@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class BuckyballBehaviour : ProjectileBehaviour
 {
-    private Vector3 lastVelocity;
     private float curSpeed;
 
     [ObserversRpc]
@@ -32,6 +31,7 @@ public class BuckyballBehaviour : ProjectileBehaviour
 
     protected override void OnCollisionEnter(Collision collision)
     {
+        base.OnCollisionEnter(collision);
         if (IsOwner)
         {
             curSpeed = lastVelocity.magnitude;

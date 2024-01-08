@@ -20,9 +20,7 @@ MonoBehaviour:
   pelletsSpread: 0
   range: 10
   fireRate: 1
-  bulletForce: 20
-  bulletPrefab: {fileID: 1029217829519620, guid: 1f1fceae8db39824aa9059aec112a98a,
-    type: 3}
+  bulletForce: 50
   movementSpeedMultiplier: 0
   reloadTime: 2.8
   childNumber: 0

@@ -13,6 +13,7 @@ public class WeaponManager : NetworkBehaviour
     [SerializeField] private AudioSource sfx;
     [SerializeField] private AudioSource weaponSound;
     [SerializeField] private AudioClip equipSound;
+    [SerializeField] private TrailRenderer bulletTrail;
     public bool isReloading = false;
     public bool canReload = true;
     private float currentCooldown;
@@ -24,6 +25,7 @@ public class WeaponManager : NetworkBehaviour
     private Coroutine reload;
     private GameObject closestEnemy;
     public GameObject ClosestEnemy => closestEnemy;
+    private ParticleSystem muzzleFlash;
 
     private void Start()
     {
@@ -80,6 +82,7 @@ public class WeaponManager : NetworkBehaviour
         ShowWeapon();
         hud.RefreshWeapon(currentWeaponData);
         Player.Instance.currentMoveSpeed *= 1 + currentWeaponData.movementSpeedMultiplier / 100f;
+        muzzleFlash = currentWeapon.GetComponentInChildren<ParticleSystem>();
         animCharacter.SetInteger("Weapon", (int)currentWeaponData.animSet);
         weaponSound.PlayOneShot(equipSound);
         hud.RefreshAmmo(currentWeaponData.GetAmmo());
@@ -127,31 +130,42 @@ public class WeaponManager : NetworkBehaviour
                 {
                     enemy.ServerTakeDamage(damage * Player.Instance.currentDamage);
                 }
+                ShootRpc(hit.point);
+            }
+            else
+            {
+                ShootRpc(muzzleFlash.gameObject.transform.position + transform.forward * 100);
             }
         }
-        ShootRpc();
+    }
+
+    private IEnumerator SpawnTrail(TrailRenderer trail, Vector3 hitPoint)
+    {
+        Vector3 startPosition = trail.transform.position;
+        float distance = Vector3.Distance(trail.transform.position, hitPoint);
+        float remainingDistance = distance;
+        while (remainingDistance > 0)
+        {
+            trail.transform.position = Vector3.Lerp(startPosition, hitPoint, 1 - (remainingDistance / distance));
+            remainingDistance -= currentWeaponData.bulletForce * Time.deltaTime;
+            yield return null;
+        }
+        trail.transform.position = hitPoint;
+        Destroy(trail.gameObject);
     }
 
     [ObserversRpc]
-    private void ShootRpc()
+    private void ShootRpc(Vector3 hitPoint)
     {
-        //muzzle
-        ParticleSystem muzzleFlash = weaponHolder.GetChild(currentWeaponData.childNumber).gameObject.GetComponentInChildren<ParticleSystem>();
+        TrailRenderer trail = Instantiate(bulletTrail, muzzleFlash.gameObject.transform.position, Quaternion.identity);
+        StartCoroutine(SpawnTrail(trail, hitPoint));
+
         muzzleFlash.Play();
 
-        //sfx
         sfx.clip = currentWeaponData.gunshotSound;
         sfx.volume = currentWeaponData.shotVolume;
         sfx.PlayOneShot(sfx.clip);
-
-        //Bullet trail
     }
-
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.yellow;
-    //    Gizmos.DrawSphere(transform.position, currentWeaponData.range);
-    //}
 
     private IEnumerator Reload()
     {

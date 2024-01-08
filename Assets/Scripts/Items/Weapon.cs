@@ -20,7 +20,6 @@ public class Weapon : ScriptableObject
     public float range;
     public float fireRate;
     public float bulletForce;
-    public GameObject bulletPrefab;
     public float movementSpeedMultiplier;
     public float reloadTime;
     public int childNumber;

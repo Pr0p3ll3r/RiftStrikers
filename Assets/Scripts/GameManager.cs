@@ -297,6 +297,7 @@ public class GameManager : NetworkBehaviour
         return players.Count(x => !x.controlledPlayer.IsDead);
     }
 
+    [ObserversRpc]
     public void PauseGame(bool paused)
     {
         if (paused)

@@ -134,6 +134,7 @@ public class LevelSystem : NetworkBehaviour
         StopItemChoose();
     }
 
+    [ObserversRpc]
     private void PassiveItemChosenRpc(PassiveItem chosenItem)
     {
         if (chosenItem.itemName != money.itemName)
@@ -183,7 +184,7 @@ public class LevelSystem : NetworkBehaviour
     {
         if (gainedLevels <= 0) return;
         gainedLevels--;
-        StartItemChoose();
+        StartItemChoose();        
         GameManager.Instance.PauseGame(true);          
         StartCoroutine(WaitForItemChoice());
     }
