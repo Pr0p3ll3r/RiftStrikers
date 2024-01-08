@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa22f8ac8def0634d9380dad1fb3307f, type: 3}
+  m_Name: RocketLauncher
+  m_EditorClassIdentifier: 
+  itemName: Rocket Launcher
+  itemIconIndex: 0
+  isActive: 1
+  maxLevel: 4
+  level: -1
+  prefab: {fileID: 5828148292702650109, guid: cf996175071b2e34db2e0beacacf9300, type: 3}
+  levels:
+  - description: Fires an explosive rocket
+    damage: 10
+    range: 5
+    cooldown: 5
+    speed: 5
+    duration: 3
+    projectiles: 1
+    pierce: 2
+  - description: ' +10 damage'
+    damage: 20
+    range: 5
+    cooldown: 5
+    speed: 5
+    duration: 3
+    projectiles: 1
+    pierce: 2
+  - description: '+1 projectile
+
+      +100% area attack'
+    damage: 20
+    range: 5
+    cooldown: 5
+    speed: 5
+    duration: 3
+    projectiles: 2
+    pierce: 3
+  - description: ' +10 damage'
+    damage: 30
+    range: 5
+    cooldown: 5
+    speed: 5
+    duration: 3
+    projectiles: 2
+    pierce: 3
+  - description: '+1 projectile
+
+      +100% area attack'
+    damage: 30
+    range: 5
+    cooldown: 5
+    speed: 5
+    duration: 3
+    projectiles: 3
+    pierce: 4
