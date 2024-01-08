@@ -6,7 +6,6 @@ public class BuckyballBehaviour : NetworkBehaviour
 {
     private ActiveItem activeItem;
     private Rigidbody rb;
-    private bool despawning = false;
     private Vector3 lastVelocity;
     private float curSpeed;
 
@@ -32,7 +31,7 @@ public class BuckyballBehaviour : NetworkBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (IsServer && IsClientInitialized && !despawning)
+        if (IsServer && IsClientInitialized)
         {
             if (collision.transform.root.gameObject.TryGetComponent<Enemy>(out var enemy))
             {
@@ -50,7 +49,6 @@ public class BuckyballBehaviour : NetworkBehaviour
     private IEnumerator Despawn()
     {
         yield return new WaitForSeconds(activeItem.GetCurrentLevel().duration * Player.Instance.currentAttackDuration);
-        despawning = true;
         Despawn(gameObject);
     }
 }

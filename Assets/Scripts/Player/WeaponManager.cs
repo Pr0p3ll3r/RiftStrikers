@@ -42,7 +42,7 @@ public class WeaponManager : NetworkBehaviour
 
         if (currentWeapon != null)
         {
-            //closestEnemy = GameManager.Instance.GetClosestEnemy(transform.position, currentWeaponData.range * Player.Instance.currentAttackRange);
+            if (Player.Instance.AutoAim) closestEnemy = GameManager.Instance.GetClosestEnemy(transform.position, currentWeaponData.range * Player.Instance.currentAttackRange);
 
             if (currentCooldown > 0) currentCooldown -= Time.deltaTime;
 

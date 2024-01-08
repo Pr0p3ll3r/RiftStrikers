@@ -30,11 +30,11 @@ public class SawbladeBehaviour : NetworkBehaviour
     }
 
     [ObserversRpc]
-    public void SetProjectileRpc(ActiveItem activeItem, float angle, Transform player)
+    public void SetProjectileRpc(ActiveItem activeItem, float angle, Transform playerTransform)
     {
         this.activeItem = activeItem;
         this.angle = angle;
-        playerTransform = player;
+        this.playerTransform = playerTransform;
         if (IsServer)
             StartCoroutine(Despawn());
     }

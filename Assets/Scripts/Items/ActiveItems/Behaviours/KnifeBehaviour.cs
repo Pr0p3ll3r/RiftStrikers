@@ -12,14 +12,14 @@ public class KnifeBehaviour : NetworkBehaviour
     private HashSet<Enemy> hitEnemies = new HashSet<Enemy>();
 
     [ObserversRpc]
-    public void SetProjectileRpc(GameObject enemy, ActiveItem activeItem)
+    public void SetProjectileRpc(Vector3 targetEnemyPosition, ActiveItem activeItem)
     {
         this.activeItem = activeItem;
         currentPierce = activeItem.GetCurrentLevel().pierce;
         rb = GetComponent<Rigidbody>();
         if (IsOwner)
         {          
-            Vector3 direction = (enemy.transform.position - transform.position).normalized;
+            Vector3 direction = (targetEnemyPosition - transform.position).normalized;
             rb.velocity = activeItem.GetCurrentLevel().speed * Player.Instance.currentProjectileSpeed * direction;
             Quaternion lookRotation = Quaternion.LookRotation(direction, Vector3.up);
             transform.rotation = Quaternion.Euler(0f, lookRotation.eulerAngles.y, 0f);

@@ -13,10 +13,10 @@ public class KnifeController : ActiveItemController
         List<Enemy> tempList = new List<Enemy>(GameManager.Instance.enemies);
         for (int i = 0; i < activeItem.GetCurrentLevel().projectiles; i++)
         {
-            GameObject closestEnemy = GameManager.Instance.GetClosestEnemy(playerTransform.transform.position, activeItem.GetCurrentLevel().range * Player.Instance.currentAttackRange, tempList);
+            GameObject closestEnemy = GameManager.Instance.GetClosestEnemy(playerTransform.position, activeItem.GetCurrentLevel().range * Player.Instance.currentAttackRange, tempList);
             if (closestEnemy != null)
             {
-                SpawnServer(closestEnemy, Owner);
+                SpawnServer(closestEnemy.transform.position, Owner);
                 if (closestEnemy.TryGetComponent<Enemy>(out var enemyComponent))
                 {
                     tempList.Remove(enemyComponent);
@@ -26,10 +26,10 @@ public class KnifeController : ActiveItemController
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void SpawnServer(GameObject closestEnemy, NetworkConnection Owner)
+    private void SpawnServer(Vector3 closestEnemyPosition, NetworkConnection Owner)
     {
         GameObject spawnedKnife = Instantiate(knifePrefab, transform.position, knifePrefab.transform.rotation);
         Spawn(spawnedKnife, Owner);
-        spawnedKnife.GetComponent<KnifeBehaviour>().SetProjectileRpc(closestEnemy, activeItem);
+        spawnedKnife.GetComponent<KnifeBehaviour>().SetProjectileRpc(closestEnemyPosition, activeItem);
     }
 }

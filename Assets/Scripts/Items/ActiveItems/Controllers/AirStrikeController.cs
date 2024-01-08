@@ -11,10 +11,9 @@ public class AirStrikeController : ActiveItemController
     {
         base.Attack();
         List<Enemy> tempList = new List<Enemy>(GameManager.Instance.enemies);
-        Debug.Log(tempList.Count);
         for (int i = 0; i < activeItem.GetCurrentLevel().projectiles; i++)
         {
-            GameObject closestEnemy = GameManager.Instance.GetClosestEnemy(playerTransform.transform.position, activeItem.GetCurrentLevel().range * Player.Instance.currentAttackRange, tempList);
+            GameObject closestEnemy = GameManager.Instance.GetClosestEnemy(playerTransform.position, activeItem.GetCurrentLevel().range * Player.Instance.currentAttackRange, tempList);
             if (closestEnemy != null)
             {
                 SpawnServer(closestEnemy.transform.position, Owner);
