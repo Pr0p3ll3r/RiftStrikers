@@ -28,7 +28,7 @@ public abstract class ActiveItemController : NetworkBehaviour
         currentCooldown = activeItem.GetCurrentLevel().cooldown * Player.Instance.currentAttackCooldown;
     }
 
-    public void AddLevel()
+    public virtual void AddLevel()
     {
         activeItem.AddLevel();
         currentCooldown = activeItem.GetCurrentLevel().cooldown * Player.Instance.currentAttackCooldown;

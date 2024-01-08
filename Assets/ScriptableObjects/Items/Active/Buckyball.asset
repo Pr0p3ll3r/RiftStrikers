@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa22f8ac8def0634d9380dad1fb3307f, type: 3}
+  m_Name: Buckyball
+  m_EditorClassIdentifier: 
+  itemName: Buckyball
+  itemIconIndex: 0
+  isActive: 1
+  maxLevel: 4
+  level: -1
+  prefab: {fileID: 5828148292702650109, guid: dfb57337134aded46994307eceb48b9a, type: 3}
+  levels:
+  - description: Throws a bouncing ball
+    damage: 5
+    range: 1
+    cooldown: 3
+    speed: 10
+    duration: 5
+    projectiles: 1
+    pierce: 1
+  - description: '+0.5 duration
+
+      +50% speed'
+    damage: 5
+    range: 1
+    cooldown: 3
+    speed: 15
+    duration: 5.5
+    projectiles: 1
+    pierce: 1
+  - description: 'Fires 1 more projectile
+
+      +5 damage'
+    damage: 10
+    range: 1
+    cooldown: 3
+    speed: 15
+    duration: 5.5
+    projectiles: 2
+    pierce: 1
+  - description: '+0.5 duration
+
+      +50% speed'
+    damage: 10
+    range: 1
+    cooldown: 3
+    speed: 22.5
+    duration: 6
+    projectiles: 2
+    pierce: 1
+  - description: 'Fires 1 more projectile
+
+      +5 damage'
+    damage: 15
+    range: 1
+    cooldown: 3
+    speed: 22.5
+    duration: 6
+    projectiles: 3
+    pierce: 1

@@ -10,7 +10,7 @@ public class SawbladeBehaviour : NetworkBehaviour
 
     private IEnumerator Despawn()
     {
-        yield return new WaitForSeconds(activeItem.GetCurrentLevel().duration);
+        yield return new WaitForSeconds(activeItem.GetCurrentLevel().duration * Player.Instance.currentAttackDuration);
         Despawn(gameObject);
     }
 

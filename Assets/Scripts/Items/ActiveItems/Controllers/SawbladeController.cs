@@ -19,6 +19,20 @@ public class SawbladeController : ActiveItemController
         }
     }
 
+    [ObserversRpc]
+    public override void SetData(ActiveItem activeItem, Transform playerTransform)
+    {
+        this.activeItem = activeItem;
+        this.playerTransform = playerTransform;
+        currentCooldown = (activeItem.GetCurrentLevel().cooldown * Player.Instance.currentAttackCooldown) + (activeItem.GetCurrentLevel().duration * Player.Instance.currentAttackDuration);
+    }
+
+    public override void AddLevel()
+    {
+        activeItem.AddLevel();
+        currentCooldown = (activeItem.GetCurrentLevel().cooldown * Player.Instance.currentAttackCooldown) + (activeItem.GetCurrentLevel().duration * Player.Instance.currentAttackDuration);
+    }
+
     [ServerRpc(RequireOwnership = false)]
     private void SpawnServer(Vector3 spawnPosition, float angle, NetworkConnection Owner)
     {
