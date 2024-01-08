@@ -79,11 +79,9 @@ public class PlayerController : NetworkBehaviour
             lineRenderer.enabled = true;
 
         if (!roll)
-        {
-            Move();
-            if (!player.AutoAim)
-                Look();
-        }
+            Move();    
+        
+        Look();
     }
 
     private void Move()
@@ -141,7 +139,8 @@ public class PlayerController : NetworkBehaviour
             Vector3 hitPoint = ray.GetPoint(hit);
             var direction = hitPoint - transform.position;
             direction.y = 0;
-            transform.forward = direction;
+            if (!player.AutoAim)
+                transform.forward = direction;
 
             lineRenderer.SetPosition(0, transform.position);
             lineRenderer.SetPosition(1, hitPoint);
