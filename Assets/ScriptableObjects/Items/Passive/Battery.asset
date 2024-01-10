@@ -16,6 +16,7 @@ MonoBehaviour:
   itemIconIndex: 0
   isActive: 0
   maxLevel: 4
-  <ItemType>k__BackingField: 8
+  level: -1
+  itemType: 8
   description: All attack cooldown -8%
   multiplier: -8

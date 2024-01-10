@@ -16,6 +16,7 @@ MonoBehaviour:
   itemIconIndex: 0
   isActive: 0
   maxLevel: 4
-  <ItemType>k__BackingField: 10
+  level: -1
+  itemType: 10
   description: Money gain +8%
   multiplier: 8

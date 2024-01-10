@@ -3,16 +3,19 @@ using UnityEngine;
 
 public class Portal : NetworkBehaviour
 {
-    private void OnTriggerEnter(Collider other)
+    public override void OnStartNetwork()
     {
-        if (other.CompareTag("Player") && other.gameObject.GetComponent<NetworkObject>().IsOwner)
-        {
-            ServerPlayerInPortal(other.gameObject);
-        }
+        base.OnStartNetwork();
+        enabled = false;
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void ServerPlayerInPortal(GameObject other)
+    private void OnTriggerEnter(Collider other)
+    {
+        if (enabled && IsServer && other.CompareTag("Player"))
+            PlayerInPortal(other.gameObject);
+    }
+
+    private void PlayerInPortal(GameObject other)
     {
         Despawn(other);
         GameManager.Instance.PlayersInPortal();

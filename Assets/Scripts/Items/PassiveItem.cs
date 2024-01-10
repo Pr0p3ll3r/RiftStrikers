@@ -3,8 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "PassiveItem", menuName = "ScriptableObjects/Items/PassiveItem")]
 public class PassiveItem : Item
 {
-    [field: SerializeField]
-    public PassiveItemType ItemType { get; set; }
+    public PassiveItemType itemType;
     [TextArea(4, 6)] public string description;
     public float multiplier;
 }

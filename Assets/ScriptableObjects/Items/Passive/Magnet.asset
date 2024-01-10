@@ -16,6 +16,7 @@ MonoBehaviour:
   itemIconIndex: 0
   isActive: 0
   maxLevel: 4
-  <ItemType>k__BackingField: 11
+  level: -1
+  itemType: 11
   description: Item loot range +100%
   multiplier: 100

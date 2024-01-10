@@ -2,6 +2,7 @@
 using FishNet.Object;
 using UnityEngine.InputSystem;
 using FishNet.Connection;
+using System.Linq;
 
 public class Player : NetworkBehaviour
 {
@@ -26,7 +27,6 @@ public class Player : NetworkBehaviour
     private float currentHealth;
     private bool isDead;
     public bool IsDead => isDead;
-    private int currentMoney;
     private float healthRecoveryTime = 5f;
     private float currentHealthRecoveryTime;
 
@@ -58,7 +58,6 @@ public class Player : NetworkBehaviour
         currentMoneyGain = stats.MoneyGain;
         currentLootRange = stats.LootRange;
         currentHealthRecoveryTime = healthRecoveryTime;
-        currentMoney = 0;
     }
 
     public override void OnStartNetwork()
@@ -102,8 +101,8 @@ public class Player : NetworkBehaviour
     {
         if (isDead) return;
 
-        //float modifiedDamage = damage * (1 - currentDamageReduction);
-        //currentHealth -= modifiedDamage;
+        float modifiedDamage = damage * (1 - currentDamageReduction);
+        currentHealth -= modifiedDamage;
         currentHealth -= 0;
 
         hurtSound.Play();
@@ -140,6 +139,18 @@ public class Player : NetworkBehaviour
         foreach (Transform child in gameObject.GetComponentsInChildren<Transform>(true))
         {
             child.gameObject.layer = LayerMask.NameToLayer("NotCollide");
+        }
+        if(GameManager.Instance.GetLivingPlayers() > 0)
+        {
+            PlayerInstance player = GameManager.Instance.players.Find(x => !x.controlledPlayer.isDead);
+            if(player != null)
+            {
+                Camera.main.GetComponent<CameraFollow>().SetPlayer(player.controlledPlayer.transform);
+            }
+        }
+        if(IsServer)
+        {
+            GameManager.Instance.GameOver();
         }
     }
 
@@ -193,7 +204,7 @@ public class Player : NetworkBehaviour
         else if (item.itemType == ItemType.Money)
         {
             value = Mathf.RoundToInt(value * currentMoneyGain);
-            currentMoney += value;
+            GameManager.Instance.AddMoneyRpc(value);
         }
         return true;
     }
@@ -209,9 +220,10 @@ public class Player : NetworkBehaviour
         }
         else if(item is PassiveItem passiveItem)
         {
-            if (passiveItem.name == "Money")
+            if (passiveItem.itemName == "Money")
             {
-                currentMoney += (int)passiveItem.multiplier;
+                if (IsServer)
+                    GameManager.Instance.AddMoneyRpc((int)passiveItem.multiplier);
             }
             else
             {

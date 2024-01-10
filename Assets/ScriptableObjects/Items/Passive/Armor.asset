@@ -16,6 +16,7 @@ MonoBehaviour:
   itemIconIndex: 0
   isActive: 0
   maxLevel: 4
-  <ItemType>k__BackingField: 2
+  level: -1
+  itemType: 2
   description: Received damage -10%
   multiplier: 10

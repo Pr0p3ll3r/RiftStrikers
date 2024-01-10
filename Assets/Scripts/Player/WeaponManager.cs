@@ -134,7 +134,7 @@ public class WeaponManager : NetworkBehaviour
             }
             else
             {
-                ShootRpc(muzzleFlash.gameObject.transform.position + transform.forward * 100);
+                ShootRpc(transform.position + transform.forward * 100);
             }
         }
     }

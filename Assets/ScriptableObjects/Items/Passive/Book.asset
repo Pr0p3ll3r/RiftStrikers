@@ -16,6 +16,7 @@ MonoBehaviour:
   itemIconIndex: 0
   isActive: 0
   maxLevel: 4
-  <ItemType>k__BackingField: 9
+  level: -1
+  itemType: 9
   description: EXP gain +8%
   multiplier: 8

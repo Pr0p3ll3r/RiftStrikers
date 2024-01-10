@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Rocket Launcher
   itemIconIndex: 0
   isActive: 1
-  maxLevel: 4
+  maxLevel: 7
   level: -1
   prefab: {fileID: 5828148292702650109, guid: cf996175071b2e34db2e0beacacf9300, type: 3}
   levels:

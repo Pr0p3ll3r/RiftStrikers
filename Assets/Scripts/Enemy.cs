@@ -69,7 +69,6 @@ public class Enemy : NetworkBehaviour
             if(IsServer && dissolve >= 0.5f)
             {
                 enabled = false;
-                GameManager.Instance.EnemyKilled(this);
                 Despawn(gameObject);
             }
             return;
@@ -178,6 +177,7 @@ public class Enemy : NetworkBehaviour
             agent.enabled = false;
             DropItem();
             RpcDie();
+            GameManager.Instance.EnemyKilled(this);
             if (stats.IsBoss)
                 GameManager.Instance.ClearedIsland();
         }

@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Buckyball
   itemIconIndex: 0
   isActive: 1
-  maxLevel: 4
+  maxLevel: 7
   level: -1
   prefab: {fileID: 5828148292702650109, guid: dfb57337134aded46994307eceb48b9a, type: 3}
   levels:

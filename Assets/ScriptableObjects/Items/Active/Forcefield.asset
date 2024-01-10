@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Forcefield
   itemIconIndex: 0
   isActive: 1
-  maxLevel: 4
+  maxLevel: 7
   level: -1
   prefab: {fileID: 1289543790355709915, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
   levels:

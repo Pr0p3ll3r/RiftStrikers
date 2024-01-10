@@ -108,6 +108,8 @@ public class MapGenerator : NetworkBehaviour
         }
 
         StartCoroutine(RebuildNavMesh());
+        if (IsServer)
+            GameManager.Instance.SpawnPortals();
     }
 
     IEnumerator RebuildNavMesh()
@@ -154,7 +156,9 @@ public class MapGenerator : NetworkBehaviour
     
     public GameObject GetRandomEmptyLand()
     {
-        return emptyLands[Random.Range(0, emptyLands.Count)];
+        GameObject emptyLand = emptyLands[Random.Range(0, emptyLands.Count)];
+        emptyLands.Remove(emptyLand);
+        return emptyLand;
     }
 
     private GameObject GetLandPrefab(GameObject[] prefabs)

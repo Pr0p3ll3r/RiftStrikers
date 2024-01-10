@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Boomerang
   itemIconIndex: 0
   isActive: 1
-  maxLevel: 4
+  maxLevel: 7
   level: -1
   prefab: {fileID: 5828148292702650109, guid: 9055d0ddb391cfb478f8bad1f066c915, type: 3}
   levels:

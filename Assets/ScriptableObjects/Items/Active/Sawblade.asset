@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Sawblade
   itemIconIndex: 0
   isActive: 1
-  maxLevel: 4
+  maxLevel: 7
   level: -1
   prefab: {fileID: 5828148292702650109, guid: 27195fd41c07b50419bba9c573562187, type: 3}
   levels:

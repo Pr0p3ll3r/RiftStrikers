@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Knife
   itemIconIndex: 0
   isActive: 1
-  maxLevel: 4
+  maxLevel: 7
   level: -1
   prefab: {fileID: 5828148292702650109, guid: c48406a87f6a33e43b811e49e6ad93be, type: 3}
   levels:

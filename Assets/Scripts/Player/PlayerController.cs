@@ -78,8 +78,8 @@ public class PlayerController : NetworkBehaviour
             lineRenderer.enabled = true;
 
         if (!roll)
-            Move();    
-        
+            Move();
+
         Look();
     }
 
@@ -98,12 +98,10 @@ public class PlayerController : NetworkBehaviour
         playerVelocity.y += gravity * Time.deltaTime;
         controller.Move(playerVelocity * Time.deltaTime);
 
-        //animations
         Vector3 localMove = transform.InverseTransformDirection(movement);
         animCharacter.SetFloat("Speed", localMove.z, 0.05f, Time.deltaTime);
         animCharacter.SetFloat("Direction", localMove.x, 0.05f, Time.deltaTime);
 
-        //footsteps
         distMoved += (transform.position - lastPos).magnitude;
         if (distMoved >= nextStep)
         {

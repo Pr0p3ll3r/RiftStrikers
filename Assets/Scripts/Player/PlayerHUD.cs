@@ -11,7 +11,6 @@ public class PlayerHUD : NetworkBehaviour
     private Slider healthBar;
     private Slider staminaBar;
     private TextMeshProUGUI ammo;
-    private TextMeshProUGUI moneyText;
     private GameObject vignette;
     private Transform weapon;
     private Slider reloadingSlider;
@@ -24,7 +23,6 @@ public class PlayerHUD : NetworkBehaviour
     void InitializeUI()
     {
         //Bottom Left
-        moneyText = GameObject.Find("HUD/Game/BottomLeftCorner/Money").GetComponent<TextMeshProUGUI>();
         healthBar = GameObject.Find("HUD/Game/BottomLeftCorner/Health/HealthBar").GetComponent<Slider>();
         staminaBar = GameObject.Find("HUD/Game/BottomLeftCorner/Stamina/StaminaBar").GetComponent<Slider>();
 
@@ -56,11 +54,6 @@ public class PlayerHUD : NetworkBehaviour
     public void RefreshAmmo(int currentAmmo)
     {
         ammo.text = currentAmmo.ToString();
-    }
-
-    public void UpdateMoney(int money)
-    {
-        moneyText.text = $"${money}";
     }
 
     public void ShowVignette()

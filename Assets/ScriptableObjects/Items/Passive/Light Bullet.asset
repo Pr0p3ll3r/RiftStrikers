@@ -16,6 +16,7 @@ MonoBehaviour:
   itemIconIndex: 0
   isActive: 0
   maxLevel: 4
-  <ItemType>k__BackingField: 6
+  level: -1
+  itemType: 6
   description: Bullet flight speed +10%
   multiplier: 10

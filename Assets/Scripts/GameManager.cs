@@ -1,3 +1,4 @@
+using FishNet.Managing.Scened;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System.Collections;
@@ -5,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class Island
@@ -21,8 +24,8 @@ public class GameManager : NetworkBehaviour
     public GameState currentState = GameState.WaitingForPlayers;
 
     [SerializeField] private float waitingTimeBeforeStart = 5f;
-    [SerializeField] private int islandDuration = 600;
-    [SerializeField] private Transform[] spawnPoints;
+    [SerializeField] private int islandDuration = 300;
+    private Transform[] spawnPoints = new Transform[4];
     [SerializeField] private Island[] islands = new Island[5];
     [SerializeField] private float spawnInterval;
     [SerializeField] private int maximumAmount;
@@ -37,26 +40,37 @@ public class GameManager : NetworkBehaviour
     private float timeToSpawnEnemy;
     private float timeToNextIsland;
 
-    [SyncVar] private float gameTimer;
-    [SerializeField] private TextMeshProUGUI timer;
-
+    private float gameTimer;
+    [SerializeField] private TextMeshProUGUI gameTimerText;
+    [HideInInspector] public int money;
+    [SerializeField] private TextMeshProUGUI moneyText;
+    [SerializeField] private GameObject gameoverScreen;
+    [SerializeField] private TextMeshProUGUI timeSurvivedText;
+    [SerializeField] private TextMeshProUGUI moneyEarnedText;
+    [SerializeField] private TextMeshProUGUI levelReachedText;
+    [SerializeField] private TextMeshProUGUI enemiesDefeatedText;
+    [SerializeField] private TextMeshProUGUI islandsClearedText;
+    [SerializeField] private Button returnToMenuButton;
     private int healthMultiplier = 2;
     private float damageMultiplier = 1;
     private float spawnIntervalMultiplier = 1;
     private float maximumAmountMultiplier = 1;
     private bool isBossSpawned;
 
-    [SyncObject]
-    public readonly SyncList<PlayerInstance> players = new SyncList<PlayerInstance>();
+    [SyncObject] public readonly SyncList<PlayerInstance> players = new SyncList<PlayerInstance>();
     [SyncObject] public readonly SyncList<Enemy> enemies = new SyncList<Enemy>();
 
-    [SerializeField] private GameObject teleportPrefab;
-    [SerializeField] private float timeForGetToTeleport = 30.0f;
-    [SerializeField] private float timeToFadeScreen = 2f;
+    [SerializeField] private TextMeshProUGUI nextIslandTimerText;
+    [SerializeField] private GameObject getPortalText;
+    [SerializeField] private GameObject enemyPortalPrefab;
+    [SerializeField] private GameObject playerPortalPrefab;
+    private GameObject spawnedPlayerPortal;
+    private GameObject[] spawnedEnemiesPortal = new GameObject[4];
+    [SerializeField] private float timeForGetToPortal = 30.0f;
+    [SerializeField] private float timeToFadeScreen = 1f;
     [SerializeField] private Animator screenTransition;
-    private GameObject teleport;
-    private int playersInTeleport;
-    private bool teleportSpawned = false;
+    private int playersInPortal;
+    private bool islandBeingDestroyed = false;
     private MapGenerator MapGenerator => MapGenerator.Instance;
     private GameState previousState;
 
@@ -64,6 +78,7 @@ public class GameManager : NetworkBehaviour
     {
         Instance = this;
         availableIslands = islands.ToList();
+        returnToMenuButton.onClick.AddListener(ReturnToMenu);
     }
 
     public override void OnStartNetwork()
@@ -74,19 +89,26 @@ public class GameManager : NetworkBehaviour
             enabled = false;
             return;
         }
+        GenerateMap();
+    }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
         gameTimer = 0;
         waitingTimeBeforeStart = 2f;
         currentState = GameState.WaitingForPlayers;
-        GenerateMap();
     }
 
     void Update()
     {
+        if (!IsClientInitialized) return;
+
         switch (currentState)
         {
             case GameState.WaitingForPlayers:
                 waitingTimeBeforeStart -= Time.deltaTime;
-                RpcUpdateGameTimer(waitingTimeBeforeStart);
+                UpdateGameTimerRpc(waitingTimeBeforeStart + 1);
                 if (waitingTimeBeforeStart <= 0)
                 {
                     StartGame();
@@ -110,15 +132,15 @@ public class GameManager : NetworkBehaviour
             case GameState.ChangingMap:
                 UpdateGameTimer();
 
-                if (playersInTeleport == GetLivingPlayers())
+                if (playersInPortal == GetLivingPlayers())
                 {
-                    playersInTeleport = 0;
+                    playersInPortal = 0;
                     StartDarkeningScreenRpc();
                 }
-                else if (teleportSpawned)
+                else if (islandBeingDestroyed)
                 {
-                    timeForGetToTeleport -= Time.deltaTime;
-                    if (timeForGetToTeleport <= 0)
+                    timeForGetToPortal -= Time.deltaTime;
+                    if (timeForGetToPortal <= 0)
                     {
                         TimeExpired();
                     }
@@ -142,10 +164,28 @@ public class GameManager : NetworkBehaviour
         Player.Instance.TakeDamageServer(1000);
     }
 
+    [ObserversRpc]
+    private void UpdateGameTimerRpc(float newTime)
+    {
+        gameTimerText.text = FormatTimer(newTime);
+        nextIslandTimerText.text = FormatTimer(timeForGetToPortal);
+    }
+
+    private string FormatTimer(float newTime)
+    {
+        int hours = Mathf.FloorToInt(newTime / 3600);
+        int minutes = Mathf.FloorToInt((newTime % 3600) / 60);
+        int seconds = Mathf.FloorToInt(newTime % 60);
+        if (hours > 0)
+            return string.Format("{0:00}:{1:00}:{2:00}", hours, minutes, seconds);
+        else
+            return string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+
     private void UpdateGameTimer()
     {
         gameTimer += Time.deltaTime;
-        RpcUpdateGameTimer(gameTimer);
+        UpdateGameTimerRpc(gameTimer);
     }
 
     private void StartGame()
@@ -153,10 +193,11 @@ public class GameManager : NetworkBehaviour
         Debug.Log("Game Start");
         foreach (PlayerInstance player in players)
         {
-            player.SpawnPlayer();
+            player.SpawnPlayer(spawnedPlayerPortal.transform.position);
         }
         timeToNextIsland = islandDuration;
         UpdateGameTimer();
+        getPortalText.SetActive(false);
         currentState = GameState.Fighting;
     }
 
@@ -168,6 +209,7 @@ public class GameManager : NetworkBehaviour
         clearedIslands++;
         isBossSpawned = false;
         availableIslands.Remove(currentIsland);
+        getPortalText.SetActive(true);
         if (!availableIslands.Any())
             NewCycle();     
         StartIslandRemoving();
@@ -189,13 +231,16 @@ public class GameManager : NetworkBehaviour
         timeToSpawnEnemy = spawnInterval * spawnIntervalMultiplier;
         foreach (GameObject enemyPrefab in currentIsland.enemies)
         {
-            Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
-            GameObject enemyGO = Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
-            Enemy enemy = enemyGO.GetComponent<Enemy>();
-            enemy.CurrentMaxHealth *= healthMultiplier;
-            enemy.CurrentDamage = (int)(enemy.CurrentDamage * damageMultiplier);
-            Spawn(enemyGO);
-            enemies.Add(enemy);
+            for (int i = 0; i < spawnPoints.Length; i++)
+            {
+                Transform spawnPoint = spawnPoints[i];
+                GameObject enemyGO = Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+                Enemy enemy = enemyGO.GetComponent<Enemy>();
+                enemy.CurrentMaxHealth *= healthMultiplier;
+                enemy.CurrentDamage = (int)(enemy.CurrentDamage * damageMultiplier);
+                Spawn(enemyGO);
+                enemies.Add(enemy);
+            }
         }
     }
 
@@ -229,26 +274,41 @@ public class GameManager : NetworkBehaviour
     private void StartIslandRemoving()
     {
         MapGenerator.StartShakingRpc();
-        SpawnTeleport();
+        EnablePortal();
     }
 
     public void PlayersInPortal()
     {
-        playersInTeleport++;
+        playersInPortal++;
     }
 
-    private void SpawnTeleport()
+    public void SpawnPortals()
     {
         GameObject randomLand = MapGenerator.GetRandomEmptyLand();
-        teleport = Instantiate(teleportPrefab, randomLand.transform.position + Vector3.up, Quaternion.identity);
-        Spawn(teleport);
-        teleportSpawned = true;
+        spawnedPlayerPortal = Instantiate(playerPortalPrefab, randomLand.transform.position + Vector3.up, Quaternion.identity);
+        Spawn(spawnedPlayerPortal);
+        for (int i = 0; i < 4; i++)
+        {
+            randomLand = MapGenerator.GetRandomEmptyLand();
+            GameObject spawnedEnemyPortal = Instantiate(enemyPortalPrefab, randomLand.transform.position + Vector3.up, Quaternion.identity);
+            Spawn(spawnedEnemyPortal);
+            spawnedEnemiesPortal[i] = spawnedEnemyPortal;
+            spawnPoints[i] = spawnedEnemyPortal.transform;
+        }
+    }
+
+    [ObserversRpc]
+    private void EnablePortal()
+    {
+        spawnedPlayerPortal.GetComponent<Portal>().enabled = true;
+        islandBeingDestroyed = true;
     }
 
     [ObserversRpc]
     private void StartDarkeningScreenRpc()
     {
         currentState = GameState.Paused;
+        getPortalText.SetActive(false);
         StartCoroutine(DarkenScreen());
     }
 
@@ -260,9 +320,10 @@ public class GameManager : NetworkBehaviour
         {
             ClearMap();
             GenerateMap();
+            yield return new WaitForSeconds(0.1f);
             foreach (PlayerInstance player in players)
             {
-                player.SpawnPlayer(false);
+                player.SpawnPlayer(spawnedPlayerPortal.transform.position, false);
             }
         }
         yield return new WaitForSeconds(timeToFadeScreen);
@@ -272,24 +333,56 @@ public class GameManager : NetworkBehaviour
 
     private void ClearMap()
     {
-        teleportSpawned = false;
-        playersInTeleport = 0;
+        islandBeingDestroyed = false;
+        playersInPortal = 0;
         previousState = GameState.Fighting;
-        Despawn(teleport);
+        Despawn(spawnedPlayerPortal);
+        foreach (GameObject portal in spawnedEnemiesPortal)
+        {
+            Despawn(portal);
+        }
+        foreach (PlayerInstance player in players)
+        {
+            if (player.controlledPlayer)
+                Despawn(player.controlledPlayer.gameObject);
+        }
         for (int i = enemies.Count - 1; i >= 0; i--)
         {
-            Enemy enemy = enemies[i];
-            if (!enemy.IsDead)
-            {
-                Despawn(enemy.gameObject);
-                enemies.RemoveAt(i);
-            }
+            Despawn(enemies[i].gameObject);
+            enemies.RemoveAt(i);           
         }
         PickupItem[] pickups = FindObjectsByType<PickupItem>(FindObjectsSortMode.None);
         foreach (PickupItem pickup in pickups)
         {
             Despawn(pickup.gameObject);
         }
+    }
+
+    public void GameOver()
+    {
+        if (GetLivingPlayers() > 0) return;
+        SetGameOverScreen();
+    }
+
+    [ObserversRpc]
+    public void SetGameOverScreen()
+    {
+        PauseGame(true);
+        timeSurvivedText.text = gameTimerText.text;
+        enemiesDefeatedText.text = enemyKilledText.text;
+        moneyEarnedText.text = moneyText.text;
+        levelReachedText.text = LevelSystem.Instance.GetCurrentLevel().ToString();
+        islandsClearedText.text = clearedIslands.ToString();
+        gameoverScreen.SetActive(true);
+    }
+
+    public void ReturnToMenu()
+    {
+        SceneManager.LoadGlobalScenes(new SceneLoadData("Menu"));
+        SceneManager.UnloadGlobalScenes(new SceneUnloadData("Game"));
+        NetworkManager.ClientManager.StopConnection();
+        if (IsServer)
+            NetworkManager.ServerManager.StopConnection(false);
     }
 
     public int GetLivingPlayers()
@@ -322,13 +415,10 @@ public class GameManager : NetworkBehaviour
     }
 
     [ObserversRpc]
-    private void RpcUpdateGameTimer(float newTime)
+    public void AddMoneyRpc(int amount)
     {
-        string hours = (newTime / 3600).ToString("00");
-        float m = newTime % 3600;
-        string minutes = (m / 60).ToString("00");
-        string seconds = (m % 60).ToString("00");
-        timer.text = $"{hours}:{minutes}:{seconds}";
+        money += amount;
+        moneyText.text = $"Money: ${money}";
     }
 
     public GameObject GetClosestEnemy(Vector3 pos, float range, List<Enemy> enemyList = null)

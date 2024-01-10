@@ -57,9 +57,6 @@ public class GameLauncher : MonoBehaviour
         menuManager = GetComponent<MenuManager>();
         menuManager.OpenTab(menuManager.tabConnect);
 
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-
         authenticateButton.onClick.AddListener(Authenticate);
 
         createLobbyButton.onClick.AddListener(() => {

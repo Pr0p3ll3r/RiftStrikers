@@ -1,4 +1,5 @@
 ﻿using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,11 @@ public class LevelSystem : NetworkBehaviour
 {
     public static LevelSystem Instance { get; private set; }
 
-    private int currentLevel = 1;
+    [SyncVar] private int currentLevel = 1;
+    public int GetCurrentLevel()
+    {
+        return currentLevel;
+    }
     private int currentEXP = 0;
 
     [SerializeField] private GameObject upgradeUI;

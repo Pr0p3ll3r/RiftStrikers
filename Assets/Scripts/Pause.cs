@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
@@ -63,7 +62,6 @@ public class Pause : MonoBehaviour
 
     private void ReturnToMenu()
     {
-        TooglePause();
-        LobbyManager.Instance.LeaveLobby();
+        GameManager.Instance.ReturnToMenu();
     }
 }

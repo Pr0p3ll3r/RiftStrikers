@@ -33,7 +33,7 @@ public class ItemManager : NetworkBehaviour
 
     public void AddPassiveItem(PassiveItem item)
     {
-        switch (item.ItemType)
+        switch (item.itemType)
         {
             case PassiveItemType.MaxHealth:
                 Player.Instance.currentMaxHealth *= 1 + item.multiplier / 100f;

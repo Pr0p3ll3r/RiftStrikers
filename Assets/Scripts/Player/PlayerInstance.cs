@@ -33,10 +33,9 @@ public class PlayerInstance : NetworkBehaviour
         Instance = this;
     }
 
-    public void SpawnPlayer(bool canControl = true)
+    public void SpawnPlayer(Vector3 position, bool canControl = true)
     {
-        GameObject spawnPoint = MapGenerator.Instance.GetRandomEmptyLand();
-        GameObject player = Instantiate(playerPrefab, spawnPoint.transform.position + Vector3.up, Quaternion.identity);
+        GameObject player = Instantiate(playerPrefab, position + Vector3.up, Quaternion.identity);
 
         Debug.Log("Player Spawn");
         Spawn(player, Owner);

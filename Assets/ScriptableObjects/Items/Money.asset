@@ -16,6 +16,7 @@ MonoBehaviour:
   itemIconIndex: 0
   isActive: 0
   maxLevel: 4
-  <ItemType>k__BackingField: 10
-  description: Adds 5 to your money
-  <Multiplier>k__BackingField: 5
+  level: -1
+  itemType: 10
+  description: Adds 25 to total money
+  multiplier: 25

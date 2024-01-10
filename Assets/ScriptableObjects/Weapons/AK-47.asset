@@ -20,7 +20,7 @@ MonoBehaviour:
   pelletsSpread: 0
   range: 10
   fireRate: 1
-  bulletForce: 50
+  bulletForce: 75
   movementSpeedMultiplier: 0
   reloadTime: 2.8
   childNumber: 0

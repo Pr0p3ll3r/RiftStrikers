@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Air Strike
   itemIconIndex: 0
   isActive: 1
-  maxLevel: 4
+  maxLevel: 7
   level: -1
   prefab: {fileID: 5828148292702650109, guid: 429178ccd336bea49af94cecc04ddef9, type: 3}
   levels:
