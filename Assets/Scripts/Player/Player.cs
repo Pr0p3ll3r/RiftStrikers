@@ -27,8 +27,7 @@ public class Player : NetworkBehaviour
     private float currentHealth;
     private bool isDead;
     public bool IsDead => isDead;
-    private float healthRecoveryTime = 5f;
-    private float currentHealthRecoveryTime;
+    private float healthRecoveryTime = 1f;
 
     [SerializeField] private AudioSource hurtSound;
     [SerializeField] private AudioSource deathSound;
@@ -57,7 +56,6 @@ public class Player : NetworkBehaviour
         currentExpGain = stats.ExpGain;
         currentMoneyGain = stats.MoneyGain;
         currentLootRange = stats.LootRange;
-        currentHealthRecoveryTime = healthRecoveryTime;
     }
 
     public override void OnStartNetwork()
@@ -86,6 +84,7 @@ public class Player : NetworkBehaviour
         HealthRecovery();
         PullItemsTowardsPlayer();
 
+#if UNITY_EDITOR
         if (Keyboard.current.tKey.wasPressedThisFrame)
         {
             TakeDamageServer(20);
@@ -94,6 +93,7 @@ public class Player : NetworkBehaviour
         {
             LevelSystem.Instance.GainExperience(5);
         }
+#endif
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -101,9 +101,8 @@ public class Player : NetworkBehaviour
     {
         if (isDead) return;
 
-        float modifiedDamage = damage * (1 - currentDamageReduction);
-        currentHealth -= modifiedDamage;
-        currentHealth -= 0;
+        float modifiedDamage = damage + currentDamageReduction;
+        currentHealth -= Mathf.Max(0, modifiedDamage);
 
         hurtSound.Play();
         TakeDamageRpc(Owner, currentHealth);
@@ -160,12 +159,12 @@ public class Player : NetworkBehaviour
 
         if (currentHealth < currentMaxHealth)
         {
-            currentHealthRecoveryTime -= Time.deltaTime;
-            if(currentHealthRecoveryTime <= 0) 
+            healthRecoveryTime -= Time.deltaTime;
+            if(healthRecoveryTime <= 0) 
             {
-                currentHealth += currentMaxHealth * currentHealthRecovery;
+                currentHealth += currentHealthRecovery;
                 currentHealth = Mathf.Min(currentHealth, currentMaxHealth);
-                currentHealthRecoveryTime = healthRecoveryTime;
+                healthRecoveryTime = 1f;
                 hud.RefreshBars(currentHealth);
             }
         }      

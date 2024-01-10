@@ -39,10 +39,10 @@ public class ItemManager : NetworkBehaviour
                 Player.Instance.currentMaxHealth *= 1 + item.multiplier / 100f;
                 break;
             case PassiveItemType.HealthRecovery:
-                Player.Instance.currentHealthRecovery += item.multiplier / 100f;
+                Player.Instance.currentHealthRecovery += item.multiplier;
                 break;
             case PassiveItemType.DamageReduction:
-                Player.Instance.currentDamageReduction += item.multiplier / 100f;
+                Player.Instance.currentDamageReduction += item.multiplier;
                 break;
             case PassiveItemType.MoveSpeed:
                 Player.Instance.currentMoveSpeed *= 1 + item.multiplier / 100f;

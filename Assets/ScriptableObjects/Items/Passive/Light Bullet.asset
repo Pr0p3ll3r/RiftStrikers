@@ -18,5 +18,5 @@ MonoBehaviour:
   maxLevel: 4
   level: -1
   itemType: 6
-  description: Bullet flight speed +10%
+  description: Projectile speed +10%
   multiplier: 10
