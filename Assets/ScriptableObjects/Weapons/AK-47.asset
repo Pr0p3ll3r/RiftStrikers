@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: AK-47
   icon: {fileID: 21300000, guid: 4d5d447baac61ae4b9cc0e1fac946301, type: 3}
-  damage: 45
+  damage: 5
   ammo: 6
   pellets: 0
   pelletsSpread: 0

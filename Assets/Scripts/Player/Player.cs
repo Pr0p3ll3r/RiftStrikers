@@ -138,7 +138,7 @@ public class Player : NetworkBehaviour
         currentHealth -= Mathf.Max(0, modifiedDamage);
 
         hurtSound.Play();
-        TakeDamageRpc(Owner, currentHealth);
+        RefreshHudRpc(Owner, currentHealth);
 
         if (currentHealth <= 0)
         {
@@ -148,7 +148,7 @@ public class Player : NetworkBehaviour
     }
 
     [TargetRpc]
-    public void TakeDamageRpc(NetworkConnection conn, float newHealth)
+    public void RefreshHudRpc(NetworkConnection conn, float newHealth)
     {
         hud.ShowVignette();
         hud.RefreshBars(newHealth);
@@ -248,7 +248,10 @@ public class Player : NetworkBehaviour
             if(activeItem.level > 0)
                 itemManager.LevelUpActiveItem(activeItem);
             else
+            {
                 itemManager.AddActiveItem(activeItem);
+                hud.AddItemUI(activeItem);
+            }            
         }
         else if(item is PassiveItem passiveItem)
         {
@@ -260,6 +263,7 @@ public class Player : NetworkBehaviour
             else
             {
                 itemManager.AddPassiveItem(passiveItem);
+                hud.AddItemUI(passiveItem);
             }           
         }
     }

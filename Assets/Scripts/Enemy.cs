@@ -152,7 +152,7 @@ public class Enemy : NetworkBehaviour
         material = mesh.GetComponent<SkinnedMeshRenderer>().material;
     }
 
-    [ObserversRpc(RunLocally = true)]
+    [ObserversRpc]
     void RpcSetHealthBar(float currentHealth)
     {
         healthBar.SetActive(true);

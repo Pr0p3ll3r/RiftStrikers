@@ -4091,6 +4091,8 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 3610995976546538049}
   fadeOutTime: 4
   emptyIcon: {fileID: 21300000, guid: 35834e06d68ba1542b4d82c106ef6eba, type: 3}
+  itemListItemPrefab: {fileID: 5724650254614766357, guid: f4b69a1125df21a4c8082a79a0023789,
+    type: 3}
 --- !u!114 &4794672592407554630
 MonoBehaviour:
   m_ObjectHideFlags: 0

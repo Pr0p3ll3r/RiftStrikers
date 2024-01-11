@@ -425,7 +425,7 @@ public class GameManager : NetworkBehaviour
 
     public GameObject GetClosestEnemy(Vector3 pos, float range, List<Enemy> enemyList = null)
     {
-        List<Enemy> tempList = enemyList != null ? enemyList : enemies.ToList();      
+        List<Enemy> tempList = enemyList ?? enemies.ToList();      
 
         GameObject closestEnemy = null;
         float minimumDistance = Mathf.Infinity;

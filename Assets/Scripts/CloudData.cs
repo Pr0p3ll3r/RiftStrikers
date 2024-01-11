@@ -15,7 +15,22 @@ public static class CloudData
     public static async Task SaveAsync()
     {
         var data = new Dictionary<string, object> { { "PlayerData", PlayerData } };
-        await CloudSaveService.Instance.Data.Player.SaveAsync(data);
+        try
+        {
+            await CloudSaveService.Instance.Data.Player.SaveAsync(data);
+        }
+        catch (CloudSaveValidationException e)
+        {
+            Debug.LogError(e);
+        }
+        catch (CloudSaveRateLimitedException e)
+        {
+            Debug.LogError(e);
+        }
+        catch (CloudSaveException e)
+        {
+            Debug.LogError(e);
+        }   
     }
 
     public static async Task<T> RetrieveSpecificData<T>(string key)

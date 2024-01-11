@@ -89,11 +89,11 @@ public class LobbyManager : MonoBehaviour
                     return;
                 }
 
-                if (joinedLobby.Data["Start Game"].Value != "0")
+                if (joinedLobby.Data["RelayCode"].Value != "0")
                 {
                     if(!IsLobbyHost())
                     {
-                        RelayManager.Instance.JoinRelay(joinedLobby.Data["Start Game"].Value);
+                        RelayManager.Instance.JoinRelay(joinedLobby.Data["RelayCode"].Value);
                     }
 
                     joinedLobby = null;
@@ -130,7 +130,7 @@ public class LobbyManager : MonoBehaviour
                 Player = GetPlayer(),
                 Data = new Dictionary<string, DataObject>
                 {
-                    {"Start Game", new DataObject(DataObject.VisibilityOptions.Member, "0") }
+                    {"RelayCode", new DataObject(DataObject.VisibilityOptions.Member, "0") }
                 }
             };
 
@@ -317,7 +317,7 @@ public class LobbyManager : MonoBehaviour
                 {
                     Data = new Dictionary<string, DataObject>
                     {
-                       { "Start Game", new DataObject(DataObject.VisibilityOptions.Member, relayCode) }
+                       { "RelayCode", new DataObject(DataObject.VisibilityOptions.Member, relayCode) }
                     }
                 });
 

@@ -8,12 +8,15 @@ public class PlayerHUD : NetworkBehaviour
 {
     [SerializeField] private float fadeOutTime = 4f;
     [SerializeField] private Sprite emptyIcon;
+    [SerializeField] private GameObject itemListItemPrefab;
     private Slider healthBar;
     private Slider staminaBar;
     private TextMeshProUGUI ammo;
     private GameObject vignette;
     private Transform weapon;
     private Slider reloadingSlider;
+    private Transform activeitemsContainer;
+    private Transform passiveitemsContainer;
 
     private void Awake()
     {
@@ -30,6 +33,8 @@ public class PlayerHUD : NetworkBehaviour
         ammo = GameObject.Find("HUD/Game/BottomRightCorner/Ammo/Amount").GetComponent<TextMeshProUGUI>();
         weapon = GameObject.Find("HUD/Game/BottomRightCorner/Weapon").transform;
         reloadingSlider = GameObject.Find("HUD/Game/BottomRightCorner/Ammo/ReloadingSlider").GetComponent<Slider>();
+        activeitemsContainer = GameObject.Find("HUD/Game/BottomRightCorner/ActiveItems").transform;
+        passiveitemsContainer = GameObject.Find("HUD/Game/BottomRightCorner/PassiveItems").transform;
 
         //Center
         vignette = GameObject.Find("HUD/Game/Vignette").gameObject;
@@ -75,6 +80,17 @@ public class PlayerHUD : NetworkBehaviour
     public void RefreshWeapon(Weapon weaponData)
     {
         weapon.GetChild(0).GetComponentInChildren<Image>().sprite = weaponData.icon;
+    }
+
+    public void AddItemUI(Item item)
+    {
+        GameObject itemGO = null;
+        Debug.Log(item.itemName);
+        if (item is ActiveItem)
+            itemGO = Instantiate(itemListItemPrefab, activeitemsContainer);
+        else if(item is PassiveItem)
+            itemGO = Instantiate(itemListItemPrefab, activeitemsContainer);
+        itemGO.transform.GetChild(0).GetComponent<Image>().sprite = Database.GetItemIcon(item.itemIconIndex);
     }
 
     private IEnumerator Reload(float time)
