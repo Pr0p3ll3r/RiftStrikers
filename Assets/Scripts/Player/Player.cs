@@ -2,7 +2,6 @@
 using FishNet.Object;
 using UnityEngine.InputSystem;
 using FishNet.Connection;
-using System.Linq;
 
 public class Player : NetworkBehaviour
 {
@@ -34,7 +33,6 @@ public class Player : NetworkBehaviour
     [SerializeField] private GameObject itemsContainer;
 
     private PlayerController controller;
-    private WeaponManager weaponManager;
     private PlayerHUD hud;
     private Ragdoll ragdoll;
     private ItemManager itemManager;
@@ -43,8 +41,7 @@ public class Player : NetworkBehaviour
 
     private void Awake()
     {
-        currentHealth = stats.MaxHealth;
-        currentMaxHealth = stats.MaxHealth;
+        currentMaxHealth = stats.MaxHealth;        
         currentHealthRecovery = stats.HealthRecovery;
         currentDamageReduction = stats.DamageReduction;
         currentMoveSpeed = stats.MoveSpeed;
@@ -56,6 +53,43 @@ public class Player : NetworkBehaviour
         currentExpGain = stats.ExpGain;
         currentMoneyGain = stats.MoneyGain;
         currentLootRange = stats.LootRange;
+
+        if(CloudData.PlayerData.MaxHealth > 0)
+            currentMaxHealth *= (1 + CloudData.PlayerData.MaxHealth * 10 / 100f);
+        currentHealth = currentMaxHealth;
+
+        if (CloudData.PlayerData.HealthRecovery > 0)
+            currentHealthRecovery += (CloudData.PlayerData.HealthRecovery * 0.1f);
+
+        if (CloudData.PlayerData.DamageReduction > 0)
+            currentDamageReduction += CloudData.PlayerData.DamageReduction;
+
+        if (CloudData.PlayerData.MoveSpeed > 0)
+            currentMoveSpeed *= (1 + CloudData.PlayerData.MoveSpeed * 5 / 100f);
+
+        if (CloudData.PlayerData.Damage > 0)
+            currentDamage += (CloudData.PlayerData.Damage * 5 / 100f);
+
+        if (CloudData.PlayerData.AttackDuration > 0)
+            currentAttackDuration += (CloudData.PlayerData.AttackDuration * 10 / 100f);
+
+        if (CloudData.PlayerData.AttackRange > 0)
+            currentAttackRange += (CloudData.PlayerData.AttackRange * 2.5f / 100f);
+
+        if (CloudData.PlayerData.ProjectileSpeed > 0)
+            currentProjectileSpeed += (CloudData.PlayerData.ProjectileSpeed * 10 / 100f);
+
+        if (CloudData.PlayerData.AttackDuration > 0)
+            currentAttackDuration += (CloudData.PlayerData.AttackDuration * 15 / 100f);
+
+        if (CloudData.PlayerData.LootRange > 0)
+            currentLootRange += (CloudData.PlayerData.LootRange * 25 / 100f);
+
+        if (CloudData.PlayerData.ExpGain > 0)
+            currentExpGain += (CloudData.PlayerData.ExpGain * 3 / 100f);
+
+        if (CloudData.PlayerData.MoneyGain > 0)
+            currentMoneyGain += (CloudData.PlayerData.MoneyGain * 10 / 100f);
     }
 
     public override void OnStartNetwork()
@@ -72,7 +106,6 @@ public class Player : NetworkBehaviour
         controller = GetComponent<PlayerController>();
         ragdoll = GetComponent<Ragdoll>();
         itemManager = GetComponent<ItemManager>();
-        weaponManager = GetComponent<WeaponManager>();
         hud.RefreshBars(currentHealth);
         AutoAim = PlayerPrefs.GetInt("AutoAim", 1) == 1;
     }
@@ -230,12 +263,4 @@ public class Player : NetworkBehaviour
             }           
         }
     }
-
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if(other.gameObject.layer == LayerMask.NameToLayer("Water"))
-    //    {
-    //        DieServer();
-    //    }
-    //}
 }

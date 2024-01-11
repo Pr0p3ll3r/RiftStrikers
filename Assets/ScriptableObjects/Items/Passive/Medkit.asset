@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Medkit
   m_EditorClassIdentifier: 
   itemName: Medkit
-  itemIconIndex: 0
+  itemIconIndex: 8
   isActive: 0
   maxLevel: 4
   level: -1

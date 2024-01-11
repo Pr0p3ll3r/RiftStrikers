@@ -191,6 +191,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lobbyNameText: {fileID: 6003041650168406210}
   playersText: {fileID: 5333688382279915050}
+  statusText: {fileID: 7265317600617777107}
+  joinLobbyButton: {fileID: 5675951549042781848}
 --- !u!222 &550444396634020596
 CanvasRenderer:
   m_ObjectHideFlags: 0

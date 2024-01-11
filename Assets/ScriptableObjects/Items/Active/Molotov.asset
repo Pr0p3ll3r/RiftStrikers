@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Molotov
   m_EditorClassIdentifier: 
   itemName: Molotov
-  itemIconIndex: 0
+  itemIconIndex: 18
   isActive: 1
   maxLevel: 7
   level: -1

@@ -7,13 +7,12 @@ public class LobbyListItem : MonoBehaviour
 { 
     [SerializeField] private TextMeshProUGUI lobbyNameText;
     [SerializeField] private TextMeshProUGUI playersText;
-    private Button joinLobbyButton;
+    [SerializeField] private TextMeshProUGUI statusText;
+    [SerializeField] private Button joinLobbyButton;
 
     private Lobby lobby;
 
     private void Awake() {
-        joinLobbyButton = GetComponent<Button>();
-
         joinLobbyButton.onClick.AddListener(() => {
             LobbyManager.Instance.JoinLobby(lobby);
         });
@@ -25,9 +24,17 @@ public class LobbyListItem : MonoBehaviour
         lobbyNameText.text = lobby.Name;
         playersText.text = lobby.Players.Count + "/" + lobby.MaxPlayers;
 
-        if(lobby.Players.Count == lobby.MaxPlayers)
-            joinLobbyButton.gameObject.SetActive(false);
+        Debug.Log(joinLobbyButton);
+
+        if (lobby.Players.Count == lobby.MaxPlayers)
+        {
+            joinLobbyButton.interactable = false;
+            statusText.text = "FULL LOBBY";
+        }         
         else
-            joinLobbyButton.gameObject.SetActive(true);
+        {
+            joinLobbyButton.interactable = true;
+            statusText.text = "IN LOBBY";
+        }
     }
 }

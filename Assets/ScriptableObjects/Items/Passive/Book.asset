@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Book
   m_EditorClassIdentifier: 
   itemName: Book
-  itemIconIndex: 0
+  itemIconIndex: 2
   isActive: 0
   maxLevel: 4
   level: -1

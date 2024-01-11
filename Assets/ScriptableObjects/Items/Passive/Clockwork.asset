@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Clockwork
   m_EditorClassIdentifier: 
   itemName: Clockwork
-  itemIconIndex: 0
+  itemIconIndex: 3
   isActive: 0
   maxLevel: 4
   level: -1

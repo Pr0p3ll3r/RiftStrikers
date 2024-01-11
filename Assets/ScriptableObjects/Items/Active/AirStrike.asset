@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: AirStrike
   m_EditorClassIdentifier: 
   itemName: Air Strike
-  itemIconIndex: 0
+  itemIconIndex: 13
   isActive: 1
   maxLevel: 7
   level: -1

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Forcefield
   m_EditorClassIdentifier: 
   itemName: Forcefield
-  itemIconIndex: 0
+  itemIconIndex: 16
   isActive: 1
   maxLevel: 7
   level: -1

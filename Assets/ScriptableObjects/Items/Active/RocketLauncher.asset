@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: RocketLauncher
   m_EditorClassIdentifier: 
   itemName: Rocket Launcher
-  itemIconIndex: 0
+  itemIconIndex: 19
   isActive: 1
   maxLevel: 7
   level: -1

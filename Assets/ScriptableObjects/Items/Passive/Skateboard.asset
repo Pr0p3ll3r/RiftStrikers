@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Skateboard
   m_EditorClassIdentifier: 
   itemName: Skateboard
-  itemIconIndex: 0
+  itemIconIndex: 11
   isActive: 0
   maxLevel: 4
   level: -1

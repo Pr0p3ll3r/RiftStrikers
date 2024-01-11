@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Gym Membership
   m_EditorClassIdentifier: 
   itemName: Gym Membership
-  itemIconIndex: 0
+  itemIconIndex: 5
   isActive: 0
   maxLevel: 4
-  <ItemType>k__BackingField: 0
+  level: -1
+  itemType: 0
   description: Max HP +20%
   multiplier: 20

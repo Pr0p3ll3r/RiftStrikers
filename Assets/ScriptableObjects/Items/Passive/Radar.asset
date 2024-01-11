@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Radar
   m_EditorClassIdentifier: 
   itemName: Radar
-  itemIconIndex: 0
+  itemIconIndex: 10
   isActive: 0
   maxLevel: 4
   level: -1

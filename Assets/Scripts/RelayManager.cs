@@ -1,4 +1,4 @@
-using FishNet.Managing;
+using FishNet;
 using FishNet.Transporting.UTP;
 using System.Threading.Tasks;
 using Unity.Networking.Transport.Relay;
@@ -9,8 +9,6 @@ using UnityEngine;
 public class RelayManager : MonoBehaviour
 {
     public static RelayManager Instance { get; private set; }
-
-    [SerializeField] private NetworkManager networkManager;
 
     private void Awake()
     {
@@ -25,15 +23,15 @@ public class RelayManager : MonoBehaviour
 
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
-            var utp = (FishyUnityTransport)networkManager.TransportManager.Transport;
+            var utp = (FishyUnityTransport)InstanceFinder.TransportManager.Transport;
 
             RelayServerData relayServerData = new RelayServerData(allocation, "dtls");
 
             utp.SetRelayServerData(relayServerData);
 
-            networkManager.ServerManager.StartConnection();
+            InstanceFinder.ServerManager.StartConnection();
 
-            networkManager.ClientManager.StartConnection();
+            InstanceFinder.ClientManager.StartConnection();
 
             return joinCode;
         } 
@@ -49,12 +47,12 @@ public class RelayManager : MonoBehaviour
         try
         {
             Debug.Log("Joining Relay with " + joinCode);
-            var utp = (FishyUnityTransport)networkManager.TransportManager.Transport;
+            var utp = (FishyUnityTransport)InstanceFinder.TransportManager.Transport;
 
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
             utp.SetRelayServerData(new RelayServerData(joinAllocation, "dtls"));
 
-            networkManager.ClientManager.StartConnection();
+            InstanceFinder.ClientManager.StartConnection();
         }
         catch (RelayServiceException e)
         {

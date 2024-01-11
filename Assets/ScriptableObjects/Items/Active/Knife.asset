@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Knife
   m_EditorClassIdentifier: 
   itemName: Knife
-  itemIconIndex: 0
+  itemIconIndex: 17
   isActive: 1
   maxLevel: 7
   level: -1

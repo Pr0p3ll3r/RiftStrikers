@@ -13,4 +13,24 @@ MonoBehaviour:
   m_Name: Database
   m_EditorClassIdentifier: 
   itemIcons:
-  - {fileID: 21300038, guid: 6674e8c43c63e4f4184cbd009379498d, type: 3}
+  - {fileID: 21300000, guid: 0bf15fb4a1eb3c0429072663a68934d1, type: 3}
+  - {fileID: 21300000, guid: 9969d379d58e07c438834cbaa1f2c472, type: 3}
+  - {fileID: 21300000, guid: fa33dc19a93927346935ef9966a8682f, type: 3}
+  - {fileID: 21300000, guid: 7be419c5a18d0184cbc3d1ef699b1244, type: 3}
+  - {fileID: 21300000, guid: e148bed0a427f8a498b7d29d74d4b838, type: 3}
+  - {fileID: 21300000, guid: afe5c7a6a7cb84c42846982226eeae7a, type: 3}
+  - {fileID: 21300000, guid: 7717533e577bb0a448219981170de928, type: 3}
+  - {fileID: 21300000, guid: 39b5444efdcfa0f4abba4bfa5ec05a26, type: 3}
+  - {fileID: 21300000, guid: 7dd2231f22e96c64283a21a117d424c9, type: 3}
+  - {fileID: 21300000, guid: 530898ff98227424db8a7adec3d9c0fe, type: 3}
+  - {fileID: 21300000, guid: 908f58bc9f3fe5b4e8826f1c25488da3, type: 3}
+  - {fileID: 21300000, guid: 846886c22c82fca4b8cebdb5ad3a8d30, type: 3}
+  - {fileID: 21300000, guid: c5529a1e50ca57b4484c265cc5525b5c, type: 3}
+  - {fileID: 21300000, guid: 41c56cf4a9143c6419dd5b2f39d2620a, type: 3}
+  - {fileID: 21300000, guid: d300bb65a4a3a3e408862ea1a54fa560, type: 3}
+  - {fileID: 21300000, guid: 28790ea0a1738744cbc9ca3dcaf81f1a, type: 3}
+  - {fileID: 21300000, guid: b1deee197223a5f489ccc2126b6e8c4a, type: 3}
+  - {fileID: 21300000, guid: 988c72008eb8c6547b25ee46bf3b04b4, type: 3}
+  - {fileID: 21300000, guid: dc618ae233a16904fb4bc6aa5bdc28e8, type: 3}
+  - {fileID: 21300000, guid: 38a575b0334fcf84fa6166c9a6819325, type: 3}
+  - {fileID: 21300000, guid: 0865582d7d7b62a448521f165ab394f9, type: 3}

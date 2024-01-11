@@ -48,7 +48,7 @@ public class LobbyManager : MonoBehaviour
     {
         HandleLobbyHeartbeat();
         HandleLobbyPolling();
-        //HandleRefreshLobbyList(); // Disabled Auto Refresh for testing with multiple builds
+        HandleRefreshLobbyList(); // Disabled Auto Refresh for testing with multiple builds
     }
 
     private async void HandleLobbyHeartbeat()
@@ -76,9 +76,7 @@ public class LobbyManager : MonoBehaviour
                 float lobbyPollTimerMax = 1.1f;
                 lobbyPollTimer = lobbyPollTimerMax;
 
-                joinedLobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
-
-                OnJoinedLobbyUpdate?.Invoke(this, new LobbyEventArgs { lobby = joinedLobby });
+                joinedLobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);             
 
                 if (!IsPlayerInLobby())
                 {
@@ -88,6 +86,7 @@ public class LobbyManager : MonoBehaviour
                     OnKickedFromLobby?.Invoke(this, EventArgs.Empty);
 
                     joinedLobby = null;
+                    return;
                 }
 
                 if (joinedLobby.Data["Start Game"].Value != "0")
@@ -101,6 +100,7 @@ public class LobbyManager : MonoBehaviour
 
                     OnGameStarted?.Invoke(this, EventArgs.Empty);
                 }
+                OnJoinedLobbyUpdate?.Invoke(this, new LobbyEventArgs { lobby = joinedLobby });
             }
         }
     }
@@ -306,6 +306,7 @@ public class LobbyManager : MonoBehaviour
     {
         if(IsLobbyHost())
         {
+            OnGameStarted?.Invoke(this, EventArgs.Empty);
             try
             {
                 Debug.Log("Start Game");

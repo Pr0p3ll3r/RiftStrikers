@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Boomerang
   m_EditorClassIdentifier: 
   itemName: Boomerang
-  itemIconIndex: 0
+  itemIconIndex: 14
   isActive: 1
   maxLevel: 7
   level: -1

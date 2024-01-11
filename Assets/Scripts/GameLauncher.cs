@@ -90,6 +90,7 @@ public class GameLauncher : MonoBehaviour
     private void LobbyManager_OnLeftLobby(object sender, EventArgs e)
     {
         menuManager.OpenTab(menuManager.tabLobbies);
+        readyButton.GetComponent<Image>().color = Color.red;
     }
 
     private void LobbyManager_OnPlayerLeftLobby(object sender, EventArgs e)

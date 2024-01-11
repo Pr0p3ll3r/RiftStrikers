@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Buckyball
   m_EditorClassIdentifier: 
   itemName: Buckyball
-  itemIconIndex: 0
+  itemIconIndex: 15
   isActive: 1
   maxLevel: 7
   level: -1

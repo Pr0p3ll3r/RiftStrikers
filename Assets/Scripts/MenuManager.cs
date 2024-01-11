@@ -55,11 +55,6 @@ public class MenuManager : MonoBehaviour
         });
     }
 
-    private void Start()
-    {
-        OpenTab(tabLogin);
-    }
-
     private void TabCloseAll()
     {
         tabLogin.SetActive(false);

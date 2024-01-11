@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Light Bullet
   m_EditorClassIdentifier: 
   itemName: Light Bullet
-  itemIconIndex: 0
+  itemIconIndex: 6
   isActive: 0
   maxLevel: 4
   level: -1

@@ -35,15 +35,17 @@ public class AccountManager : MonoBehaviour
             Instance = this;
         else
             Destroy(gameObject);
-        DontDestroyOnLoad(gameObject);
-
         try
         {
             await UnityServices.InitializeAsync();
             bool isSignedIn = AuthenticationService.Instance.IsSignedIn;
             if (isSignedIn)
             {
-                MenuManager.Instance.OpenTab(MenuManager.Instance.tabMain);
+                LoadData();
+            }
+            else
+            {
+                MenuManager.Instance.OpenTab(MenuManager.Instance.tabLogin);
             }
         }
         catch (Exception e)
@@ -119,6 +121,7 @@ public class AccountManager : MonoBehaviour
 
     private async void LoadData()
     {
+        Debug.Log("LoadData");
         try
         {
             CloudData.PlayerData = await CloudData.RetrieveSpecificData<PlayerData>("PlayerData");

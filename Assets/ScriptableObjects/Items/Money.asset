@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Money
   m_EditorClassIdentifier: 
   itemName: Money
-  itemIconIndex: 0
+  itemIconIndex: 12
   isActive: 0
   maxLevel: 4
   level: -1

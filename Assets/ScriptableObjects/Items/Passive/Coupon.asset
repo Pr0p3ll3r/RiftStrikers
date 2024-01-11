@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Coupon
   m_EditorClassIdentifier: 
   itemName: Coupon
-  itemIconIndex: 0
+  itemIconIndex: 4
   isActive: 0
   maxLevel: 4
   level: -1

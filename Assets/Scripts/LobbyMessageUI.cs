@@ -33,6 +33,7 @@ public class LobbyMessageUI : MonoBehaviour
 
         LobbyManager.Instance.OnGameStarted += LobbyManager_OnGameStarted;
 
+        LobbyManager.Instance.OnKickedFromLobby += LobbyManager_OnKickedFromLobby;
         Hide();
     }
 
@@ -94,6 +95,11 @@ public class LobbyMessageUI : MonoBehaviour
     private void LobbyManager_OnCreateLobbyFailed(object sender, EventArgs e)
     {
         ShowResponseMessage("Failed to create Lobby!");
+    }
+
+    private void LobbyManager_OnKickedFromLobby(object sender, EventArgs e)
+    {
+        ShowResponseMessage("You have been kicked from the Lobby");
     }
 
     private void ShowMessage(string message)
