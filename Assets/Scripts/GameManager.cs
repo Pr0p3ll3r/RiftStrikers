@@ -374,6 +374,8 @@ public class GameManager : NetworkBehaviour
         levelReachedText.text = LevelSystem.Instance.GetCurrentLevel().ToString();
         islandsClearedText.text = clearedIslands.ToString();
         gameoverScreen.SetActive(true);
+        CloudData.PlayerData.Money += money;
+        CloudData.Save();
     }
 
     public void ReturnToMenu()

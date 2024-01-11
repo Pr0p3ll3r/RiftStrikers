@@ -7,61 +7,70 @@ public class MenuManager : MonoBehaviour
     public static MenuManager Instance { get; private set; }
 
     [Header("Tabs")]
-    public GameObject tabConnect;
+    public GameObject tabLogin;
+    public GameObject tabRegister;
     public GameObject tabMain;
     public GameObject tabLobbies;
     public GameObject tabCreateLobby;
     public GameObject tabLobby;
-    public GameObject tabOptions;
+    public GameObject tabSettings;
     public GameObject tabAbout;
+    public GameObject tabUpgrades;
 
-    [Header("Loading")]
-    public GameObject tabLoading;
-    [SerializeField] private TextMeshProUGUI loadingText;
-
-    [Header("MainTab")]
+    [Header("Buttons")]
+    [SerializeField] private Button registerButton;
     [SerializeField] private Button findLobbyButton;
-    [SerializeField] private Button optionsButton;
+    [SerializeField] private Button upgradesButton;
+    [SerializeField] private Button settingsButton;
     [SerializeField] private Button aboutButton;
     [SerializeField] private Button quitGameMainMenuButton;
-    [SerializeField] private Button quitGameConnectMenuButton;
+    [SerializeField] private Button quitGameLoginMenuButton;
 
     private void Awake()
     {
         Instance = this;
 
+        registerButton.onClick.AddListener(() =>
+        {
+            OpenTab(tabRegister);
+        });
         findLobbyButton.onClick.AddListener(() => {
             OpenTab(tabLobbies);
         });
-        optionsButton.onClick.AddListener(() => {
-            OpenTab(tabOptions);
+        upgradesButton.onClick.AddListener(() =>
+        {
+            tabUpgrades.SetActive(true);
+        });
+        settingsButton.onClick.AddListener(() => {
+            OpenTab(tabSettings);
         });
         aboutButton.onClick.AddListener(() => {
             OpenTab(tabAbout);
         });
-        quitGameMainMenuButton.onClick.AddListener(() => {
+        quitGameLoginMenuButton.onClick.AddListener(() => {
             QuitGame();
         });
-        quitGameConnectMenuButton.onClick.AddListener(() => {
+        quitGameMainMenuButton.onClick.AddListener(() => {
             QuitGame();
         });
     }
 
     private void Start()
     {
-        OpenTab(tabConnect);
+        OpenTab(tabLogin);
     }
 
     private void TabCloseAll()
     {
-        tabConnect.SetActive(false);
+        tabLogin.SetActive(false);
+        tabRegister.SetActive(false);
         tabMain.SetActive(false);
         tabLobbies.SetActive(false);
         tabCreateLobby.SetActive(false);
         tabLobby.SetActive(false);
-        tabLoading.SetActive(false);
-        tabOptions.SetActive(false);
+        tabSettings.SetActive(false);
         tabAbout.SetActive(false);
+        tabUpgrades.SetActive(false);
     }
 
     public void OpenTab(GameObject tab)
@@ -69,13 +78,6 @@ public class MenuManager : MonoBehaviour
         TabCloseAll();
         tab.SetActive(true);
         tab.GetComponent<Animator>().enabled = true;
-    }
-
-    public void LoadingBox(string text)
-    {
-        TabCloseAll();
-        loadingText.text = text;
-        tabLoading.SetActive(true);
     }
 
     private void QuitGame()

@@ -11,15 +11,8 @@ public class GameLauncher : MonoBehaviour
     private MenuManager menuManager;
 
     [Header("Connect")]
-    [SerializeField] private TMP_InputField usernameInputField;
-    [SerializeField] private TextMeshProUGUI progressStatus;
-    [SerializeField] private Button authenticateButton;
-
-    [Header("Profile")]
-    private string username;
-    [SerializeField] private TextMeshProUGUI usernameText;
-    [SerializeField] private TextMeshProUGUI levelText;
-    [SerializeField] private TextMeshProUGUI expText;
+    [SerializeField] private Button registerButton;
+    [SerializeField] private Button loginButton;
 
     [Header("Lobby List")]
     [SerializeField] private GameObject lobbyListItemPrefab;
@@ -47,21 +40,20 @@ public class GameLauncher : MonoBehaviour
     [SerializeField] private TextMeshProUGUI maxPlayersText;
     private int playersReady = 0;
 
-    public string GetPlayerName()
-    {
-        return username;
-    }
-
     private void Awake()
     {
         menuManager = GetComponent<MenuManager>();
-        menuManager.OpenTab(menuManager.tabConnect);
 
-        authenticateButton.onClick.AddListener(Authenticate);
+        loginButton.onClick.AddListener(() => {
+            AccountManager.Instance.SignIn();
+        });
+        registerButton.onClick.AddListener(() => {
+            AccountManager.Instance.SignUp();
+        });
 
         createLobbyButton.onClick.AddListener(() => {
             menuManager.OpenTab(menuManager.tabCreateLobby);
-            //DefaultSettings();
+            DefaultSettings();
         });
         refreshButton.onClick.AddListener(RefreshButtonClick);
 
@@ -76,18 +68,6 @@ public class GameLauncher : MonoBehaviour
         startButton.onClick.AddListener(() => {
             LobbyManager.Instance.StartGame();
         });
-    }
-
-    private void Authenticate()
-    {
-        if (string.IsNullOrEmpty(usernameInputField.text))
-        {
-            progressStatus.text = "Set username!";
-            return;
-        }
-        username = usernameInputField.text;
-        usernameText.text = username;
-        LobbyManager.Instance.Authenticate(GetPlayerName());
     }
 
     private void Start()
@@ -158,6 +138,8 @@ public class GameLauncher : MonoBehaviour
     {
         ClearLobby();
         playersReady = 0;
+        lobbyNameText.text = lobby.Name; 
+        maxPlayersText.text = lobby.MaxPlayers.ToString();
         foreach (Unity.Services.Lobbies.Models.Player player in lobby.Players)
         {
             GameObject playerListItem = Instantiate(lobbyPlayerPrefab, playerList);
@@ -190,15 +172,6 @@ public class GameLauncher : MonoBehaviour
         LobbyManager.Instance.RefreshLobbyList();
     }
 
-    private void StartTimer()
-    {
-        startButton.GetComponent<Button>().interactable = false;
-        readyButton.interactable = false;
-        //chatManager.StartCounting();
-    }
-
-    #region LobbySettings
-
     private void DefaultSettings()
     {
         lobbyNameInputField.text = "";
@@ -211,18 +184,6 @@ public class GameLauncher : MonoBehaviour
         maxPlayers = byte.Parse(change.options[change.value].text);
     }
 
-    #endregion
-
-    #region Buttons
-
-    private void LogOut()
-    {      
-        menuManager.OpenTab(menuManager.tabConnect);
-        usernameText.text = "Username";
-        levelText.text = "Level 1";
-        expText.text = "0/0";
-    }
-
     private void CreateLobby()
     {
         if (string.IsNullOrEmpty(lobbyNameInputField.text))
@@ -231,9 +192,9 @@ public class GameLauncher : MonoBehaviour
             return;
         }
 
-        Debug.Log("Creating Lobby");
+        Debug.Log("Creating Lobby...");
 
-        lobbyName = lobbyNameInputField.text;
+        lobbyName = lobbyNameInputField.text;    
         lobbyNameText.text = lobbyName;
         maxPlayersText.text = maxPlayers.ToString();      
         LobbyManager.Instance.CreateLobby(lobbyName, maxPlayers);
@@ -245,15 +206,11 @@ public class GameLauncher : MonoBehaviour
         {
             LobbyManager.Instance.UpdatePlayerReady("true");
             readyButton.GetComponent<Image>().color = Color.green;
-            
-            //leaveButton.interactable = false;
         }
         else if (readyButton.GetComponent<Image>().color == Color.green)
         {
             LobbyManager.Instance.UpdatePlayerReady("false");
             readyButton.GetComponent<Image>().color = Color.red;
-            
-           // leaveButton.interactable = true;
         }
     }
 
@@ -264,5 +221,4 @@ public class GameLauncher : MonoBehaviour
         else
             startButton.gameObject.SetActive(false);
     }
-    #endregion
 }

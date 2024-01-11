@@ -14,9 +14,7 @@ public class LobbyManager : MonoBehaviour
     private float heartbeatTimer;
     private float lobbyPollTimer;
     private float refreshLobbyListTimer = 5f;
-    private string playerName;
 
-    public event EventHandler OnAuthenticateStarted;
     public event EventHandler OnJoinLobbyStarted;
     public event EventHandler<LobbyEventArgs> OnJoinedLobby;
     public event EventHandler OnJoinLobbyFailed;
@@ -51,26 +49,6 @@ public class LobbyManager : MonoBehaviour
         HandleLobbyHeartbeat();
         HandleLobbyPolling();
         //HandleRefreshLobbyList(); // Disabled Auto Refresh for testing with multiple builds
-    }
-
-    public async void Authenticate(string playerName)
-    {
-        if (UnityServices.State != ServicesInitializationState.Initialized)
-        {
-            this.playerName = playerName;
-            InitializationOptions initializationOptions = new InitializationOptions();
-            initializationOptions.SetProfile(playerName);
-
-            OnAuthenticateStarted?.Invoke(this, EventArgs.Empty);
-            await UnityServices.InitializeAsync(initializationOptions);
-
-            AuthenticationService.Instance.SignedIn += () => {
-                Debug.Log("Signed in! " + AuthenticationService.Instance.PlayerId);
-                MenuManager.Instance.OpenTab(MenuManager.Instance.tabMain);
-            };
-
-            await AuthenticationService.Instance.SignInAnonymouslyAsync();
-        }
     }
 
     private async void HandleLobbyHeartbeat()
@@ -230,7 +208,7 @@ public class LobbyManager : MonoBehaviour
         {
             Data = new Dictionary<string, PlayerDataObject>
             {
-                { "Nickname", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerName) },
+                { "Nickname", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, CloudData.PlayerData.Name) },
                 { "Ready",  new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "false") }
             }
         };
