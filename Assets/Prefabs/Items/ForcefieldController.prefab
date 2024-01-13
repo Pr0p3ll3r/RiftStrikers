@@ -4834,6 +4834,7 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 2029320064111676637}
   _networkObjectCache: {fileID: 2029320064111676637}
   activeItem: {fileID: 0}
+  projectilePrefab: {fileID: 0}
 --- !u!199 &8241726842330886118
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -4937,7 +4938,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  <PrefabId>k__BackingField: 0
+  <PrefabId>k__BackingField: 21
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 0
   <SceneId>k__BackingField: 0

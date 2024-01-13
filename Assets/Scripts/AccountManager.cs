@@ -128,6 +128,7 @@ public class AccountManager : MonoBehaviour
             usernameText.text = CloudData.PlayerData.Name;
             moneyText.text = $"${CloudData.PlayerData.Money}";
             MenuManager.Instance.OpenTab(MenuManager.Instance.tabMain);
+            OnAuthenticated?.Invoke(this, EventArgs.Empty);
         }
         catch(CloudSaveException e)
         {
@@ -141,7 +142,6 @@ public class AccountManager : MonoBehaviour
         {
             await AuthenticationService.Instance.SignInWithUsernamePasswordAsync(username, password);
             Debug.Log("SignIn is successful.");
-            OnAuthenticated?.Invoke(this, EventArgs.Empty);
         }
         catch (AuthenticationException ex)
         {
