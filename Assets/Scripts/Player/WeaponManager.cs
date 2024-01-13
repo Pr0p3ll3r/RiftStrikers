@@ -34,7 +34,10 @@ public class WeaponManager : NetworkBehaviour
         controller = GetComponent<PlayerController>();
         playerInput = GetComponent<PlayerInput>();
         fireAction = playerInput.actions["Fire"];
-        Equip(0);
+        if (WeaponSelection.SelectedWeapon)
+            Equip(WeaponSelection.SelectedWeapon);
+        else
+            Equip(testWeapon);
     }
 
     void Update()
@@ -76,9 +79,9 @@ public class WeaponManager : NetworkBehaviour
             reload = StartCoroutine(Reload());
     }
 
-    public void Equip(int index)
+    public void Equip(Weapon weapon)
     {
-        currentWeaponData = testWeapon.GetCopy();
+        currentWeaponData = weapon;
         ShowWeapon();
         hud.RefreshWeapon(currentWeaponData);
         Player.Instance.currentMoveSpeed *= 1 + currentWeaponData.movementSpeedMultiplier / 100f;
@@ -110,7 +113,7 @@ public class WeaponManager : NetworkBehaviour
         if (currentWeaponData.FireBullet())
         {
             if (Player.Instance.AutoAim)
-                ShootServer(currentWeaponData.damage, transform.position, (closestEnemy.transform.position - transform.position).normalized, currentWeaponData.range * Player.Instance.currentAttackRange, currentWeaponData.pellets);
+                ShootServer(currentWeaponData.damage, transform.position, Vector3.ProjectOnPlane(closestEnemy.transform.position - transform.position, Vector3.up).normalized, currentWeaponData.range * Player.Instance.currentAttackRange, currentWeaponData.pellets);
             else
                 ShootServer(currentWeaponData.damage, transform.position, transform.forward, currentWeaponData.range * Player.Instance.currentAttackRange, currentWeaponData.pellets);
            

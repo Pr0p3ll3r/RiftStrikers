@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb681700cc607c45aa761a4efba7323, type: 3}
   m_Name: Spider
   m_EditorClassIdentifier: 
-  <Damage>k__BackingField: 20
+  <Damage>k__BackingField: 10
   <AttackRange>k__BackingField: 1.7
   <MoveSpeed>k__BackingField: 2
-  <MaxHealth>k__BackingField: 40
+  <MaxHealth>k__BackingField: 20
   <IsBoss>k__BackingField: 0
   <Loot>k__BackingField:
   - {fileID: 11400000, guid: 0f0fadb32803bd04fab5dc133247d773, type: 2}

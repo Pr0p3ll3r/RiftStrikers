@@ -4,4 +4,5 @@ using UnityEngine;
 public class DatabaseSO : ScriptableObject
 {
     public Sprite[] itemIcons;
+    public Weapon[] weapons;
 }

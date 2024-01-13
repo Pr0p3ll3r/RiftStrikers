@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 508e60f8eeda556419c3b296abeabd27, type: 3}
+  m_Name: Revolver
+  m_EditorClassIdentifier: 
+  itemName: Revolver
+  icon: {fileID: 21300000, guid: da219a50d4ab991498a50a7b49d796a3, type: 3}
+  damage: 10
+  ammo: 8
+  pellets: 0
+  pelletsSpread: 0
+  range: 5
+  fireRate: 1
+  bulletForce: 75
+  movementSpeedMultiplier: 30
+  reloadTime: 3
+  childNumber: 1
+  animSet: 2
+  reloadSound: {fileID: 8300000, guid: a339483550b876745b7ac869c2a51ede, type: 3}
+  gunshotSound: {fileID: 8300000, guid: 30b979006704afd4a8492ea781387480, type: 3}
+  shotVolume: 0.5

@@ -1093,7 +1093,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4503046169023880}
   - component: {fileID: 6130064387928507834}
-  - component: {fileID: 8064284316516021563}
+  - component: {fileID: 6616123426396342621}
   m_Layer: 0
   m_Name: RigPelvis
   m_TagString: Untagged
@@ -1147,8 +1147,8 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!136 &8064284316516021563
-CapsuleCollider:
+--- !u!65 &6616123426396342621
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1165,11 +1165,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2.5
-  m_Direction: 0
-  m_Center: {x: -0.24, y: 0.13, z: 0}
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1, z: 1}
+  m_Center: {x: -0.3, y: 0, z: 0}
 --- !u!1 &1654413139868126
 GameObject:
   m_ObjectHideFlags: 0
