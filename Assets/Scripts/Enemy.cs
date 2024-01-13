@@ -10,35 +10,35 @@ public class Enemy : NetworkBehaviour
     public float CurrentAttackRange { get; set; }
     public float CurrentDamage { get; set; }
 
-    private float currentHealth;
-    private bool isDead;
+    protected float currentHealth;
+    protected bool isDead;
     public bool IsDead => isDead;
     [HideInInspector] public float CanBeDamagedByForceField;
     [HideInInspector] public float CanBeDamagedByFire;
     [HideInInspector] public float CanBeDamagedBySawblade;
 
-    [SerializeField] private EnemyStats stats;
+    [SerializeField] protected EnemyStats stats;
     public EnemyStats Stats => stats;
 
-    [SerializeField] private GameObject bloodPrefab;
+    [SerializeField] protected GameObject bloodPrefab;
     [SerializeField] private Transform graphics;
     [SerializeField] private GameObject mesh;
-    private Transform player;
-    private Animator animator;
-    private NavMeshAgent agent;
+    protected Transform player;
+    protected Animator animator;
+    protected NavMeshAgent agent;
     private Material material;
     private Ragdoll ragdoll;
     [SerializeField] private GameObject healthBar;
 
-    float lastAttackTime = 0;
-    [SerializeField] private float attackCooldown = 2;
+    protected float lastAttackTime = 0;
+    [SerializeField] protected float attackCooldown = 2;
     [SerializeField] private bool randomLook = false;
     private float dissolve = -0.1f;
     private bool isStopped = false;
     [SerializeField] private float dissolveSpeed = 0.1f;
     [SerializeField] private float dissolveEnd = 0.4f;
 
-    public void Awake()
+    private void Awake()
     {
         animator = GetComponent<Animator>();
         ragdoll = GetComponent<Ragdoll>();
@@ -56,7 +56,7 @@ public class Enemy : NetworkBehaviour
     public override void OnStartNetwork()
     {
         base.OnStartNetwork();
-
+        
         if (IsServer)
         {
             if (!randomLook) return;
@@ -109,7 +109,7 @@ public class Enemy : NetworkBehaviour
         }
     }
 
-    void Attack()
+    protected virtual void Attack()
     {
         if(Time.time - lastAttackTime >= attackCooldown)
         {
@@ -125,11 +125,11 @@ public class Enemy : NetworkBehaviour
         isStopped = status;
     }
 
-    GameObject GetClosestPlayer()
+    private GameObject GetClosestPlayer()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         GameObject closestPlayer = null;
-        float minimumDistance = 1000000f;
+        float minimumDistance = Mathf.Infinity;
 
         foreach (GameObject player in players)
         {
@@ -146,7 +146,7 @@ public class Enemy : NetworkBehaviour
     }
 
     [ObserversRpc(BufferLast = true)]
-    void RpcRandomZombieLook(int rand)
+    private void RpcRandomZombieLook(int rand)
     {    
         for (int i = 0; i < graphics.childCount; i++)
         {
@@ -165,7 +165,7 @@ public class Enemy : NetworkBehaviour
     }
 
     [ObserversRpc]
-    void RpcSetHealthBar(float currentHealth)
+    protected void RpcSetHealthBar(float currentHealth)
     {
         healthBar.SetActive(true);
         healthBar.GetComponentInChildren<Slider>().value = currentHealth / CurrentMaxHealth;
@@ -174,7 +174,7 @@ public class Enemy : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void ServerTakeDamage(float damage)
+    public virtual void ServerTakeDamage(float damage)
     {
         if (isDead) return;
         
@@ -196,11 +196,10 @@ public class Enemy : NetworkBehaviour
     }
 
     [ObserversRpc(BufferLast = true)]
-    void RpcDie()
+    protected void RpcDie()
     {
         isDead = true;
         ragdoll.Die();
-        material.SetFloat("_EdgeWidth", 0.3f);
         gameObject.layer = LayerMask.NameToLayer("NotCollide");
         foreach (Transform child in gameObject.GetComponentsInChildren<Transform>(true))
         {
@@ -208,7 +207,7 @@ public class Enemy : NetworkBehaviour
         }
     }
 
-    private void DropItem()
+    protected void DropItem()
     {
         PickableItem item = LootTable.GetItem(stats.Loot);
         GameObject pickupItem = Instantiate(item.prefab, new Vector3(transform.position.x, 1.5f, transform.position.z), item.prefab.transform.rotation);

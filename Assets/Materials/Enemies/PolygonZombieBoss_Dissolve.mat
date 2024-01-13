@@ -72,7 +72,7 @@ Material:
     - BOOLEAN_WORLDORIGIN: 0
     - _DierctionEdgeWidthScale: 10
     - _EdgeColorIntensity: 1
-    - _EdgeWidth: 0
+    - _EdgeWidth: 0.1
     - _Emission_Power: 0
     - _NoiseScale: 50
     - _QueueControl: 0
@@ -82,7 +82,7 @@ Material:
     - _Blood_Color: {r: 0.41960785, g: 0.08235294, b: 0.08235294, a: 0}
     - _DissolveDirection: {r: 0, g: 90, b: 0, a: 0}
     - _DissolveOffest: {r: 0, g: -0.1, b: 0, a: 0}
-    - _DissolveOffset: {r: 0, g: -0.1, b: 0, a: 0}
+    - _DissolveOffset: {r: 0, g: -0.2, b: 0, a: 0}
     - _EdgeColor: {r: 0, g: 2.917647, b: 2.980392, a: 1}
     - _Emission_Colour: {r: 1, g: 1, b: 1, a: 0}
     - _NoiseUVSpeed: {r: 1, g: 1, b: 0, a: 0}

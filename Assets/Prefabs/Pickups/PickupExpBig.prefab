@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 5546833915997605416}
   - component: {fileID: 6561184452205593314}
   - component: {fileID: 4459580390924338214}
-  - component: {fileID: 3833506195460882320}
   m_Layer: 0
   m_Name: PickupExpBig
   m_TagString: Untagged
@@ -123,7 +122,7 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 4459580390924338214}
   _networkObjectCache: {fileID: 4459580390924338214}
-  item: {fileID: 11400000, guid: 0f0fadb32803bd04fab5dc133247d773, type: 2}
+  item: {fileID: 11400000, guid: 6f8d83c0644622d468a7ca019ce4964e, type: 2}
 --- !u!114 &4459580390924338214
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -157,27 +156,3 @@ MonoBehaviour:
   _scenePathHash: 0
   <SceneId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 13139930174762311563
---- !u!114 &3833506195460882320
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8957155702306191222}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ff967b7ed48f2441bcf509edf6b889a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isAnimated: 1
-  isRotating: 1
-  isFloating: 1
-  isScaling: 1
-  rotationAngle: {x: 0, y: 0, z: 10}
-  rotationSpeed: 10
-  floatSpeed: 0.04
-  floatRate: 0.5
-  startScale: {x: 1, y: 1, z: 1}
-  endScale: {x: 1.5, y: 1.5, z: 1.5}
-  scaleSpeed: 1
-  scaleRate: 0.5

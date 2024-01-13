@@ -88,7 +88,7 @@ MonoBehaviour:
   healthBar: {fileID: 7738503667405173057}
   attackCooldown: 2
   randomLook: 1
-  dissolveSpeed: 0.1
+  dissolveSpeed: 0.05
   dissolveEnd: 0.4
 --- !u!136 &1317560198989577915
 CapsuleCollider:

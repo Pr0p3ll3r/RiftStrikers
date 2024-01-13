@@ -148,6 +148,13 @@ public class Player : NetworkBehaviour
         }
     }
 
+    public float GetHealAmount(float damage)
+    {
+        float modifiedDamage = damage + currentDamageReduction;
+        modifiedDamage = Mathf.Max(0, modifiedDamage);
+        return modifiedDamage;
+    }
+
     [TargetRpc]
     public void RefreshHudRpc(NetworkConnection conn, float newHealth)
     {

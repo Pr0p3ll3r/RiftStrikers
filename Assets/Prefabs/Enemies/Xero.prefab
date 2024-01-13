@@ -390,7 +390,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1695502807786446131}
   - component: {fileID: 1695502807779455699}
-  - component: {fileID: 614780622931393208}
+  - component: {fileID: 4696715007534382992}
   - component: {fileID: 2286847953190690403}
   - component: {fileID: 3646975166620041950}
   - component: {fileID: 4119820664270467546}
@@ -399,7 +399,7 @@ GameObject:
   - component: {fileID: 3271018307038951305}
   m_Layer: 8
   m_Name: Xero
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -443,7 +443,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &614780622931393208
+--- !u!114 &4696715007534382992
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -452,7 +452,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1695502807786733843}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76ad0eed927fdb44c869e8254c6042c9, type: 3}
+  m_Script: {fileID: 11500000, guid: ab2e169203e04f345bd7628bbb1d180b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _componentIndexCache: 0
@@ -470,6 +470,8 @@ MonoBehaviour:
   randomLook: 0
   dissolveSpeed: 0.1
   dissolveEnd: -0.7
+  bossPrefab: {fileID: 1695502807786733843}
+  lives: 10
 --- !u!135 &2286847953190690403
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -529,7 +531,7 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   _networkBehaviours:
-  - {fileID: 614780622931393208}
+  - {fileID: 4696715007534382992}
   - {fileID: 2059420197562661752}
   - {fileID: 7464766524564716688}
   <ParentNetworkObject>k__BackingField: {fileID: 0}

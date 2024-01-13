@@ -113,7 +113,7 @@ GameObject:
   - component: {fileID: 8564855713599487046}
   m_Layer: 8
   m_Name: Metalon Red
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
