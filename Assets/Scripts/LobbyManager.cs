@@ -304,7 +304,7 @@ public class LobbyManager : MonoBehaviour
 
     public async void StartGame()
     {
-        if(IsLobbyHost())
+        if (IsLobbyHost())
         {
             OnGameStarted?.Invoke(this, EventArgs.Empty);
             try

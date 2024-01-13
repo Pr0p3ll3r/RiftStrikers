@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d71010244b3f1b4bbe46ffe7dba6842, type: 3}
   m_Name: ExpBig
   m_EditorClassIdentifier: 
-  prefab: {fileID: 8957155702306191222, guid: 53b512dbeb48c7941a34546dc0ac0d92, type: 3}
+  prefab: {fileID: 8957155702306191222, guid: 025f9a7cc74405344bb59d3e24bb722f, type: 3}
   itemType: 1
   value: 9
   weight: 90

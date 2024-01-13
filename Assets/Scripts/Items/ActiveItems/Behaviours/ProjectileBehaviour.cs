@@ -35,17 +35,6 @@ public class ProjectileBehaviour : NetworkBehaviour
         }
     }
 
-    protected virtual void OnCollisionEnter(Collision collision)
-    {
-        if (IsServer && IsClientInitialized)
-        {
-            if (collision.transform.root.gameObject.TryGetComponent<Enemy>(out var enemy))
-            {
-                enemy.ServerTakeDamage(activeItem.GetCurrentLevel().damage * Player.Instance.currentDamage);
-            }
-        }
-    }
-
     protected IEnumerator Despawn()
     {
         yield return new WaitForSeconds(activeItem.GetCurrentLevel().duration * Player.Instance.currentAttackDuration);

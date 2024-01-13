@@ -37,7 +37,7 @@ public class SawbladeBehaviour : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (GameManager.Instance.currentState == GameState.Paused) return;
-
+        
         if (IsServer && IsClientInitialized && other.transform.root.TryGetComponent<Enemy>(out var enemy))
         {
             if (enemy.CanBeDamagedBySawblade <= 0)

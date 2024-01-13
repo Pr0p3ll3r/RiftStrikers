@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb681700cc607c45aa761a4efba7323, type: 3}
   m_Name: BossTest
   m_EditorClassIdentifier: 
-  <Damage>k__BackingField: 10
+  <Damage>k__BackingField: 25
   <AttackRange>k__BackingField: 1.5
   <MoveSpeed>k__BackingField: 5
-  <MaxHealth>k__BackingField: 10
+  <MaxHealth>k__BackingField: 1000
   <IsBoss>k__BackingField: 1
   <Loot>k__BackingField:
-  - {fileID: 11400000, guid: 0f0fadb32803bd04fab5dc133247d773, type: 2}
-  - {fileID: 11400000, guid: 54eb888d49cc7e946b3cd3a0cba742cd, type: 2}
+  - {fileID: 11400000, guid: 6f8d83c0644622d468a7ca019ce4964e, type: 2}

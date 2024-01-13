@@ -134,9 +134,10 @@ public class Player : NetworkBehaviour
     {
         if (isDead) return;
 
+#if !UNITY_EDITOR
         float modifiedDamage = damage + currentDamageReduction;
         currentHealth -= Mathf.Max(0, modifiedDamage);
-
+#endif
         hurtSound.Play();
         RefreshHudRpc(Owner, currentHealth);
 

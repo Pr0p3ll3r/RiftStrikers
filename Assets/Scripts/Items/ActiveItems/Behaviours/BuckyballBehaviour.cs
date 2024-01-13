@@ -29,9 +29,8 @@ public class BuckyballBehaviour : ProjectileBehaviour
         lastVelocity = rb.velocity;
     }
 
-    protected override void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision collision)
     {
-        base.OnCollisionEnter(collision);
         if (IsOwner)
         {
             curSpeed = lastVelocity.magnitude;

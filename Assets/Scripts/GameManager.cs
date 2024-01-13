@@ -30,7 +30,6 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private float spawnInterval;
     [SerializeField] private int maximumAmount;
     private int clearedIslands = 0;
-    private int cycleNumber = 0;
 
     private Island currentIsland;
     private int enemyAmount;
@@ -51,7 +50,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI enemiesDefeatedText;
     [SerializeField] private TextMeshProUGUI islandsClearedText;
     [SerializeField] private Button returnToMenuButton;
-    private int healthMultiplier = 2;
+    private int healthMultiplier = 1;
     private float damageMultiplier = 1;
     private float spawnIntervalMultiplier = 1;
     private float maximumAmountMultiplier = 1;
@@ -218,8 +217,8 @@ public class GameManager : NetworkBehaviour
     private void GenerateMap()
     {
         int seed = Random.Range(int.MinValue, int.MaxValue);
-        int randomWave = Random.Range(0, availableIslands.Count);
-        currentIsland = availableIslands[randomWave];
+        int randomIsland = Random.Range(0, availableIslands.Count);
+        currentIsland = availableIslands[randomIsland];
         MapGenerator.GenerateMapRpc(seed, currentIsland.biomeType);
         Debug.Log("Generated map!");
     }
@@ -231,16 +230,13 @@ public class GameManager : NetworkBehaviour
         timeToSpawnEnemy = spawnInterval * spawnIntervalMultiplier;
         foreach (GameObject enemyPrefab in currentIsland.enemies)
         {
-            for (int i = 0; i < spawnPoints.Length; i++)
-            {
-                Transform spawnPoint = spawnPoints[i];
-                GameObject enemyGO = Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
-                Enemy enemy = enemyGO.GetComponent<Enemy>();
-                enemy.CurrentMaxHealth *= healthMultiplier;
-                enemy.CurrentDamage = (int)(enemy.CurrentDamage * damageMultiplier);
-                Spawn(enemyGO);
-                enemies.Add(enemy);
-            }
+            Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
+            GameObject enemyGO = Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+            Enemy enemy = enemyGO.GetComponent<Enemy>();
+            enemy.CurrentMaxHealth *= healthMultiplier;
+            enemy.CurrentDamage *= damageMultiplier;
+            Spawn(enemyGO);
+            enemies.Add(enemy);
         }
     }
 
@@ -252,7 +248,7 @@ public class GameManager : NetworkBehaviour
         GameObject bossGO = Instantiate(currentIsland.bossPrefab, spawnPoint.position, Quaternion.identity);
         Enemy boss = bossGO.GetComponent<Enemy>();
         boss.CurrentMaxHealth *= healthMultiplier;
-        boss.CurrentDamage = (int)(boss.CurrentDamage * damageMultiplier);
+        boss.CurrentDamage *= damageMultiplier;
         Spawn(bossGO);
         enemies.Add(boss);
         isBossSpawned = true;
@@ -263,10 +259,10 @@ public class GameManager : NetworkBehaviour
     {
         availableIslands = islands.ToList();
         currentIsland = null;
-        cycleNumber++;
         healthMultiplier += 1;
         damageMultiplier += 0.25f;
-        spawnIntervalMultiplier += 0.5f;
+        spawnIntervalMultiplier -= 0.5f;
+        spawnIntervalMultiplier = Mathf.Max(spawnIntervalMultiplier, 0.5f);
         maximumAmountMultiplier += 0.5f;
         Debug.Log("New Cycle!");
     }

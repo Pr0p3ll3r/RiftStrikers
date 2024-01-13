@@ -22,6 +22,7 @@ public class Enemy : NetworkBehaviour
 
     [SerializeField] private GameObject bloodPrefab;
     [SerializeField] private Transform graphics;
+    [SerializeField] private GameObject mesh;
     private Transform player;
     private Animator animator;
     private NavMeshAgent agent;
@@ -30,10 +31,12 @@ public class Enemy : NetworkBehaviour
     [SerializeField] private GameObject healthBar;
 
     float lastAttackTime = 0;
-    public float attackCooldown = 2;
+    [SerializeField] private float attackCooldown = 2;
+    [SerializeField] private bool randomLook = false;
     private float dissolve = -0.1f;
     private bool isStopped = false;
     [SerializeField] private float dissolveSpeed = 0.1f;
+    [SerializeField] private float dissolveEnd = 0.4f;
 
     public void Awake()
     {
@@ -45,8 +48,9 @@ public class Enemy : NetworkBehaviour
         CurrentAttackRange = stats.AttackRange;
         CurrentDamage = stats.Damage;
         agent.speed = CurrentMoveSpeed;
-        agent.stoppingDistance = CurrentAttackRange;
         currentHealth = CurrentMaxHealth;
+        if (!randomLook)
+            SetMaterial(mesh);
     }
 
     public override void OnStartNetwork()
@@ -55,6 +59,8 @@ public class Enemy : NetworkBehaviour
 
         if (IsServer)
         {
+            if (!randomLook) return;
+
             int rand = Random.Range(0, graphics.childCount);
             RpcRandomZombieLook(rand);
         }
@@ -66,7 +72,7 @@ public class Enemy : NetworkBehaviour
         {
             dissolve += Time.deltaTime * dissolveSpeed;
             material.SetVector("_DissolveOffset", new Vector4(0f, dissolve, 0f, 0f));
-            if(IsServer && dissolve >= 0.5f)
+            if(IsServer && dissolve >= dissolveEnd)
             {
                 enabled = false;
                 Despawn(gameObject);
@@ -149,7 +155,13 @@ public class Enemy : NetworkBehaviour
 
         GameObject mesh = graphics.GetChild(rand).gameObject;
         mesh.SetActive(true);
+        SetMaterial(mesh);
+    }
+
+    private void SetMaterial(GameObject mesh)
+    {
         material = mesh.GetComponent<SkinnedMeshRenderer>().material;
+        dissolve = material.GetVector("_DissolveOffset").y;
     }
 
     [ObserversRpc]
@@ -199,7 +211,7 @@ public class Enemy : NetworkBehaviour
     private void DropItem()
     {
         PickableItem item = LootTable.GetItem(stats.Loot);
-        GameObject pickupItem = Instantiate(item.prefab, transform.position + Vector3.up, Quaternion.identity);
+        GameObject pickupItem = Instantiate(item.prefab, new Vector3(transform.position.x, 1.5f, transform.position.z), item.prefab.transform.rotation);
         Spawn(pickupItem);
     }
 }

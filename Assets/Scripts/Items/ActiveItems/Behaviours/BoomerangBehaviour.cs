@@ -30,7 +30,7 @@ public class BoomerangBehaviour : ProjectileBehaviour
         if (!IsOwner) return;
         if (GameManager.Instance.currentState == GameState.Paused) return;
 
-        transform.Rotate(Vector3.right, 100f * Time.deltaTime);
+        transform.Rotate(Vector3.up, 100f * Time.deltaTime);
 
         if (returnTimer > 0)
             returnTimer -= Time.deltaTime;
@@ -38,6 +38,16 @@ public class BoomerangBehaviour : ProjectileBehaviour
         {
             isReturning = true;
             rb.velocity = -rb.velocity;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (GameManager.Instance.currentState == GameState.Paused) return;
+
+        if (IsServer && IsClientInitialized && other.transform.root.TryGetComponent<Enemy>(out var enemy))
+        {
+            enemy.ServerTakeDamage(activeItem.GetCurrentLevel().damage * Player.Instance.currentDamage);
         }
     }
 }

@@ -85,7 +85,6 @@ public class PlayerHUD : NetworkBehaviour
     public void AddItemUI(Item item)
     {
         GameObject itemGO = null;
-        Debug.Log(item.itemName);
         if (item is ActiveItem)
             itemGO = Instantiate(itemListItemPrefab, activeitemsContainer);
         else if(item is PassiveItem)
