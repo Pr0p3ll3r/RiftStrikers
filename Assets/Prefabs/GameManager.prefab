@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1022183712016645321}
   - component: {fileID: 3706020177405343019}
+  - component: {fileID: 6836281540126714704}
   - component: {fileID: 4522802371100892334}
   - component: {fileID: 7926492663542331986}
   m_Layer: 0
@@ -54,22 +55,25 @@ MonoBehaviour:
   islandDuration: 300
   islands:
   - biomeType: 0
-    enemies: []
-    bossPrefab: {fileID: 0}
-  - biomeType: 0
-    enemies: []
-    bossPrefab: {fileID: 0}
-  - biomeType: 0
-    enemies: []
-    bossPrefab: {fileID: 0}
-  - biomeType: 0
-    enemies: []
-    bossPrefab: {fileID: 0}
-  - biomeType: 0
-    enemies: []
-    bossPrefab: {fileID: 0}
-  spawnInterval: 0
-  maximumAmount: 0
+    enemies:
+    - {fileID: 5128811620208064792, guid: e42dce10de392fb46b7cf553d7658cf4, type: 3}
+    - {fileID: 1128758269040250, guid: f88c6ad57910d8648807bcf0c131f49d, type: 3}
+    bossPrefab: {fileID: 1695502807786733843, guid: c73a559184154c75991d095521bdea87,
+      type: 3}
+  - biomeType: 4
+    enemies:
+    - {fileID: 488183240140642613, guid: e0acc73de89b9cb4ca742b7b460bcb2d, type: 3}
+    - {fileID: 488183240140642613, guid: 941b09f99340dbc4c9b3c3aa33cd58c5, type: 3}
+    bossPrefab: {fileID: 1397897947513670, guid: 602e2bafea94085478f3eb9b58f4f7b6,
+      type: 3}
+  - biomeType: 1
+    enemies:
+    - {fileID: 1128758269040250, guid: f88c6ad57910d8648807bcf0c131f49d, type: 3}
+    - {fileID: 488183240140642613, guid: 941b09f99340dbc4c9b3c3aa33cd58c5, type: 3}
+    bossPrefab: {fileID: 1658146812600542, guid: 574d3bbe7d1c8684f9101c2b823c5770,
+      type: 3}
+  spawnInterval: 5
+  maximumAmount: 100
   enemyKilledText: {fileID: 0}
   gameTimerText: {fileID: 0}
   money: 0
@@ -83,11 +87,56 @@ MonoBehaviour:
   returnToMenuButton: {fileID: 0}
   nextIslandTimerText: {fileID: 0}
   getPortalText: {fileID: 0}
-  enemyPortalPrefab: {fileID: 0}
-  playerPortalPrefab: {fileID: 0}
+  enemyPortalPrefab: {fileID: 5809357657173578095, guid: 87bbb3d2214d15143b174b506c252d11,
+    type: 3}
+  playerPortalPrefab: {fileID: 6567485051206294167, guid: c791d15a9d2c92d44b63b0d291b9eeda,
+    type: 3}
   timeForGetToPortal: 30
   timeToFadeScreen: 1
   screenTransition: {fileID: 0}
+--- !u!114 &6836281540126714704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7550372425941623618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebde5d34eb5972144a8555853bfdb4d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 1
+  _addedNetworkObject: {fileID: 4522802371100892334}
+  _networkObjectCache: {fileID: 4522802371100892334}
+  currentLevel: 1
+  upgradeUI: {fileID: 0}
+  itemList: {fileID: 0}
+  money: {fileID: 11400000, guid: 20dd61b0bb7845148b46460f955dc7a1, type: 2}
+  availableItems:
+  - {fileID: 11400000, guid: 95669de9089d9e74b903cfe6180aa2af, type: 2}
+  - {fileID: 11400000, guid: aaddd39abe3d8d247af756d768d4356f, type: 2}
+  - {fileID: 11400000, guid: 285bc60c4789d1c47aa16485364a999f, type: 2}
+  - {fileID: 11400000, guid: 9754fa15f1de12345aeca2713b9b63f9, type: 2}
+  - {fileID: 11400000, guid: 3f8833507b3e4f34eb4cda975da5fbf4, type: 2}
+  - {fileID: 11400000, guid: 40baaa90b4a66d648b7e1eb5188a15ab, type: 2}
+  - {fileID: 11400000, guid: c00744e863fb2ae44887c8a67de3d3de, type: 2}
+  - {fileID: 11400000, guid: 3b81278b0d29aea40b6753cdf411dfff, type: 2}
+  - {fileID: 11400000, guid: b8b88e30941d54f469152e3458e23179, type: 2}
+  - {fileID: 11400000, guid: 0f5381e11f289ff47ba86dcd9a5c3148, type: 2}
+  - {fileID: 11400000, guid: b9a90cf3cf490a3458bbc0ac3ffdb920, type: 2}
+  - {fileID: 11400000, guid: 3c5fc19d5eb98ce4f816b4a0c9b96914, type: 2}
+  - {fileID: 11400000, guid: 43ae54fd9caf3714d9421c61e2aabde1, type: 2}
+  - {fileID: 11400000, guid: 434cc5b012f78214cbad05c7cf2ef9c4, type: 2}
+  - {fileID: 11400000, guid: cb049461876b10e40920ab6b73d8054d, type: 2}
+  - {fileID: 11400000, guid: 3350a8452cbff6b45bae4a35949e73a5, type: 2}
+  - {fileID: 11400000, guid: 0d54644358d3f5340ace605c31627fd7, type: 2}
+  - {fileID: 11400000, guid: 9385eddabad6312449a277d8efae6c5f, type: 2}
+  - {fileID: 11400000, guid: cb46933c5104b21479af7f0e19095d0d, type: 2}
+  - {fileID: 11400000, guid: 27587eb074e3d2740b17a8d495f3c8aa, type: 2}
+  levelText: {fileID: 0}
+  expBar: {fileID: 0}
+  ownedItems: []
 --- !u!114 &4522802371100892334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105,6 +154,7 @@ MonoBehaviour:
   <PredictedSpawn>k__BackingField: {fileID: 0}
   _networkBehaviours:
   - {fileID: 3706020177405343019}
+  - {fileID: 6836281540126714704}
   <ParentNetworkObject>k__BackingField: {fileID: 0}
   <ChildNetworkObjects>k__BackingField: []
   SerializedTransformProperties:
@@ -116,9 +166,9 @@ MonoBehaviour:
   _initializeOrder: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  <PrefabId>k__BackingField: 0
+  <PrefabId>k__BackingField: 46
   <SpawnableCollectionId>k__BackingField: 0
-  _scenePathHash: 0
+  _scenePathHash: 774665742
   <SceneId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 17981935845437572623
 --- !u!114 &7926492663542331986
@@ -133,7 +183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 211a9f6ec51ddc14f908f5acc0cd0423, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerPrefab: {fileID: 3610995976546538049, guid: e6f48db2c778f9640a460aa1f9a36c7e,
+  _playerPrefab: {fileID: 1557489069479332240, guid: 3dddaccf6d22a58418dace8cec69060b,
     type: 3}
   _addToDefaultScene: 1
   Spawns: []

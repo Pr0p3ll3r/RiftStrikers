@@ -333,7 +333,7 @@ ModelImporter:
       name: Stab Attack
       takeName: Take 001
       internalID: 7400000
-      firstFrame: 0
+      firstFrame: 8
       lastFrame: 25
       wrapMode: 0
       orientationOffsetY: 0
