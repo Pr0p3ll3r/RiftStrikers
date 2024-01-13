@@ -88,7 +88,7 @@ public class PlayerHUD : NetworkBehaviour
         if (item is ActiveItem)
             itemGO = Instantiate(itemListItemPrefab, activeitemsContainer);
         else if(item is PassiveItem)
-            itemGO = Instantiate(itemListItemPrefab, activeitemsContainer);
+            itemGO = Instantiate(itemListItemPrefab, passiveitemsContainer);
         itemGO.transform.GetChild(0).GetComponent<Image>().sprite = Database.GetItemIcon(item.itemIconIndex);
     }
 
