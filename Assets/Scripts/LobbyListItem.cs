@@ -24,8 +24,6 @@ public class LobbyListItem : MonoBehaviour
         lobbyNameText.text = lobby.Name;
         playersText.text = lobby.Players.Count + "/" + lobby.MaxPlayers;
 
-        Debug.Log(joinLobbyButton);
-
         if (lobby.Players.Count == lobby.MaxPlayers)
         {
             joinLobbyButton.interactable = false;

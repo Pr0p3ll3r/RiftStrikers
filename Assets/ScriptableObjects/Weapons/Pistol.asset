@@ -27,4 +27,4 @@ MonoBehaviour:
   animSet: 2
   reloadSound: {fileID: 8300000, guid: 49f33ff7ab063234ca621793496fa7f9, type: 3}
   gunshotSound: {fileID: 8300000, guid: 6b8a8f000d685194c93414c9f4610e7d, type: 3}
-  shotVolume: 0.5
+  shotVolume: 1
