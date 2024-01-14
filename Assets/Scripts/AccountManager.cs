@@ -5,6 +5,7 @@ using TMPro;
 using Unity.Services.Authentication;
 using Unity.Services.CloudSave;
 using Unity.Services.Core;
+using Unity.Services.Vivox;
 using UnityEngine;
 
 public class AccountManager : MonoBehaviour
@@ -12,7 +13,7 @@ public class AccountManager : MonoBehaviour
     public static AccountManager Instance { get; private set; }
 
     public event EventHandler OnSignUpStarted;
-    public event EventHandler OnSignUped;
+    public event EventHandler OnSignedUp;
     public event EventHandler<string> OnSignUpFailed;
     public event EventHandler OnAuthenticateStarted;
     public event EventHandler OnAuthenticated;
@@ -52,6 +53,21 @@ public class AccountManager : MonoBehaviour
         {
             Debug.LogException(e);
         }
+
+        AuthenticationService.Instance.SignedIn += () => {
+            Debug.Log("Signed in! " + AuthenticationService.Instance.PlayerId);
+            LoadData();
+        };
+    }
+
+    private void Start()
+    {
+        VivoxService.Instance.LoggedIn += OnLoggedIn;
+    }
+
+    private void OnDestroy()
+    {
+        VivoxService.Instance.LoggedIn -= OnLoggedIn;
     }
 
     public async void SignUp()
@@ -80,7 +96,7 @@ public class AccountManager : MonoBehaviour
             await AuthenticationService.Instance.SignUpWithUsernamePasswordAsync(username, password);
             CloudData.PlayerData.Name = username;
             Debug.Log("SignUp is successful.");
-            OnSignUped?.Invoke(this, EventArgs.Empty);
+            OnSignedUp?.Invoke(this, EventArgs.Empty);
             CloudData.Save();
             usernameText.text = username;
             moneyText.text = $"${CloudData.PlayerData.Money}";
@@ -103,13 +119,6 @@ public class AccountManager : MonoBehaviour
         OnAuthenticateStarted?.Invoke(this, EventArgs.Empty);
         try
         {
-            await UnityServices.InitializeAsync();
-
-            AuthenticationService.Instance.SignedIn += () => {
-                Debug.Log("Signed in! " + AuthenticationService.Instance.PlayerId);
-                LoadData();
-            };
-
             await SignInWithUsernamePassword(usernameInputFieldLogin.text, passwordInputFieldLogin.text);
         }
         catch (AuthenticationException e)
@@ -121,14 +130,16 @@ public class AccountManager : MonoBehaviour
 
     private async void LoadData()
     {
-        Debug.Log("LoadData");
         try
         {
             CloudData.PlayerData = await CloudData.RetrieveSpecificData<PlayerData>("PlayerData");
+            Debug.Log("Loaded Data");
             usernameText.text = CloudData.PlayerData.Name;
             moneyText.text = $"${CloudData.PlayerData.Money}";
-            MenuManager.Instance.OpenTab(MenuManager.Instance.tabMain);
-            OnAuthenticated?.Invoke(this, EventArgs.Empty);
+            if (!VivoxService.Instance.IsLoggedIn)
+                LoginToVivox();
+            else
+                MenuManager.Instance.OpenTab(MenuManager.Instance.tabMain);
         }
         catch(CloudSaveException e)
         {
@@ -141,7 +152,6 @@ public class AccountManager : MonoBehaviour
         try
         {
             await AuthenticationService.Instance.SignInWithUsernamePasswordAsync(username, password);
-            Debug.Log("SignIn is successful.");
         }
         catch (AuthenticationException ex)
         {
@@ -153,5 +163,30 @@ public class AccountManager : MonoBehaviour
             Debug.LogException(ex);
             OnAuthenticateFailed?.Invoke(this, ex.Message);
         }
+    }
+
+    private async void LoginToVivox()
+    {
+        var loginOptions = new LoginOptions()
+        {
+            DisplayName = CloudData.PlayerData.Name,
+            ParticipantUpdateFrequency = ParticipantPropertyUpdateFrequency.FivePerSecond
+        };
+        try
+        {
+            Debug.Log("Connecting to Vivox...");
+            await VivoxService.Instance.LoginAsync(loginOptions);        
+        }
+        catch (Exception ex)
+        {
+            Debug.LogException(ex);
+        }       
+    }
+
+    private void OnLoggedIn()
+    {
+        Debug.Log("Connected to Vivox");
+        MenuManager.Instance.OpenTab(MenuManager.Instance.tabMain);
+        OnAuthenticated?.Invoke(this, EventArgs.Empty);
     }
 }

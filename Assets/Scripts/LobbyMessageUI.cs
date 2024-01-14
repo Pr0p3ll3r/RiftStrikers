@@ -1,5 +1,6 @@
 using System;
 using TMPro;
+using Unity.Services.Vivox;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,7 +18,7 @@ public class LobbyMessageUI : MonoBehaviour
     private void Start()
     {
         AccountManager.Instance.OnSignUpStarted += AccountManager_OnSignUpStarted;
-        AccountManager.Instance.OnSignUped += AccountManager_OnSignUped;
+        AccountManager.Instance.OnSignedUp += AccountManager_OnSignUped;
         AccountManager.Instance.OnSignUpFailed += AccountManager_OnSignUpFailed;
 
         AccountManager.Instance.OnAuthenticateStarted += AccountManager_OnAuthenticateStarted;
@@ -25,7 +26,7 @@ public class LobbyMessageUI : MonoBehaviour
         AccountManager.Instance.OnAuthenticateFailed += AccountManager_OnAuthenticateFailed;
 
         LobbyManager.Instance.OnCreateLobbyStarted += LobbyManager_OnCreateLobbyStarted;
-        LobbyManager.Instance.OnJoinedLobby += LobbyManager_OnJoinedLobby;
+        VivoxService.Instance.ChannelJoined += VivoxService_ChannelJoined;
         LobbyManager.Instance.OnCreateLobbyFailed += LobbyManager_OnCreateLobbyFailed;
 
         LobbyManager.Instance.OnJoinLobbyStarted += LobbyManager_OnJoinLobbyStarted;
@@ -34,6 +35,12 @@ public class LobbyMessageUI : MonoBehaviour
         LobbyManager.Instance.OnGameStarted += LobbyManager_OnGameStarted;
 
         LobbyManager.Instance.OnKickedFromLobby += LobbyManager_OnKickedFromLobby;
+
+        Hide();
+    }
+
+    private void VivoxService_ChannelJoined(string obj)
+    {
         Hide();
     }
 
@@ -49,7 +56,7 @@ public class LobbyMessageUI : MonoBehaviour
 
     private void AccountManager_OnSignUped(object sender, EventArgs e)
     {
-        ShowResponseMessage("Registration successful");
+        ShowResponseMessage("Registration successful!");
     }
 
     private void AccountManager_OnSignUpFailed(object sender, string e)
@@ -77,11 +84,6 @@ public class LobbyMessageUI : MonoBehaviour
         ShowMessage("Joining Lobby...");
     }
 
-    private void LobbyManager_OnJoinedLobby(object sender, LobbyManager.LobbyEventArgs e)
-    {
-        Hide();
-    }
-
     private void LobbyManager_OnJoinLobbyFailed(object sender, EventArgs e)
     {
         ShowResponseMessage("Failed to join Lobby!");
@@ -99,7 +101,7 @@ public class LobbyMessageUI : MonoBehaviour
 
     private void LobbyManager_OnKickedFromLobby(object sender, EventArgs e)
     {
-        ShowResponseMessage("You have been kicked from the Lobby");
+        ShowResponseMessage("You have been kicked from the Lobby!");
     }
 
     private void ShowMessage(string message)
@@ -124,5 +126,27 @@ public class LobbyMessageUI : MonoBehaviour
     private void Hide()
     {
         gameObject.SetActive(false);
+    }
+
+    private void OnDestroy()
+    {
+        AccountManager.Instance.OnSignUpStarted -= AccountManager_OnSignUpStarted;
+        AccountManager.Instance.OnSignedUp -= AccountManager_OnSignUped;
+        AccountManager.Instance.OnSignUpFailed -= AccountManager_OnSignUpFailed;
+
+        AccountManager.Instance.OnAuthenticateStarted -= AccountManager_OnAuthenticateStarted;
+        AccountManager.Instance.OnAuthenticated -= AccountManager_OnAuthenticated;
+        AccountManager.Instance.OnAuthenticateFailed -= AccountManager_OnAuthenticateFailed;
+
+        LobbyManager.Instance.OnCreateLobbyStarted -= LobbyManager_OnCreateLobbyStarted;
+        VivoxService.Instance.ChannelJoined -= VivoxService_ChannelJoined;
+        LobbyManager.Instance.OnCreateLobbyFailed -= LobbyManager_OnCreateLobbyFailed;
+
+        LobbyManager.Instance.OnJoinLobbyStarted -= LobbyManager_OnJoinLobbyStarted;
+        LobbyManager.Instance.OnJoinLobbyFailed -= LobbyManager_OnJoinLobbyFailed;
+
+        LobbyManager.Instance.OnGameStarted -= LobbyManager_OnGameStarted;
+
+        LobbyManager.Instance.OnKickedFromLobby -= LobbyManager_OnKickedFromLobby;
     }
 }

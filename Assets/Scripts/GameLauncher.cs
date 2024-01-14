@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Services.Authentication;
 using Unity.Services.Lobbies.Models;
+using Unity.Services.Vivox;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -89,6 +90,7 @@ public class GameLauncher : MonoBehaviour
 
     private void LobbyManager_OnLeftLobby(object sender, EventArgs e)
     {
+        VivoxService.Instance.LeaveChannelAsync(VivoxVoiceManager.LobbyChannelName);
         menuManager.OpenTab(menuManager.tabLobbies);
         readyButton.GetComponent<Image>().color = Color.red;
     }
@@ -99,8 +101,10 @@ public class GameLauncher : MonoBehaviour
         ShowStartButton();
     }
 
-    private void LobbyManager_OnJoinedLobby(object sender, LobbyManager.LobbyEventArgs e)
+    private async void LobbyManager_OnJoinedLobby(object sender, LobbyManager.LobbyEventArgs e)
     {
+        VivoxVoiceManager.LobbyChannelName = e.lobby.Name;
+        await VivoxService.Instance.JoinGroupChannelAsync(VivoxVoiceManager.LobbyChannelName, ChatCapability.TextOnly);
         menuManager.OpenTab(menuManager.tabLobby);
         ShowStartButton();
     }

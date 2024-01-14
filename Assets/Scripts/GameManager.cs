@@ -95,7 +95,7 @@ public class GameManager : NetworkBehaviour
     {
         base.OnStartClient();
         gameTimer = 0;
-        waitingTimeBeforeStart = 2f;
+        waitingTimeBeforeStart = 5f;
         currentState = GameState.WaitingForPlayers;
     }
 

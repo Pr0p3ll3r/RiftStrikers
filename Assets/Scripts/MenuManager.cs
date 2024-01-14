@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +13,6 @@ public class MenuManager : MonoBehaviour
     public GameObject tabCreateLobby;
     public GameObject tabLobby;
     public GameObject tabSettings;
-    public GameObject tabAbout;
     public GameObject tabUpgrades;
 
     [Header("Buttons")]
@@ -22,7 +20,6 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private Button findLobbyButton;
     [SerializeField] private Button upgradesButton;
     [SerializeField] private Button settingsButton;
-    [SerializeField] private Button aboutButton;
     [SerializeField] private Button quitGameMainMenuButton;
     [SerializeField] private Button quitGameLoginMenuButton;
 
@@ -44,9 +41,6 @@ public class MenuManager : MonoBehaviour
         settingsButton.onClick.AddListener(() => {
             OpenTab(tabSettings);
         });
-        aboutButton.onClick.AddListener(() => {
-            OpenTab(tabAbout);
-        });
         quitGameLoginMenuButton.onClick.AddListener(() => {
             QuitGame();
         });
@@ -64,7 +58,6 @@ public class MenuManager : MonoBehaviour
         tabCreateLobby.SetActive(false);
         tabLobby.SetActive(false);
         tabSettings.SetActive(false);
-        tabAbout.SetActive(false);
         tabUpgrades.SetActive(false);
     }
 
