@@ -216,8 +216,9 @@ public class Player : NetworkBehaviour
 
         foreach (Collider itemCollider in itemsInRadius)
         {
-            if (itemCollider.TryGetComponent<PickupItem>(out var pickupItem) && !itemCollider.CompareTag("HealthPickup"))
+            if (itemCollider.transform.root.CompareTag("Pickup"))
             {
+                PickupItem pickupItem = itemCollider.transform.root.GetComponent<PickupItem>();
                 Vector3 directionToPlayer = transform.position - pickupItem.transform.position;
                 if (directionToPlayer.magnitude < currentLootRange)
                 {

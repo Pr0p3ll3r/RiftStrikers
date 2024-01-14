@@ -91,7 +91,7 @@ public class GameManager : NetworkBehaviour
         GenerateMap();
     }
 
-    public override void OnStartClient()
+    public override void OnStartServer()
     {
         base.OnStartClient();
         gameTimer = 0;

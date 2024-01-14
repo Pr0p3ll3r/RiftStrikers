@@ -38,10 +38,4 @@ public class WeaponMenuSelection : MonoBehaviour
         currentIndex = (currentIndex - 1 + weapons.Length) % weapons.Length;
         UpdateUI();
     }
-
-    private void OnDisable()
-    {
-        currentIndex = 0;
-        UpdateUI();
-    }
 }

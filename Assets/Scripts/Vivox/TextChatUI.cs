@@ -95,7 +95,6 @@ public class TextChatUI : MonoBehaviour
         foreach (KeyValuePair<string, MessageObjectUI> keyValuePair in m_MessageObjPool)
         {
             Destroy(keyValuePair.Value.gameObject);
-            Debug.Log("Niszczenie");
         }
         m_MessageObjPool.Clear();
     }

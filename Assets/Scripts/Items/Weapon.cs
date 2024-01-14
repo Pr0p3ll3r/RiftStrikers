@@ -15,8 +15,6 @@ public class Weapon : ScriptableObject
     public Sprite icon;
     public float damage;
     public int ammo;
-    public int pellets;
-    public float pelletsSpread;
     public float range;
     public float fireRate;
     public float bulletForce;
@@ -31,13 +29,6 @@ public class Weapon : ScriptableObject
     public float shotVolume;
 
     private int currentAmmo;
-
-    public Weapon GetCopy()
-    {
-        Weapon weapon = Instantiate(this);
-        weapon.Reload();
-        return weapon;
-    }
 
     public bool FireBullet()
     {

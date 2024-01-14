@@ -9,9 +9,7 @@ public class BossMorgana : Enemy
             animator.SetBool("Attack", true);
             lastAttackTime = Time.time;
             player.GetComponent<Player>().TakeDamageServer(CurrentDamage);
-            Debug.Log("Current Health: " + currentHealth);
             currentHealth += player.GetComponent<Player>().GetHealAmount(CurrentDamage);
-            Debug.Log("Current Health: " + currentHealth);
             currentHealth = Mathf.Min(currentHealth, CurrentMaxHealth);
             RpcSetHealthBar(currentHealth);
         }

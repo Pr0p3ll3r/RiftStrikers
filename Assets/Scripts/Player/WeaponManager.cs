@@ -79,9 +79,10 @@ public class WeaponManager : NetworkBehaviour
             reload = StartCoroutine(Reload());
     }
 
-    public void Equip(Weapon weapon)
+    private void Equip(Weapon weapon)
     {
         currentWeaponData = weapon;
+        weapon.Reload();
         ShowWeapon();
         hud.RefreshWeapon(currentWeaponData);
         Player.Instance.currentMoveSpeed *= 1 + currentWeaponData.movementSpeedMultiplier / 100f;
@@ -113,9 +114,9 @@ public class WeaponManager : NetworkBehaviour
         if (currentWeaponData.FireBullet())
         {
             if (Player.Instance.AutoAim)
-                ShootServer(currentWeaponData.damage, transform.position, Vector3.ProjectOnPlane(closestEnemy.transform.position - transform.position, Vector3.up).normalized, currentWeaponData.range * Player.Instance.currentAttackRange, currentWeaponData.pellets);
+                ShootServer(currentWeaponData.damage, transform.position, Vector3.ProjectOnPlane(closestEnemy.transform.position - transform.position, Vector3.up).normalized, currentWeaponData.range * Player.Instance.currentAttackRange);
             else
-                ShootServer(currentWeaponData.damage, transform.position, transform.forward, currentWeaponData.range * Player.Instance.currentAttackRange, currentWeaponData.pellets);
+                ShootServer(currentWeaponData.damage, transform.position, transform.forward, currentWeaponData.range * Player.Instance.currentAttackRange);
            
             currentCooldown = currentWeaponData.fireRate * Player.Instance.currentAttackCooldown;
             hud.RefreshAmmo(currentWeaponData.GetAmmo());
@@ -123,22 +124,19 @@ public class WeaponManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void ShootServer(float damage, Vector3 position, Vector3 direction, float range, int pellets)
+    private void ShootServer(float damage, Vector3 position, Vector3 direction, float range)
     {
-        for (int i = 0; i < Mathf.Max(1, pellets); i++)
+        if (Physics.Raycast(position, direction, out RaycastHit hit, range, canBeShot))
         {
-            if (Physics.Raycast(position, direction, out RaycastHit hit, range, canBeShot))
-            {             
-                if(hit.collider.TryGetComponent(out Enemy enemy))
-                {
-                    enemy.ServerTakeDamage(damage * Player.Instance.currentDamage);
-                }
-                ShootRpc(hit.point);
-            }
-            else
+            if (hit.collider.TryGetComponent(out Enemy enemy))
             {
-                ShootRpc(transform.position + transform.forward * 100);
+                enemy.ServerTakeDamage(damage * Player.Instance.currentDamage);
             }
+            ShootRpc(hit.point);
+        }
+        else
+        {
+            ShootRpc(transform.position + transform.forward * 100);
         }
     }
 

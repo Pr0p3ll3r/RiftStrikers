@@ -17,7 +17,7 @@ MonoBehaviour:
   damage: 8
   ammo: 12
   pellets: 10
-  pelletsSpread: 0.1
+  pelletsSpread: 1
   range: 5
   fireRate: 1.2
   bulletForce: 75

@@ -133,6 +133,8 @@ public class Enemy : NetworkBehaviour
 
         foreach (GameObject player in players)
         {
+            if (player.GetComponent<Player>().IsDead) continue;
+
             float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
 
             if (distanceToPlayer < minimumDistance)
