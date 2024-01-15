@@ -18,7 +18,6 @@ public class LobbyMessageUI : MonoBehaviour
     private void Start()
     {
         AccountManager.Instance.OnSignUpStarted += AccountManager_OnSignUpStarted;
-        AccountManager.Instance.OnSignedUp += AccountManager_OnSignUped;
         AccountManager.Instance.OnSignUpFailed += AccountManager_OnSignUpFailed;
 
         AccountManager.Instance.OnAuthenticateStarted += AccountManager_OnAuthenticateStarted;
@@ -35,6 +34,9 @@ public class LobbyMessageUI : MonoBehaviour
         LobbyManager.Instance.OnGameStarted += LobbyManager_OnGameStarted;
 
         LobbyManager.Instance.OnKickedFromLobby += LobbyManager_OnKickedFromLobby;
+
+        AccountManager.Instance.OnVivoxLoginFailed += AccountManager_OnVivoxLoginFailed;
+        AccountManager.Instance.OnDataLoadFailed += AccountManager_OnDataLoadFailed;
 
         Hide();
     }
@@ -54,7 +56,7 @@ public class LobbyMessageUI : MonoBehaviour
         ShowMessage("Registration...");
     }
 
-    private void AccountManager_OnSignUped(object sender, EventArgs e)
+    private void AccountManager_OnSignedUp(object sender, EventArgs e)
     {
         ShowResponseMessage("Registration successful!");
     }
@@ -104,6 +106,16 @@ public class LobbyMessageUI : MonoBehaviour
         ShowResponseMessage("You have been kicked from the Lobby!");
     }
 
+    private void AccountManager_OnVivoxLoginFailed(object sender, EventArgs e)
+    {
+        ShowResponseMessage("Login to Vivox failed!");
+    }
+
+    private void AccountManager_OnDataLoadFailed(object sender, EventArgs e)
+    {
+        ShowResponseMessage("Load Data failed!");
+    }
+
     private void ShowMessage(string message)
     {
         messageText.text = message;
@@ -131,7 +143,6 @@ public class LobbyMessageUI : MonoBehaviour
     private void OnDestroy()
     {
         AccountManager.Instance.OnSignUpStarted -= AccountManager_OnSignUpStarted;
-        AccountManager.Instance.OnSignedUp -= AccountManager_OnSignUped;
         AccountManager.Instance.OnSignUpFailed -= AccountManager_OnSignUpFailed;
 
         AccountManager.Instance.OnAuthenticateStarted -= AccountManager_OnAuthenticateStarted;

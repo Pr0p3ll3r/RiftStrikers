@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Services.Authentication;
@@ -13,11 +12,12 @@ public class AccountManager : MonoBehaviour
     public static AccountManager Instance { get; private set; }
 
     public event EventHandler OnSignUpStarted;
-    public event EventHandler OnSignedUp;
     public event EventHandler<string> OnSignUpFailed;
     public event EventHandler OnAuthenticateStarted;
     public event EventHandler OnAuthenticated;
     public event EventHandler<string> OnAuthenticateFailed;
+    public event EventHandler OnVivoxLoginFailed;
+    public event EventHandler OnDataLoadFailed;
 
     [Header("Profile")]
     [SerializeField] private TextMeshProUGUI usernameText;
@@ -53,12 +53,9 @@ public class AccountManager : MonoBehaviour
         {
             Debug.LogException(e);
         }
-
-        AuthenticationService.Instance.SignedIn += () => {
-            Debug.Log("Signed in! " + AuthenticationService.Instance.PlayerId);
-            LoadData();
-        };
     }
+
+
 
     private void Start()
     {
@@ -95,12 +92,10 @@ public class AccountManager : MonoBehaviour
         {
             await AuthenticationService.Instance.SignUpWithUsernamePasswordAsync(username, password);
             CloudData.PlayerData.Name = username;
-            Debug.Log("SignUp is successful.");
-            OnSignedUp?.Invoke(this, EventArgs.Empty);
+            Debug.Log("Signed Up!");
             CloudData.Save();
             usernameText.text = username;
-            moneyText.text = $"${CloudData.PlayerData.Money}";
-            MenuManager.Instance.OpenTab(MenuManager.Instance.tabMain);
+            LoginToVivox();
         }
         catch (AuthenticationException ex)
         {
@@ -144,6 +139,7 @@ public class AccountManager : MonoBehaviour
         catch(CloudSaveException e)
         {
             Debug.Log(e);
+            OnDataLoadFailed?.Invoke(this, EventArgs.Empty);
         }    
     }
 
@@ -152,6 +148,8 @@ public class AccountManager : MonoBehaviour
         try
         {
             await AuthenticationService.Instance.SignInWithUsernamePasswordAsync(username, password);
+            Debug.Log("Signed in! " + AuthenticationService.Instance.PlayerId);
+            LoadData();
         }
         catch (AuthenticationException ex)
         {
@@ -180,6 +178,7 @@ public class AccountManager : MonoBehaviour
         catch (Exception ex)
         {
             Debug.LogException(ex);
+            OnVivoxLoginFailed?.Invoke(this, EventArgs.Empty);
         }       
     }
 

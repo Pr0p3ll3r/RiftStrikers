@@ -7,7 +7,6 @@ public class LobbyListItem : MonoBehaviour
 { 
     [SerializeField] private TextMeshProUGUI lobbyNameText;
     [SerializeField] private TextMeshProUGUI playersText;
-    [SerializeField] private TextMeshProUGUI statusText;
     [SerializeField] private Button joinLobbyButton;
 
     private Lobby lobby;
@@ -25,14 +24,8 @@ public class LobbyListItem : MonoBehaviour
         playersText.text = lobby.Players.Count + "/" + lobby.MaxPlayers;
 
         if (lobby.Players.Count == lobby.MaxPlayers)
-        {
-            joinLobbyButton.interactable = false;
-            statusText.text = "FULL LOBBY";
-        }         
+            joinLobbyButton.interactable = false;      
         else
-        {
             joinLobbyButton.interactable = true;
-            statusText.text = "IN LOBBY";
-        }
     }
 }
