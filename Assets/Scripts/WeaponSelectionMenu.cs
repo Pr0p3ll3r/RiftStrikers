@@ -24,7 +24,7 @@ public class WeaponMenuSelection : MonoBehaviour
         weaponImage.sprite = weapons[currentIndex].icon;
         string weaponName = weapons[currentIndex].itemName;
         weaponText.text = weaponName;
-        WeaponSelection.SelectedWeapon = Database.GetWeaponByName(weaponName);
+        WeaponSelection.SelectedWeapon = currentIndex;
     }
 
     private void NextWeapon()

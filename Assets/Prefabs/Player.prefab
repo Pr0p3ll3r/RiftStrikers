@@ -4119,7 +4119,7 @@ MonoBehaviour:
   currentWeapon: {fileID: 0}
   weaponHolder: {fileID: 3764887501991101459}
   currentWeaponData: {fileID: 0}
-  testWeapon: {fileID: 11400000, guid: 3c1df7da234888049a6966dc32cc54ac, type: 2}
+  testWeapon: {fileID: 11400000, guid: 87b267c21bacf1048bf16abeeef76a4c, type: 2}
   canBeShot:
     serializedVersion: 2
     m_Bits: 384
@@ -4220,7 +4220,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
@@ -4686,6 +4686,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 337971332374090741, guid: bff6c7d70d3655e459411e6201ab59a8,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1151627990394472783, guid: bff6c7d70d3655e459411e6201ab59a8,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4910,6 +4915,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 5583900874407409141, guid: b52a2a857d903434facf521b55ad8bfd,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7590473662579096335, guid: b52a2a857d903434facf521b55ad8bfd,
         type: 3}
       propertyPath: m_Layer
@@ -5035,6 +5045,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 1884327364251684655, guid: af62397f679116f4eaa99458fca09fc0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3316147367607209734, guid: af62397f679116f4eaa99458fca09fc0,
         type: 3}
       propertyPath: m_Layer
@@ -5128,6 +5143,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6929837873653623657, guid: 23fb7e71af927fb44af9e9def5f30d55,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7737301223729820115, guid: 23fb7e71af927fb44af9e9def5f30d55,
         type: 3}
@@ -5258,6 +5278,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Assault_Rifle
       objectReference: {fileID: 0}
+    - target: {fileID: 8058979916973862898, guid: cc13683c27d98f04fa33d3e1d11fa486,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5331,6 +5356,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5914052679613201946, guid: 6e8e54e195fe39041a15a44479dcac6d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6438246683829265568, guid: 6e8e54e195fe39041a15a44479dcac6d,
         type: 3}

@@ -2,6 +2,10 @@
 using System.Collections;
 using FishNet.Object;
 using UnityEngine.InputSystem;
+using FishNet.Object.Synchronizing;
+using FishNet.Transporting;
+using System;
+using UnityEngine.UIElements;
 
 public class WeaponManager : NetworkBehaviour
 {
@@ -27,17 +31,20 @@ public class WeaponManager : NetworkBehaviour
     public GameObject ClosestEnemy => closestEnemy;
     private ParticleSystem muzzleFlash;
 
-    private void Start()
+    private void Awake()
     {
         hud = GetComponent<PlayerHUD>();
         animCharacter = GetComponent<Animator>();
         controller = GetComponent<PlayerController>();
         playerInput = GetComponent<PlayerInput>();
         fireAction = playerInput.actions["Fire"];
-        if (WeaponSelection.SelectedWeapon)
+    }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        if(IsOwner)
             Equip(WeaponSelection.SelectedWeapon);
-        else
-            Equip(testWeapon);
     }
 
     void Update()
@@ -79,47 +86,80 @@ public class WeaponManager : NetworkBehaviour
             reload = StartCoroutine(Reload());
     }
 
-    private void Equip(Weapon weapon)
+    private void Equip(int index)
     {
-        currentWeaponData = weapon;
-        weapon.Reload();
-        ShowWeapon();
+        currentWeaponData = Database.Instance.data.weapons[index];
+        currentWeaponData.Reload();       
         hud.RefreshWeapon(currentWeaponData);
-        Player.Instance.currentMoveSpeed *= 1 + currentWeaponData.movementSpeedMultiplier / 100f;
-        muzzleFlash = currentWeapon.GetComponentInChildren<ParticleSystem>();
-        animCharacter.SetInteger("Weapon", (int)currentWeaponData.animSet);
-        weaponSound.PlayOneShot(equipSound);
+        for (int i = 0; i < weaponHolder.childCount; i++)
+        {
+            weaponHolder.GetChild(i).transform.gameObject.SetActive(false);
+        }
+        currentWeapon = weaponHolder.GetChild(index).gameObject;
+        currentWeapon.SetActive(true);
+        ServerEquip(currentWeaponData.childNumber);
         hud.RefreshAmmo(currentWeaponData.GetAmmo());
+        Player.Instance.currentMoveSpeed *= 1 + currentWeaponData.movementSpeedMultiplier / 100f;
+        animCharacter.SetInteger("Weapon", (int)currentWeaponData.animSet);
+        weaponSound.PlayOneShot(equipSound);    
     }
 
-    private void ShowWeapon()
+    [ServerRpc]
+    private void ServerEquip(int childNumber)
+    {
+        RpcEquip(childNumber);
+    }
+
+    [ObserversRpc]
+    private void RpcEquip(int childNumber)
     {
         for (int i = 0; i < weaponHolder.childCount; i++)
         {
             weaponHolder.GetChild(i).transform.gameObject.SetActive(false);
         }
-
-        if (currentWeaponData == null)
-        {
-            currentWeapon = null;
-            return;
-        }
-
-        currentWeapon = weaponHolder.GetChild(currentWeaponData.childNumber).gameObject;
+        currentWeapon = weaponHolder.GetChild(childNumber).gameObject;
         currentWeapon.SetActive(true);
+        currentWeaponData = Database.Instance.data.weapons[childNumber];
+        muzzleFlash = currentWeapon.GetComponentInChildren<ParticleSystem>();
     }
 
     private void Shoot()
     {
         if (currentWeaponData.FireBullet())
         {
+            Vector3 position;
+            Vector3 direction;
+            float range = currentWeaponData.range * Player.Instance.currentAttackRange;
             if (Player.Instance.AutoAim)
-                ShootServer(currentWeaponData.damage, transform.position, Vector3.ProjectOnPlane(closestEnemy.transform.position - transform.position, Vector3.up).normalized, currentWeaponData.range * Player.Instance.currentAttackRange);
+            {
+                position = closestEnemy.transform.position - transform.position;
+                direction = Vector3.ProjectOnPlane(position, Vector3.up.normalized);
+                ShootServer(currentWeaponData.damage, transform.position, direction, range);
+            }            
             else
-                ShootServer(currentWeaponData.damage, transform.position, transform.forward, currentWeaponData.range * Player.Instance.currentAttackRange);
-           
+            {
+                position = transform.position;
+                direction = transform.forward;
+                ShootServer(currentWeaponData.damage, transform.position, direction, range);
+            }
+
+            if (Physics.Raycast(position, direction, out RaycastHit hit, range, canBeShot))
+            {
+                TrailRenderer trail = Instantiate(bulletTrail, muzzleFlash.transform.position, Quaternion.identity);
+                StartCoroutine(SpawnTrail(trail, hit.point));
+            }
+            else
+            {
+                TrailRenderer trail = Instantiate(bulletTrail, muzzleFlash.transform.position, Quaternion.identity);
+                StartCoroutine(SpawnTrail(trail, transform.position + transform.forward * range));
+            }
+
             currentCooldown = currentWeaponData.fireRate * Player.Instance.currentAttackCooldown;
             hud.RefreshAmmo(currentWeaponData.GetAmmo());
+            muzzleFlash.Play();
+            sfx.clip = currentWeaponData.gunshotSound;
+            sfx.volume = currentWeaponData.shotVolume;
+            sfx.PlayOneShot(sfx.clip);
         }
     }
 
@@ -132,11 +172,11 @@ public class WeaponManager : NetworkBehaviour
             {
                 enemy.ServerTakeDamage(damage * Player.Instance.currentDamage);
             }
-            ShootRpc(hit.point);
+            ShootRpc(muzzleFlash.transform.position, hit.point);
         }
         else
         {
-            ShootRpc(transform.position + transform.forward * 100);
+            ShootRpc(muzzleFlash.transform.position, transform.position + transform.forward * range);
         }
     }
 
@@ -155,13 +195,13 @@ public class WeaponManager : NetworkBehaviour
         Destroy(trail.gameObject);
     }
 
-    [ObserversRpc]
-    private void ShootRpc(Vector3 hitPoint)
+    [ObserversRpc(ExcludeOwner = true)]
+    private void ShootRpc(Vector3 startPoint, Vector3 hitPoint)
     {
-        TrailRenderer trail = Instantiate(bulletTrail, muzzleFlash.gameObject.transform.position, Quaternion.identity);
-        StartCoroutine(SpawnTrail(trail, hitPoint));
-
         muzzleFlash.Play();
+
+        TrailRenderer trail = Instantiate(bulletTrail, startPoint, Quaternion.identity);
+        StartCoroutine(SpawnTrail(trail, hitPoint));
 
         sfx.clip = currentWeaponData.gunshotSound;
         sfx.volume = currentWeaponData.shotVolume;

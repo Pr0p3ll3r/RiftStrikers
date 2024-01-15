@@ -16,8 +16,6 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: bfa66cbb872433441a45287f6cf935ec, type: 3}
   damage: 5
   ammo: 20
-  pellets: 0
-  pelletsSpread: 0
   range: 5
   fireRate: 0.5
   bulletForce: 75

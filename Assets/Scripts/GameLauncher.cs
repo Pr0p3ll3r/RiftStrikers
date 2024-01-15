@@ -141,6 +141,8 @@ public class GameLauncher : MonoBehaviour
 
     private void UpdateLobby(Lobby lobby)
     {
+        if (lobby == null) return;
+
         ClearLobby();
         playersReady = 0;
         lobbyNameText.text = lobby.Name; 

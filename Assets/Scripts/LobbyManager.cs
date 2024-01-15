@@ -48,7 +48,7 @@ public class LobbyManager : MonoBehaviour
     {
         HandleLobbyHeartbeat();
         HandleLobbyPolling();
-        //HandleRefreshLobbyList(); // Disabled Auto Refresh for testing with multiple builds
+        HandleRefreshLobbyList(); // Disabled Auto Refresh for testing with multiple builds
     }
 
     private async void HandleLobbyHeartbeat()

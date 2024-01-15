@@ -1,4 +1,4 @@
 public static class WeaponSelection
 {
-    public static Weapon SelectedWeapon { get; set; }
+    public static int SelectedWeapon;
 }

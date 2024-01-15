@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Damage>k__BackingField: 10
   <AttackRange>k__BackingField: 1.5
-  <MoveSpeed>k__BackingField: 4
+  <MoveSpeed>k__BackingField: 3
   <MaxHealth>k__BackingField: 10
   <IsBoss>k__BackingField: 0
   <Loot>k__BackingField:

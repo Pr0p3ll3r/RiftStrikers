@@ -16,8 +16,6 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 4d5d447baac61ae4b9cc0e1fac946301, type: 3}
   damage: 5
   ammo: 20
-  pellets: 0
-  pelletsSpread: 0
   range: 10
   fireRate: 0.25
   bulletForce: 75
@@ -27,4 +25,4 @@ MonoBehaviour:
   animSet: 1
   reloadSound: {fileID: 8300000, guid: 5cbc0a42c05d9184d912d1308566356a, type: 3}
   gunshotSound: {fileID: 8300000, guid: 7c2281521487bbd42b48542bbe6aa1a7, type: 3}
-  shotVolume: 0.5
+  shotVolume: 1
