@@ -3984,7 +3984,19 @@ MonoBehaviour:
     m_ActionId: ee2f41a1-8fa0-4356-b390-300d1eab5df6
     m_ActionName: UI/TrackedDeviceOrientation
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3182755882567150873}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnPause
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: cd4f869b-988c-4a7c-9295-f9110cbb786a
     m_ActionName: Player/Pause[/Keyboard/escape]
   m_NeverAutoSwitchControlSchemes: 0
@@ -4119,7 +4131,6 @@ MonoBehaviour:
   currentWeapon: {fileID: 0}
   weaponHolder: {fileID: 3764887501991101459}
   currentWeaponData: {fileID: 0}
-  testWeapon: {fileID: 11400000, guid: 87b267c21bacf1048bf16abeeef76a4c, type: 2}
   canBeShot:
     serializedVersion: 2
     m_Bits: 384
@@ -4188,7 +4199,7 @@ LineRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8410920378868955675}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0

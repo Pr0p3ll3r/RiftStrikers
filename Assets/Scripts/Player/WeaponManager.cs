@@ -2,17 +2,12 @@
 using System.Collections;
 using FishNet.Object;
 using UnityEngine.InputSystem;
-using FishNet.Object.Synchronizing;
-using FishNet.Transporting;
-using System;
-using UnityEngine.UIElements;
 
 public class WeaponManager : NetworkBehaviour
 {
     public GameObject currentWeapon;
     [SerializeField] private Transform weaponHolder;
     public Weapon currentWeaponData;
-    public Weapon testWeapon;
     [SerializeField] private LayerMask canBeShot;
     [SerializeField] private AudioSource sfx;
     [SerializeField] private AudioSource weaponSound;
@@ -60,19 +55,12 @@ public class WeaponManager : NetworkBehaviour
 
             if (currentWeapon != null && currentCooldown <= 0 && !isReloading && !controller.IsRolling)
             {
-                if (currentWeaponData.OutOfAmmo()) 
+                if (currentWeaponData.OutOfAmmo())
                     reload = StartCoroutine(Reload());
-                else if (Player.Instance.AutoAim)
-                {
-                    if(closestEnemy)
-                    {
-                        Shoot();
-                    }               
-                }
-                else if (!Pause.paused && fireAction.IsPressed())
-                {   
+                else if (Player.Instance.AutoAim && closestEnemy)
                     Shoot();
-                }
+                else if (!Pause.paused && fireAction.IsPressed())
+                    Shoot();
             }
         }
     }

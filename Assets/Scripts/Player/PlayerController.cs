@@ -157,8 +157,16 @@ public class PlayerController : NetworkBehaviour
         if (!IsOwner || player.IsDead || !Player.Instance.CanControl)
             return;
 
-        if (context.started && lastRoll <= 0)
+        if (context.performed && lastRoll <= 0)
             StartCoroutine(Roll());
+    }
+
+    public void OnPause(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            Pause.Instance.TooglePause();
+        }
     }
 
     public void OnDeath()

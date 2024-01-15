@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class Pause : MonoBehaviour
 {
+    public static Pause Instance {  get; private set; }
+
     public static bool paused = false;
 
     [SerializeField] private GameObject pauseMenu;
@@ -13,6 +14,11 @@ public class Pause : MonoBehaviour
     [SerializeField] private Button settingsButton;
     [SerializeField] private Button exitButton;
     [SerializeField] private Button returnButton;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
@@ -30,15 +36,7 @@ public class Pause : MonoBehaviour
         });
     }
 
-    private void Update()
-    {
-        if (Keyboard.current.escapeKey.wasPressedThisFrame)
-        {
-            TooglePause();
-        }
-    }
-
-    private void TooglePause()
+    public void TooglePause()
     {
         paused = !paused;
    
