@@ -53,9 +53,10 @@ public class AccountManager : MonoBehaviour
         {
             Debug.LogException(e);
         }
+
+        usernameInputFieldLogin.text = PlayerPrefs.GetString("username", "");
+        passwordInputFieldLogin.text = PlayerPrefs.GetString("password", "");
     }
-
-
 
     private void Start()
     {
@@ -150,6 +151,8 @@ public class AccountManager : MonoBehaviour
             await AuthenticationService.Instance.SignInWithUsernamePasswordAsync(username, password);
             Debug.Log("Signed in! " + AuthenticationService.Instance.PlayerId);
             LoadData();
+            PlayerPrefs.SetString("username", username);
+            PlayerPrefs.SetString("password", password);
         }
         catch (AuthenticationException ex)
         {
