@@ -25,13 +25,15 @@ public class WeaponManager : NetworkBehaviour
     private GameObject closestEnemy;
     public GameObject ClosestEnemy => closestEnemy;
     private ParticleSystem muzzleFlash;
-
+    private LineRenderer laserRenderer;
+            
     private void Awake()
     {
         hud = GetComponent<PlayerHUD>();
         animCharacter = GetComponent<Animator>();
         controller = GetComponent<PlayerController>();
         playerInput = GetComponent<PlayerInput>();
+        laserRenderer = GetComponent<LineRenderer>();
         fireAction = playerInput.actions["Fire"];
     }
 
@@ -51,16 +53,23 @@ public class WeaponManager : NetworkBehaviour
         {
             if (Player.Instance.AutoAim) closestEnemy = GameManager.Instance.GetClosestEnemy(transform.position, currentWeaponData.range * Player.Instance.currentAttackRange);
 
+            UpdateLineRenderer();
+
             if (currentCooldown > 0) currentCooldown -= Time.deltaTime;
 
             if (currentWeapon != null && currentCooldown <= 0 && !isReloading && !controller.IsRolling)
             {
                 if (currentWeaponData.OutOfAmmo())
                     reload = StartCoroutine(Reload());
-                else if (Player.Instance.AutoAim && closestEnemy)
-                    Shoot();
+                else if (Player.Instance.AutoAim)
+                {
+                    if (closestEnemy)
+                        Shoot();
+                }                           
                 else if (!Pause.paused && fireAction.IsPressed())
+                {
                     Shoot();
+                }
             }
         }
     }
@@ -89,7 +98,7 @@ public class WeaponManager : NetworkBehaviour
         hud.RefreshAmmo(currentWeaponData.GetAmmo());
         Player.Instance.currentMoveSpeed *= 1 + currentWeaponData.movementSpeedMultiplier / 100f;
         animCharacter.SetInteger("Weapon", (int)currentWeaponData.animSet);
-        weaponSound.PlayOneShot(equipSound);    
+        weaponSound.PlayOneShot(equipSound);
     }
 
     [ServerRpc]
@@ -115,33 +124,42 @@ public class WeaponManager : NetworkBehaviour
     {
         if (currentWeaponData.FireBullet())
         {
+            if (Player.Instance.AutoAim)
+            {
+                Vector3 directionToEnemy = closestEnemy.transform.position - transform.position;
+                directionToEnemy.y = 0;
+                transform.forward = directionToEnemy;
+            }
+
             Vector3 position;
             Vector3 direction;
             float range = currentWeaponData.range * Player.Instance.currentAttackRange;
             if (Player.Instance.AutoAim)
             {
                 position = closestEnemy.transform.position - transform.position;
-                direction = Vector3.ProjectOnPlane(position, Vector3.up.normalized);
+                direction = Vector3.ProjectOnPlane(position, Vector3.up).normalized;
                 ShootServer(currentWeaponData.damage, transform.position, direction, range);
+
+                Vector3 trailEndPosition = new Vector3(closestEnemy.transform.position.x, muzzleFlash.transform.position.y, closestEnemy.transform.position.z);
+                TrailRenderer trail = Instantiate(bulletTrail, muzzleFlash.transform.position, Quaternion.identity);
+                StartCoroutine(SpawnTrail(trail, trailEndPosition));
             }            
             else
             {
                 position = transform.position;
                 direction = transform.forward;
                 ShootServer(currentWeaponData.damage, transform.position, direction, range);
-            }
 
-            if (Physics.Raycast(position, direction, out RaycastHit hit, range, canBeShot))
-            {
                 TrailRenderer trail = Instantiate(bulletTrail, muzzleFlash.transform.position, Quaternion.identity);
-                StartCoroutine(SpawnTrail(trail, hit.point));
+                if (Physics.Raycast(position, direction, out RaycastHit hit, range, canBeShot))
+                {
+                    StartCoroutine(SpawnTrail(trail, hit.point));
+                }
+                else
+                {
+                    StartCoroutine(SpawnTrail(trail, transform.position + transform.forward * range));
+                }
             }
-            else
-            {
-                TrailRenderer trail = Instantiate(bulletTrail, muzzleFlash.transform.position, Quaternion.identity);
-                StartCoroutine(SpawnTrail(trail, transform.position + transform.forward * range));
-            }
-
             currentCooldown = currentWeaponData.fireRate * Player.Instance.currentAttackCooldown;
             hud.RefreshAmmo(currentWeaponData.GetAmmo());
             muzzleFlash.Play();
@@ -166,6 +184,28 @@ public class WeaponManager : NetworkBehaviour
         {
             ShootRpc(muzzleFlash.transform.position, transform.position + transform.forward * range);
         }
+    }
+
+    private void UpdateLineRenderer()
+    {
+        float range = currentWeaponData.range * Player.Instance.currentAttackRange;
+        Vector3 lineEndPosition;
+
+        if (Player.Instance.AutoAim && closestEnemy)
+        {
+            lineEndPosition = new Vector3(closestEnemy.transform.position.x, muzzleFlash.transform.position.y, closestEnemy.transform.position.z);
+        }
+        else if(Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, range, canBeShot))
+        {
+            lineEndPosition = hit.point;
+        }
+        else
+        {
+            lineEndPosition = transform.position + transform.forward * range;
+        }
+
+        laserRenderer.SetPosition(0, transform.position);
+        laserRenderer.SetPosition(1, lineEndPosition);
     }
 
     private IEnumerator SpawnTrail(TrailRenderer trail, Vector3 hitPoint)

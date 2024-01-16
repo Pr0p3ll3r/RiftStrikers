@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Metalon
   m_EditorClassIdentifier: 
   <Damage>k__BackingField: 20
-  <AttackRange>k__BackingField: 3.3
+  <AttackRange>k__BackingField: 3
   <MoveSpeed>k__BackingField: 2
   <MaxHealth>k__BackingField: 40
   <IsBoss>k__BackingField: 0

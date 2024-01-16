@@ -29,7 +29,6 @@ public class PlayerController : NetworkBehaviour
     private AudioSource audioSource;
     private Animator animCharacter;
     private NetworkAnimator networkAnimator;
-    private LineRenderer laserRenderer;
     private Vector3 lastPos;
     private Vector3 playerVelocity;
     private Vector2 moveInput;
@@ -47,7 +46,6 @@ public class PlayerController : NetworkBehaviour
         controller = GetComponent<CharacterController>();
         networkAnimator = GetComponent<NetworkAnimator>();
         weaponManager = GetComponent<WeaponManager>();
-        laserRenderer = GetComponent<LineRenderer>();
         cam = Camera.main;
 
         Keyframe roll_LastFrame = rollingCurve[rollingCurve.length - 1];
@@ -77,14 +75,6 @@ public class PlayerController : NetworkBehaviour
 
         if (!player.AutoAim)
             Look();
-
-        if (player.AutoAim)
-            laserRenderer.enabled = false;
-        else
-            laserRenderer.enabled = true;
-
-        laserRenderer.SetPosition(0, transform.position);
-        laserRenderer.SetPosition(1, transform.position + transform.forward * weaponManager.currentWeaponData.range);
     }
 
     private void Move()
@@ -173,6 +163,7 @@ public class PlayerController : NetworkBehaviour
     {
         enabled = false;
         weaponManager.enabled = false;
+        StopAllCoroutines();
     }
 
     private IEnumerator Roll()

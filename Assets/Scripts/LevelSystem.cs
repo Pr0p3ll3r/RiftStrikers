@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class LevelSystem : NetworkBehaviour
@@ -295,6 +296,7 @@ public class LevelSystem : NetworkBehaviour
             itemList.GetChild(i).gameObject.SetActive(true);
         }
         upgradeUI.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(itemList.GetChild(0).gameObject);
     }
 
     [ServerRpc(RequireOwnership = false)]
