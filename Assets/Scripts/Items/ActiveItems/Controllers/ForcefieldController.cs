@@ -29,7 +29,7 @@ public class ForcefieldController : ActiveItemController
     {
         if (GameManager.Instance.currentState == GameState.Paused) return;
 
-        if (IsServer && other.transform.root.TryGetComponent<Enemy>(out var enemy) && enemy.CanBeDamagedByForceField <= 0)
+        if (IsServer && IsClientInitialized && other.transform.root.TryGetComponent<Enemy>(out var enemy) && enemy.CanBeDamagedByForceField <= 0)
         {
             enemy.ServerTakeDamage(activeItem.GetCurrentLevel().damage * Player.Instance.currentDamage);
             enemy.CanBeDamagedByForceField = activeItem.GetCurrentLevel().cooldown * Player.Instance.currentAttackCooldown;
@@ -40,7 +40,7 @@ public class ForcefieldController : ActiveItemController
     {
         if (GameManager.Instance.currentState == GameState.Paused) return;
 
-        if (IsServer && other.transform.root.TryGetComponent<Enemy>(out var enemy) && enemy.CanBeDamagedByForceField <= 0)
+        if (IsServer && IsClientInitialized && other.transform.root.TryGetComponent<Enemy>(out var enemy) && enemy.CanBeDamagedByForceField <= 0)
         {
             enemy.ServerTakeDamage(activeItem.GetCurrentLevel().damage * Player.Instance.currentDamage);
             enemy.CanBeDamagedByForceField = activeItem.GetCurrentLevel().cooldown * Player.Instance.currentAttackCooldown;
