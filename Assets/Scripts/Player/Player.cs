@@ -235,6 +235,7 @@ public class Player : NetworkBehaviour
             if (currentHealth >= currentMaxHealth) return false;
 
             currentHealth += value;
+            hud.RefreshBars(currentHealth);
         }
         else if (item.itemType == ItemType.Exp)
         {
