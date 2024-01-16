@@ -116,10 +116,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1057000521409143511}
+  - component: {fileID: 6335179108662794740}
   - component: {fileID: 233010185876438620}
   - component: {fileID: 5369705754654201739}
   - component: {fileID: 8428515307297857}
-  - component: {fileID: 6335179108662794740}
   m_Layer: 0
   m_Name: PickupMoney
   m_TagString: Pickup
@@ -143,6 +143,23 @@ Transform:
   - {fileID: 6549021752070646945}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6335179108662794740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1819967331026758684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9bf7bf407935484194d4177da7430f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 0
+  _addedNetworkObject: {fileID: 5369705754654201739}
+  _networkObjectCache: {fileID: 5369705754654201739}
+  item: {fileID: 11400000, guid: 54eb888d49cc7e946b3cd3a0cba742cd, type: 2}
+  mesh: {fileID: 74848361354188048}
 --- !u!54 &233010185876438620
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -153,7 +170,7 @@ Rigidbody:
   serializedVersion: 4
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -300,20 +317,3 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &6335179108662794740
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1819967331026758684}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9bf7bf407935484194d4177da7430f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _componentIndexCache: 0
-  _addedNetworkObject: {fileID: 5369705754654201739}
-  _networkObjectCache: {fileID: 5369705754654201739}
-  item: {fileID: 11400000, guid: 54eb888d49cc7e946b3cd3a0cba742cd, type: 2}
-  mesh: {fileID: 74848361354188048}
