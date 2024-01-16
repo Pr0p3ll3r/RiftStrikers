@@ -303,6 +303,8 @@ public class GameManager : NetworkBehaviour
     [ObserversRpc]
     private void StartDarkeningScreenRpc()
     {
+        if (GetLivingPlayers() == 0) return;
+
         currentState = GameState.Paused;
         getPortalText.SetActive(false);
         StartCoroutine(DarkenScreen());
