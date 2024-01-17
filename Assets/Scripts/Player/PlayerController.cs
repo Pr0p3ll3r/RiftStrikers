@@ -153,10 +153,11 @@ public class PlayerController : NetworkBehaviour
 
     public void OnPause(InputAction.CallbackContext context)
     {
+        if (!IsOwner)
+            return;
+
         if (context.performed)
-        {
             Pause.Instance.TooglePause();
-        }
     }
 
     public void OnDeath()
