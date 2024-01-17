@@ -177,6 +177,7 @@ public class LevelSystem : NetworkBehaviour
     [ObserversRpc]
     private void StartItemChoose()
     {
+        GameManager.Instance.PauseGame(true);
         foreach (Transform itemSlot in itemList)
         {
             itemSlot.GetComponent<Button>().interactable = true;
@@ -190,8 +191,7 @@ public class LevelSystem : NetworkBehaviour
     {
         if (gainedLevels <= 0) return;
         gainedLevels--;
-        StartItemChoose();        
-        GameManager.Instance.PauseGame(true);          
+        StartItemChoose();          
         StartCoroutine(WaitForItemChoice());
     }
 
@@ -296,7 +296,15 @@ public class LevelSystem : NetworkBehaviour
             itemList.GetChild(i).gameObject.SetActive(true);
         }
         upgradeUI.SetActive(true);
-        EventSystem.current.SetSelectedGameObject(itemList.GetChild(0).gameObject);
+        if (Player.Instance.IsDead)
+        {
+            foreach (Transform skillSlot in itemList)
+            {
+                skillSlot.GetComponent<Button>().interactable = false;
+            }
+        }
+        else
+            EventSystem.current.SetSelectedGameObject(itemList.GetChild(0).gameObject);
     }
 
     [ServerRpc(RequireOwnership = false)]
