@@ -104,8 +104,11 @@ public class LevelSystem : NetworkBehaviour
             yield return new WaitForSeconds(0.1f);
         }
         (Item item, int index) = ChooseItem();
-        HighlightSelectedItem(index);
-        yield return new WaitForSeconds(2f);
+        if (ServerManager.Clients.Count > 1)
+        {
+            HighlightSelectedItem(index);
+            yield return new WaitForSeconds(1f);
+        }
         if (item is ActiveItem activeItem)
             ActiveItemChosenRpc(activeItem);
         else if (item is PassiveItem passiveItem)
