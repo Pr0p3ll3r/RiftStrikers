@@ -21,6 +21,7 @@ public class PlayerHUD : NetworkBehaviour
     private void Awake()
     {
         InitializeUI();
+        vignette.GetComponent<CanvasGroup>().alpha = 0f;
     }
 
     void InitializeUI()
