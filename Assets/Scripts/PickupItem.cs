@@ -18,7 +18,7 @@ public class PickupItem : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        if(timer > 0)
+        if (timer > 0)
         {
             timer -= Time.deltaTime;
         }
@@ -26,24 +26,38 @@ public class PickupItem : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (IsServer && IsClientInitialized && timer <= 0 && other.transform.root.TryGetComponent(out Player player))
+        if (!IsServer) return;
+
+        if (IsServerInitialized && timer <= 0 && other.transform.root.TryGetComponent(out Player player))
         {
+            Debug.Log("Pickup");
             timer = 0.2f;
-            ServerPickup(player);
+            Pickup(player);
         }
     }
 
-    private void ServerPickup(Player player)
+    private void OnTriggerStay(Collider other)
+    {
+        if (!IsServer) return;
+
+        if (IsServerInitialized && timer <= 0 && other.transform.root.TryGetComponent(out Player player))
+        {
+            timer = 0.2f;
+            Pickup(player);
+        }
+    }
+
+    private void Pickup(Player player)
     {
         if(player.HandlePickup(item, item.value))
         {
-            Disable();
+            RpcDisable();
             StartCoroutine(Wait());
         }        
     }
 
     [ObserversRpc]
-    private void Disable()
+    private void RpcDisable()
     {
         pickupSound.Play();
         mesh.SetActive(false);

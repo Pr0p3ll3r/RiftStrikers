@@ -33,11 +33,10 @@ public class PlayerInstance : NetworkBehaviour
         Instance = this;
     }
 
-    public void SpawnPlayer(Vector3 position, bool canControl = true)
+    public void SpawnPlayer(Transform transform, bool canControl = true)
     {
-        GameObject player = Instantiate(playerPrefab, position + Vector3.up, Quaternion.identity);
+        GameObject player = Instantiate(playerPrefab, transform.position + Vector3.up, Quaternion.identity);
 
-        Debug.Log("Player Spawn");
         Spawn(player, Owner);
 
         controlledPlayer = player.GetComponent<Player>();

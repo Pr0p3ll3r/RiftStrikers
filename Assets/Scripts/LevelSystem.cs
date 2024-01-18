@@ -154,17 +154,26 @@ public class LevelSystem : NetworkBehaviour
                 chosenItem.AddLevel();
                 ownedItems.Add(chosenItem);
                 availableItems.Remove(chosenItem);
+                Player.Instance.HandleItemSelection(chosenItem);
                 Debug.Log("Add item: " + chosenItem.itemName);
             }
             else
             {
                 Item ownedItem = ownedItems.Find(x => x.itemName == chosenItem.itemName);
                 ownedItem.AddLevel();
+                Player.Instance.HandleItemSelection(ownedItem);
                 Debug.Log("Level up item: " + chosenItem.itemName);
             }
-        }
-        Player.Instance.HandleItemSelection(chosenItem);
+        }     
         StopItemChoose();
+    }
+
+    public void SpawnAllItems()
+    {
+        foreach(Item item in ownedItems)
+        {
+            Player.Instance.ReaddItems(item);
+        }
     }
 
     private void StopItemChoose()

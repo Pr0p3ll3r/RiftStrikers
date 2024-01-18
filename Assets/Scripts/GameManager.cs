@@ -66,6 +66,7 @@ public class GameManager : NetworkBehaviour
     private GameObject spawnedPlayerPortal;
     private GameObject[] spawnedEnemiesPortal = new GameObject[4];
     [SerializeField] private float timeForGetToPortal = 30.0f;
+    [SyncVar] [HideInInspector] private float timerGetToPortal;
     [SerializeField] private float timeToFadeScreen = 1f;
     [SerializeField] private Animator screenTransition;
     private int playersInPortal;
@@ -83,12 +84,10 @@ public class GameManager : NetworkBehaviour
     public override void OnStartNetwork()
     {
         base.OnStartNetwork();
-        if (!IsServerInitialized)
+        if (IsServer)
         {
-            enabled = false;
-            return;
-        }
-        GenerateMap();
+            GenerateMap();
+        }      
     }
 
     public override void OnStartServer()
@@ -101,7 +100,7 @@ public class GameManager : NetworkBehaviour
 
     void Update()
     {
-        if (!IsClientInitialized) return;
+        if (!IsServer) return;
 
         switch (currentState)
         {
@@ -133,13 +132,13 @@ public class GameManager : NetworkBehaviour
 
                 if (playersInPortal == GetLivingPlayers())
                 {
-                    playersInPortal = 0;
+                    currentState = GameState.Paused;
                     StartDarkeningScreenRpc();
                 }
                 else if (islandBeingDestroyed)
                 {
-                    timeForGetToPortal -= Time.deltaTime;
-                    if (timeForGetToPortal <= 0)
+                    timerGetToPortal -= Time.deltaTime;
+                    if (timerGetToPortal <= 0)
                     {
                         TimeExpired();
                     }
@@ -157,21 +156,35 @@ public class GameManager : NetworkBehaviour
 
     private void TimeExpired()
     {
-        MapGenerator.DestroyMapRpc();
-        ClearMap();
-        PauseGame(true);
-        Player.Instance.TakeDamageServer(1000);
+        foreach (PlayerInstance player in players)
+        {
+            if (player.controlledPlayer.gameObject.activeSelf)
+                Despawn(player.controlledPlayer.gameObject);
+        }
+        if (playersInPortal == 0)
+        {
+            MapGenerator.DestroyMapRpc();
+            ClearMap();
+            SetGameOverScreen();
+        }
+        else
+        {
+            currentState = GameState.Paused;
+            StartDarkeningScreenRpc();
+        }
     }
 
     [ObserversRpc]
     private void UpdateGameTimerRpc(float newTime)
     {
         gameTimerText.text = FormatTimer(newTime);
-        nextIslandTimerText.text = FormatTimer(timeForGetToPortal);
+        nextIslandTimerText.text = FormatTimer(timerGetToPortal + 1);
     }
 
     private string FormatTimer(float newTime)
     {
+        if (newTime < 0)
+            newTime = 0;
         int hours = Mathf.FloorToInt(newTime / 3600);
         int minutes = Mathf.FloorToInt((newTime % 3600) / 60);
         int seconds = Mathf.FloorToInt(newTime % 60);
@@ -192,26 +205,13 @@ public class GameManager : NetworkBehaviour
         Debug.Log("Game Start");
         foreach (PlayerInstance player in players)
         {
-            player.SpawnPlayer(spawnedPlayerPortal.transform.position);
+            player.SpawnPlayer(spawnedPlayerPortal.transform);
         }
+        timerGetToPortal = timeForGetToPortal;
         timeToNextIsland = islandDuration;
         UpdateGameTimer();
         getPortalText.SetActive(false);
         currentState = GameState.Fighting;
-    }
-
-    public void ClearedIsland()
-    {
-        Debug.Log("Cleared Island!");
-        currentState = GameState.ChangingMap;
-        timeToNextIsland = islandDuration;
-        clearedIslands++;
-        isBossSpawned = false;
-        availableIslands.Remove(currentIsland);
-        getPortalText.SetActive(true);
-        if (!availableIslands.Any())
-            NewCycle();     
-        StartIslandRemoving();
     }
 
     private void GenerateMap()
@@ -255,10 +255,21 @@ public class GameManager : NetworkBehaviour
         Debug.Log("Boss spawned!");
     }
 
+    [ObserversRpc]
+    public void ClearedIsland()
+    {
+        Debug.Log("Cleared Island!");
+        currentState = GameState.ChangingMap;
+        timeToNextIsland = islandDuration;
+        clearedIslands++;
+        isBossSpawned = false;
+        availableIslands.Remove(currentIsland);
+        StartIslandRemoving();
+    }
+
     private void NewCycle()
     {
         availableIslands = islands.ToList();
-        currentIsland = null;
         healthMultiplier += 1;
         damageMultiplier += 0.25f;
         spawnIntervalMultiplier -= 0.5f;
@@ -269,8 +280,10 @@ public class GameManager : NetworkBehaviour
 
     private void StartIslandRemoving()
     {
-        MapGenerator.StartShakingRpc();
-        EnablePortal();
+        MapGenerator.StartShaking();
+        getPortalText.SetActive(true);
+        if (IsServer)
+            EnablePortal();
     }
 
     public void PlayersInPortal()
@@ -293,10 +306,9 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    [ObserversRpc]
     private void EnablePortal()
-    {
-        spawnedPlayerPortal.GetComponent<Portal>().enabled = true;
+    {      
+        spawnedPlayerPortal.GetComponent<Portal>().canBeUsed = true;
         islandBeingDestroyed = true;
     }
 
@@ -307,6 +319,8 @@ public class GameManager : NetworkBehaviour
 
         currentState = GameState.Paused;
         getPortalText.SetActive(false);
+        timerGetToPortal = timeForGetToPortal;
+        Player.Instance.DisableVignette();
         StartCoroutine(DarkenScreen());
     }
 
@@ -316,15 +330,22 @@ public class GameManager : NetworkBehaviour
         yield return new WaitForSeconds(timeToFadeScreen);
         if (IsServer)
         {
+            if (!availableIslands.Any())
+                NewCycle();
             ClearMap();
             GenerateMap();
-            yield return new WaitForSeconds(0.1f);
+        }
+        yield return new WaitForSeconds(timeToFadeScreen);
+        if (IsServer)
+        {
             foreach (PlayerInstance player in players)
             {
-                player.SpawnPlayer(spawnedPlayerPortal.transform.position, false);
+                player.SpawnPlayer(spawnedPlayerPortal.transform, false);
             }
         }
         yield return new WaitForSeconds(timeToFadeScreen);
+        playersInPortal = 0;
+        LevelSystem.Instance.SpawnAllItems();
         screenTransition.SetBool("Fade", false);
         PauseGame(false);
     }
@@ -332,7 +353,6 @@ public class GameManager : NetworkBehaviour
     private void ClearMap()
     {
         islandBeingDestroyed = false;
-        playersInPortal = 0;
         previousState = GameState.Fighting;
         Despawn(spawnedPlayerPortal);
         foreach (GameObject portal in spawnedEnemiesPortal)
@@ -344,10 +364,10 @@ public class GameManager : NetworkBehaviour
             if (player.controlledPlayer)
                 Despawn(player.controlledPlayer.gameObject);
         }
-        for (int i = enemies.Count - 1; i >= 0; i--)
+        Enemy[] enemies = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
+        foreach (Enemy enemy in enemies)
         {
-            Despawn(enemies[i].gameObject);
-            enemies.RemoveAt(i);           
+            Despawn(enemy.gameObject);
         }
         PickupItem[] pickups = FindObjectsByType<PickupItem>(FindObjectsSortMode.None);
         foreach (PickupItem pickup in pickups)
@@ -390,7 +410,6 @@ public class GameManager : NetworkBehaviour
         return players.Count(x => !x.controlledPlayer.IsDead);
     }
 
-    [ObserversRpc]
     public void PauseGame(bool paused)
     {
         if (paused)

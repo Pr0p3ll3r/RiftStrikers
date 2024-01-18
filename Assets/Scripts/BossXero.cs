@@ -4,7 +4,7 @@ using UnityEngine;
 public class BossXero : Enemy
 {
     [SerializeField] private GameObject bossPrefab;
-    [SerializeField] private int lives = 10;
+    [SerializeField] private int lives = 5;
 
     public override void OnStartNetwork()
     {

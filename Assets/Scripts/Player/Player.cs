@@ -115,7 +115,7 @@ public class Player : NetworkBehaviour
         if (!IsOwner || GameManager.Instance.currentState == GameState.Paused) return;
 
         HealthRecovery();
-        PullItemsTowardsPlayer();
+        //PullItemsTowardsPlayer();
 
         //if (Keyboard.current.tKey.wasPressedThisFrame)
         //{

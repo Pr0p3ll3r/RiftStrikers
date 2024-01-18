@@ -137,8 +137,7 @@ public class MapGenerator : NetworkBehaviour
         }
     }
 
-    [ObserversRpc]
-    public void StartShakingRpc()
+    public void StartShaking()
     {
         foreach (GameObject land in lands)
         {

@@ -24,7 +24,14 @@ public class ItemManager : NetworkBehaviour
         activeItems.Add(controller);
     }
 
+    [ServerRpc(RequireOwnership = false)]
     public void LevelUpActiveItem(ActiveItem item)
+    {
+        RpcLevelUpActiveItem(item);
+    }
+
+    [ObserversRpc]
+    public void RpcLevelUpActiveItem(ActiveItem item)
     {
         ActiveItemController ownedItem = activeItems.Find(x => x.activeItem.itemName == item.itemName);
         ownedItem.AddLevel();

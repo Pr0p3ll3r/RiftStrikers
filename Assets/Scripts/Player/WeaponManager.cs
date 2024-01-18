@@ -88,16 +88,9 @@ public class WeaponManager : NetworkBehaviour
         currentWeaponData = Database.Instance.data.weapons[index];
         currentWeaponData.Reload();       
         hud.RefreshWeapon(currentWeaponData);
-        for (int i = 0; i < weaponHolder.childCount; i++)
-        {
-            weaponHolder.GetChild(i).transform.gameObject.SetActive(false);
-        }
-        currentWeapon = weaponHolder.GetChild(index).gameObject;
-        currentWeapon.SetActive(true);
         ServerEquip(currentWeaponData.childNumber);
         hud.RefreshAmmo(currentWeaponData.GetAmmo());
         Player.Instance.currentMoveSpeed *= 1 + currentWeaponData.movementSpeedMultiplier / 100f;
-        animCharacter.SetInteger("Weapon", (int)currentWeaponData.animSet);
         weaponSound.PlayOneShot(equipSound);
     }
 
@@ -118,6 +111,7 @@ public class WeaponManager : NetworkBehaviour
         currentWeapon.SetActive(true);
         currentWeaponData = Database.Instance.data.weapons[childNumber];
         muzzleFlash = currentWeapon.GetComponentInChildren<ParticleSystem>();
+        animCharacter.SetInteger("Weapon", (int)currentWeaponData.animSet);
     }
 
     private void Shoot()
