@@ -121,7 +121,8 @@ public class Enemy : NetworkBehaviour
 
     public void ChangeAgentStatus(bool status)
     {
-        agent.enabled = !status;
+        if(agent)
+            agent.enabled = !status;
         isStopped = status;
     }
 

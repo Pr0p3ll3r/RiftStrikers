@@ -21,7 +21,6 @@ public class PlayerHUD : NetworkBehaviour
     private void Awake()
     {
         InitializeUI();
-        vignette.GetComponent<CanvasGroup>().alpha = 0f;
     }
 
     void InitializeUI()
@@ -113,5 +112,10 @@ public class PlayerHUD : NetworkBehaviour
     {
         StopCoroutine(nameof(Reload));
         reloadingSlider.value = 0;
+    }
+
+    public void DisableVignette()
+    {
+        vignette.GetComponent<CanvasGroup>().alpha = 0f;
     }
 }

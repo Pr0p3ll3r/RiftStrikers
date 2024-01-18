@@ -1038,8 +1038,8 @@ MonoBehaviour:
   healthBar: {fileID: 2979803921933410449}
   attackCooldown: 2
   randomLook: 0
-  dissolveSpeed: 0.05
-  dissolveEnd: 0.4
+  dissolveSpeed: 0.1
+  dissolveEnd: 1.5
 --- !u!136 &3554178330786276836
 CapsuleCollider:
   m_ObjectHideFlags: 0

@@ -117,7 +117,6 @@ public class Player : NetworkBehaviour
         HealthRecovery();
         PullItemsTowardsPlayer();
 
-#if UNITY_EDITOR
         if (Keyboard.current.tKey.wasPressedThisFrame)
         {
             TakeDamageServer(20);
@@ -126,7 +125,6 @@ public class Player : NetworkBehaviour
         {
             LevelSystem.Instance.GainExperience(5);
         }
-#endif
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -174,6 +172,7 @@ public class Player : NetworkBehaviour
         isDead = true;
         controller.OnDeath();
         Destroy(itemsContainer);
+        hud.StopAllCoroutines();
         gameObject.layer = LayerMask.NameToLayer("NotCollide");
         foreach (Transform child in gameObject.GetComponentsInChildren<Transform>(true))
         {
@@ -275,5 +274,22 @@ public class Player : NetworkBehaviour
                 hud.AddItemUI(passiveItem);
             }           
         }
+    }
+
+    public void ReaddItems(Item item)
+    {
+        if (item is ActiveItem activeItem)
+        {
+            itemManager.AddActiveItem(activeItem);
+        }
+        else if (item is PassiveItem passiveItem)
+        {
+            itemManager.AddPassiveItem(passiveItem);
+        }
+    }
+
+    public void DisableVignette()
+    {
+        hud.DisableVignette();
     }
 }

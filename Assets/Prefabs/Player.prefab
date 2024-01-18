@@ -3155,6 +3155,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7632339502349730276}
+  - component: {fileID: 2956452369018485338}
   m_Layer: 6
   m_Name: Items
   m_TagString: Untagged
@@ -3177,6 +3178,38 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6913947594788788698}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2956452369018485338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7267469616229307150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <IsNested>k__BackingField: 1
+  <ComponentIndex>k__BackingField: 0
+  <PredictedSpawn>k__BackingField: {fileID: 0}
+  _networkBehaviours: []
+  <ParentNetworkObject>k__BackingField: {fileID: 0}
+  <ChildNetworkObjects>k__BackingField: []
+  SerializedTransformProperties:
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 1}
+    LocalScale: {x: 1, y: 1, z: 1}
+  _isNetworked: 1
+  _isGlobal: 0
+  _initializeOrder: 0
+  _defaultDespawnType: 0
+  NetworkObserver: {fileID: 0}
+  <PrefabId>k__BackingField: 0
+  <SpawnableCollectionId>k__BackingField: 0
+  _scenePathHash: 0
+  <SceneId>k__BackingField: 0
+  <AssetPathHash>k__BackingField: 0
 --- !u!1 &7364713166284726356
 GameObject:
   m_ObjectHideFlags: 0
@@ -3810,7 +3843,7 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 3610995976546538049}
   _networkObjectCache: {fileID: 3610995976546538049}
-  _componentConfiguration: 1
+  _componentConfiguration: 0
   _synchronizeParent: 0
   _packing:
     Position: 1

@@ -9800,7 +9800,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 4
+      scalar: Infinity
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -14513,6 +14513,7 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 2567010472895388842}
   _networkObjectCache: {fileID: 2567010472895388842}
+  canBeUsed: 0
 --- !u!199 &1548462622122383715
 ParticleSystemRenderer:
   serializedVersion: 6

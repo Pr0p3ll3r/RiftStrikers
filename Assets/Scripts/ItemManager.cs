@@ -11,9 +11,8 @@ public class ItemManager : NetworkBehaviour
     public void AddActiveItem(ActiveItem item)
     {
         GameObject itemGO = Instantiate(item.prefab, itemsList);
+        itemGO.GetComponent<NetworkObject>().SetParent(itemsList.GetComponent<NetworkObject>());
         Spawn(itemGO, Owner);
-        itemGO.transform.SetParent(itemsList);
-        itemGO.transform.localPosition = Vector3.zero;
         ActiveItemController controller = itemGO.GetComponent<ActiveItemController>();
         controller.SetData(item, transform);
         AddActiveItemRpc(controller);

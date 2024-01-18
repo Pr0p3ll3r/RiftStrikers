@@ -2149,8 +2149,8 @@ MonoBehaviour:
   healthBar: {fileID: 5794465009465089696}
   attackCooldown: 2
   randomLook: 0
-  dissolveSpeed: 0.05
-  dissolveEnd: 0.4
+  dissolveSpeed: 0.1
+  dissolveEnd: 1.3
 --- !u!136 &2891089315562655472
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -3069,7 +3069,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4628407005774460
 Transform:
   m_ObjectHideFlags: 0

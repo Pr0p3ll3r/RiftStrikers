@@ -471,7 +471,7 @@ MonoBehaviour:
   dissolveSpeed: 0.1
   dissolveEnd: -0.7
   bossPrefab: {fileID: 1695502807786733843}
-  lives: 10
+  lives: 5
 --- !u!135 &2286847953190690403
 SphereCollider:
   m_ObjectHideFlags: 0
