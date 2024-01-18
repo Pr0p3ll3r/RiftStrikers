@@ -117,14 +117,14 @@ public class Player : NetworkBehaviour
         HealthRecovery();
         PullItemsTowardsPlayer();
 
-        if (Keyboard.current.tKey.wasPressedThisFrame)
-        {
-            TakeDamageServer(20);
-        }
-        if (Keyboard.current.eKey.wasPressedThisFrame)
-        {
-            LevelSystem.Instance.GainExperience(5);
-        }
+        //if (Keyboard.current.tKey.wasPressedThisFrame)
+        //{
+        //    TakeDamageServer(20);
+        //}
+        //if (Keyboard.current.eKey.wasPressedThisFrame)
+        //{
+        //    LevelSystem.Instance.GainExperience(5);
+        //}
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -253,8 +253,10 @@ public class Player : NetworkBehaviour
     {
         if(item is ActiveItem activeItem)
         {
-            if(activeItem.level > 0)
+            if (activeItem.level > 0)
+            {
                 itemManager.LevelUpActiveItem(activeItem);
+            }  
             else
             {
                 itemManager.AddActiveItem(activeItem);
@@ -268,11 +270,15 @@ public class Player : NetworkBehaviour
                 if (IsServer)
                     GameManager.Instance.AddMoneyRpc((int)passiveItem.multiplier);
             }
+            else if (passiveItem.level > 0)
+            {             
+                itemManager.AddPassiveItem(passiveItem);
+            }
             else
             {
                 itemManager.AddPassiveItem(passiveItem);
                 hud.AddItemUI(passiveItem);
-            }           
+            }
         }
     }
 
