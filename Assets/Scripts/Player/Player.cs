@@ -115,7 +115,7 @@ public class Player : NetworkBehaviour
         if (!IsOwner || GameManager.Instance.currentState == GameState.Paused) return;
 
         HealthRecovery();
-        //PullItemsTowardsPlayer();
+        PullItemsTowardsPlayer();
 
         //if (Keyboard.current.tKey.wasPressedThisFrame)
         //{
@@ -209,6 +209,7 @@ public class Player : NetworkBehaviour
         }      
     }
 
+    [ServerRpc(RequireOwnership = false)]
     private void PullItemsTowardsPlayer()
     {
         Collider[] itemsInRadius = Physics.OverlapSphere(transform.position, currentLootRange);

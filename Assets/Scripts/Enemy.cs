@@ -1,4 +1,5 @@
-﻿using FishNet.Object;
+﻿using FishNet;
+using FishNet.Object;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -214,6 +215,6 @@ public class Enemy : NetworkBehaviour
     {
         PickableItem item = LootTable.GetItem(stats.Loot);
         GameObject pickupItem = Instantiate(item.prefab, new Vector3(transform.position.x, 1.5f, transform.position.z), item.prefab.transform.rotation);
-        Spawn(pickupItem);
+        InstanceFinder.ServerManager.Spawn(pickupItem);
     }
 }
