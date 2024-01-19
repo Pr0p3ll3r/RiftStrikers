@@ -48,6 +48,7 @@ public class LobbyMessageUI : MonoBehaviour
 
     private void LobbyManager_OnGameStarted(object sender, EventArgs e)
     {
+        VivoxService.Instance.LeaveChannelAsync(VivoxVoiceManager.LobbyChannelName);
         ShowMessage("Starting game...");
     }
 

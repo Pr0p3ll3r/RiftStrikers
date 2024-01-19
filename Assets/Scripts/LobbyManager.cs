@@ -21,7 +21,7 @@ public class LobbyManager : MonoBehaviour
     public event EventHandler OnKickedFromLobby;
     public event EventHandler OnGameStarted;
     public event EventHandler OnCreateLobbyStarted;
-    public event EventHandler OnCreateLobbyFailed;  
+    public event EventHandler OnCreateLobbyFailed;
     public event EventHandler OnLeftLobby;
 
     public event EventHandler<LobbyEventArgs> OnJoinedLobbyUpdate;

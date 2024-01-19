@@ -84,10 +84,6 @@ public class TextChatUI : MonoBehaviour
     {
         VivoxService.Instance.ChannelJoined -= OnChannelJoined;
         VivoxService.Instance.ChannelMessageReceived -= OnChannelMessageReceived;
-
-        sendButton.onClick.RemoveAllListeners();
-        messageInputField.onEndEdit.RemoveAllListeners();
-        m_TextChatScrollRect.onValueChanged.RemoveAllListeners();
     }
 
     void ClearMessageObjectPool()
