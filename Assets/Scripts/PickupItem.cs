@@ -28,19 +28,7 @@ public class PickupItem : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        if (IsServerInitialized && timer <= 0 && other.transform.root.TryGetComponent(out Player player))
-        {
-            Debug.Log("Pickup");
-            timer = 0.2f;
-            Pickup(player);
-        }
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (!IsServer) return;
-
-        if (IsServerInitialized && timer <= 0 && other.transform.root.TryGetComponent(out Player player))
+        if (IsServerInitialized && timer <= 0 && other.TryGetComponent(out Player player))
         {
             timer = 0.2f;
             Pickup(player);

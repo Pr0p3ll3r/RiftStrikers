@@ -15,8 +15,9 @@ MonoBehaviour:
   <Damage>k__BackingField: 20
   <AttackRange>k__BackingField: 3
   <MoveSpeed>k__BackingField: 2
-  <MaxHealth>k__BackingField: 40
+  <MaxHealth>k__BackingField: 30
   <IsBoss>k__BackingField: 0
   <Loot>k__BackingField:
   - {fileID: 11400000, guid: 0f0fadb32803bd04fab5dc133247d773, type: 2}
+  - {fileID: 11400000, guid: 54eb888d49cc7e946b3cd3a0cba742cd, type: 2}
   - {fileID: 11400000, guid: bde585d95b562344fbcf46ebf3754315, type: 2}

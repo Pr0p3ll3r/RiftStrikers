@@ -18,5 +18,5 @@ MonoBehaviour:
   maxLevel: 4
   level: -1
   itemType: 11
-  description: Item loot range +100%
-  multiplier: 100
+  description: Item loot range +25%
+  multiplier: 25

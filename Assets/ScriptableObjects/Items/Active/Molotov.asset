@@ -24,7 +24,7 @@ MonoBehaviour:
     range: 5
     cooldown: 4.5
     speed: 5
-    duration: 10
+    duration: 2
     area: 1
     hitDelay: 0.5
     projectile: 1
